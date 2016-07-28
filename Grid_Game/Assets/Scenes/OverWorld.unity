@@ -207,8 +207,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -50}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 150, y: -100}
+  m_SizeDelta: {x: 300, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &724167694
 MonoBehaviour:
@@ -692,15 +692,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f5838f66e517c458188ef0377a7696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cur: {fileID: 1001807407}
-  left: {fileID: 1773445036}
-  right: {fileID: 766441094}
-  top: {fileID: 2069161352}
-  bot: {fileID: 1508996160}
-  top_L: {fileID: 1936357539}
-  top_R: {fileID: 170721029}
-  bot_L: {fileID: 963198615}
-  bot_R: {fileID: 1221939126}
+  Cur: {fileID: 1001807407}
+  Left: {fileID: 1773445036}
+  Right: {fileID: 766441094}
+  Top: {fileID: 2069161352}
+  Bot: {fileID: 1508996160}
+  Top_L: {fileID: 1936357539}
+  Top_R: {fileID: 170721029}
+  Bot_L: {fileID: 963198615}
+  Bot_R: {fileID: 1221939126}
 --- !u!1 &1773445035
 GameObject:
   m_ObjectHideFlags: 0
@@ -874,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8719c196038e6cf41b103333f327f754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test_sec: 0
-  test_row: 0
-  test_col: 0
-  CoordinatesText: {fileID: 724167694}
+  Test_Sec: 2
+  Test_Row: 5
+  Test_Col: 2
+  Coordinates_Text: {fileID: 724167694}

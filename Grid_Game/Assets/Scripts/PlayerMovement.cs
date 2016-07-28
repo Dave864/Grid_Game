@@ -6,15 +6,15 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
 	// player coordinates
-	public int test_sec;
-	public int test_row;
-	public int test_col;
-	[HideInInspector] static public int cur_sec;
-	[HideInInspector] static public int cur_row;
-	[HideInInspector] static public int cur_col;
+	public int Test_Sec;
+	public int Test_Row;
+	public int Test_Col;
+	[HideInInspector] static public int Cur_Sec;
+	[HideInInspector] static public int Cur_Row;
+	[HideInInspector] static public int Cur_Col;
 
 	// section dimensions
-	[HideInInspector] static public float sec_width = 10.0f;
+	[HideInInspector] static public float Sec_Width = 10.0f;
 
 	// rotation and movement information
 	/*private float rotation = 0f;
@@ -25,24 +25,24 @@ public class PlayerMovement : MonoBehaviour {
 	private Quaternion rotateTo = Quaternion.Euler(45f, 0f, 0f);*/
 
 	// text showing player coordinates
-	public Text CoordinatesText;
+	public Text Coordinates_Text;
 
 	// Initialize initial section and intial row and column
 	void Awake () {
-		cur_sec = test_sec;
-		if (test_row < 0) {
-			cur_row = 0;
-		} else if (test_row > (int)sec_width - 1) {
-			cur_row = (int)sec_width - 1;
+		Cur_Sec = Test_Sec;
+		if (Test_Row < 0) {
+			Cur_Row = 0;
+		} else if (Test_Row > (int)Sec_Width - 1) {
+			Cur_Row = (int)Sec_Width - 1;
 		} else {
-			cur_row = test_row;
+			Cur_Row = Test_Row;
 		}
-		if (test_col < 0) {
-			cur_col = 0;
-		} else if (test_col > (int)sec_width - 1) {
-			cur_col = (int)sec_width - 1;
+		if (Test_Col < 0) {
+			Cur_Col = 0;
+		} else if (Test_Col > (int)Sec_Width - 1) {
+			Cur_Col = (int)Sec_Width - 1;
 		} else {
-			cur_col = test_col;
+			Cur_Col = Test_Col;
 		}
 	}
 
@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour {
 			height += 0.5;
 		}*/
 		// place player at coordinates
-		transform.position = new Vector3 (transform.position.x + cur_col, transform.position.y, transform.position.z + cur_row);
+		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y, transform.position.z + Cur_Row);
 		DisplayPos ();
 	}
 
@@ -68,10 +68,10 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Updates the display that shows player coordinates
 	void DisplayPos () {
-		CoordinatesText.text = "Section: " + cur_sec.ToString ()
-		+ " row: " + cur_row.ToString ()
-		+ " col: " + cur_col.ToString ()
-		+ "\nWorld Coordinates:\n\t" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z;
+		Coordinates_Text.text = "WORLD: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z
+			+ "\nsection: " + Cur_Sec.ToString ()
+			+ "\nrow: " + Cur_Row.ToString ()
+			+ "\ncol: " + Cur_Col.ToString ();
 	}
 
 	// rotate player based on input
