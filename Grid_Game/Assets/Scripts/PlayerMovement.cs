@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour {
 			height += 0.5;
 		}*/
 		// place player at coordinates
-		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y, transform.position.z + Cur_Row);
+		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y, transform.position.z - Cur_Row);
 		DisplayPos ();
 	}
 

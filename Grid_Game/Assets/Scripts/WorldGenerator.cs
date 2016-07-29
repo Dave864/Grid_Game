@@ -64,7 +64,7 @@ public class WorldGenerator : MonoBehaviour {
 			foreach (string[] row in SectionData.Cur_Sec) {
 				foreach (string cell in row) {
 					height = (float)char.GetNumericValue (cell[3]);
-					// MakeCell()
+					MakeCell(c_row, c_col, height, cell, Cur);
 					c_col += 1;
 				}
 				c_row -= 1;
@@ -86,8 +86,24 @@ public class WorldGenerator : MonoBehaviour {
 		return file_path;
 	}
 
-	// Creates a cell in the game space
-	void MakeCell () {
+	// Creates a section cell in the game space
+	void MakeCell (int row, int col, float height, string info, Transform section) {
+		string file_path = "Prefabs/";
+		float x_rot;
+		float y_rot;
+		// make flat panel
+		//if (char.IsDigit (info [0])) {
+			file_path += "Panel_0";
+			x_rot = 90f;
+			y_rot = 0f;
+		//}
+		// make special platform
+		//else {
+		//}
+		GameObject cell;
+		cell = Instantiate (Resources.Load (file_path), new Vector3 ((float)col, height, (float)row), Quaternion.Euler (x_rot, y_rot, 0)) as GameObject;
+		cell.transform.parent = section;
+		// AssignTag
 	}
 
 	// destroy sections
