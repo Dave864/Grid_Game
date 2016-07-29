@@ -22,7 +22,7 @@ public class WorldGenerator : MonoBehaviour {
 	private int Cur_Sec;
 	enum SECTION_LOC {CUR, L, R, T, B, TL, TR, BL, BR};
 
-	TextAsset secData;
+	TextAsset Sec_Data;
 
 	// Use this for initialization
 	void Start () {
@@ -37,11 +37,58 @@ public class WorldGenerator : MonoBehaviour {
 	// Loads the visible sections of the world
 	void LoadWorld () {
 		//float origin_offset = PlayerMovement.Sec_Width;
-		LoadSection (Cur_Sec, Cur_Sec_Origin_x, Cur_Sec_Origin_z, SECTION_LOC.CUR);
+		LoadSection (Cur_Sec, SECTION_LOC.CUR);
+
 	}
 
 	// Loads section sec_num of the world at location at coordinates: sec_origin_x, some height, sec_origin_z
-	void LoadSection (int sec_num, float sec_origin_x, float sec_origin_z, SECTION_LOC location) {
+	void LoadSection (int sec_num, SECTION_LOC location) {
+		Sec_Data = (TextAsset)Resources.Load (GetAreaMapPath (sec_num), typeof(TextAsset));
+		int c_col = (int)Cur_Sec_Origin_x;
+		int c_row = (int)Cur_Sec_Origin_z;
+		float height = 0.0f;
+		string[] row_data = Sec_Data.text.Split ('\n');
+		if (location == SECTION_LOC.L) {
+		} else if (location == SECTION_LOC.R) {
+		} else if (location == SECTION_LOC.T) {
+		} else if (location == SECTION_LOC.B) {
+		} else if (location == SECTION_LOC.TL) {
+		} else if (location == SECTION_LOC.TR) {
+		} else if (location == SECTION_LOC.BL) {
+		} else if (location == SECTION_LOC.BR) {
+		} else {
+			SectionData.Cur_Sec = new string[row_data.Length][];
+			for (int i = 0; i < row_data.Length; i++) {
+				SectionData.Cur_Sec [i] = row_data [i].Split (' ');
+			}
+			foreach (string[] row in SectionData.Cur_Sec) {
+				foreach (string cell in row) {
+					height = (float)char.GetNumericValue (cell[3]);
+					// MakeCell()
+					c_col += 1;
+				}
+				c_row -= 1;
+				c_col = (int)Cur_Sec_Origin_x;
+			}
+		}
 	}
+
+	// Create AreaMap file path for section sec_num
+	string GetAreaMapPath (int sec_num) {
+		string file_path = "Sections/";
+		char c = '0';
+		c += (char)(sec_num/10);
+		file_path += c;
+		c = '0';
+		c += (char)(sec_num % 10);
+		file_path += c;
+		file_path += "/AreaMap";
+		return file_path;
+	}
+
+	// Creates a cell in the game space
+	void MakeCell () {
+	}
+
 	// destroy sections
 }
