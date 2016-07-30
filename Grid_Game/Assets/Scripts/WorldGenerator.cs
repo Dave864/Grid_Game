@@ -63,7 +63,7 @@ public class WorldGenerator : MonoBehaviour {
 			}
 			foreach (string[] row in SectionData.Cur_Sec) {
 				foreach (string cell in row) {
-					height = (float)char.GetNumericValue (cell[3]);
+					height = (float)(char.GetNumericValue (cell[3])/2);
 					MakeCell(c_row, c_col, height, cell, Cur);
 					c_col += 1;
 				}
@@ -86,24 +86,67 @@ public class WorldGenerator : MonoBehaviour {
 		return file_path;
 	}
 
+	// Create file path to prefab listed in info
+	string GetPrefabPath (string info) {
+		string file_path;
+		if (info [0] == 'p') {
+			file_path = "platform_";
+			file_path += info [1];
+		} else if (info [0] == 'w') {
+			file_path = "wall_";
+			file_path += info [1];
+		} else {
+			file_path = "ramp";
+		}
+		return file_path;
+	}
+
+	// Decides how much higher/lower a cell needs to be based on its type
+	float HeightOffset (string cell) {
+		float offset = 0.0f;
+		if (cell [0] == 'w') {
+			offset = 0.25f;
+		} else if (cell [0] == 'r') {
+			offset = 0.25f;
+		}
+		return offset;
+	}
+
+	// Assigns the appropriate tag to cell
+	void AssignTag (GameObject cell, string info) {
+		if (info [0] == 'p') {
+			cell.tag = "Platform";
+		} else if (info [0] == 'w') {
+			cell.tag = "Wall";
+		} else if (info [0] == 'r') {
+			cell.tag = "Ramp";
+		} else {
+			cell.tag = "Floor";
+		}
+	}
+
 	// Creates a section cell in the game space
 	void MakeCell (int row, int col, float height, string info, Transform section) {
 		string file_path = "Prefabs/";
 		float x_rot;
 		float y_rot;
 		// make flat panel
-		//if (char.IsDigit (info [0])) {
+		if (char.IsDigit (info [0])) {
 			file_path += "Panel_0";
 			x_rot = 90f;
 			y_rot = 0f;
-		//}
+		}
 		// make special platform
-		//else {
-		//}
+		else {
+			file_path += GetPrefabPath (info);
+			height += HeightOffset (info);
+			x_rot = 0f;
+			y_rot = 90f*(float)(char.GetNumericValue(info[2]));
+		}
 		GameObject cell;
 		cell = Instantiate (Resources.Load (file_path), new Vector3 ((float)col, height, (float)row), Quaternion.Euler (x_rot, y_rot, 0)) as GameObject;
 		cell.transform.parent = section;
-		// AssignTag
+		AssignTag (cell, info);
 	}
 
 	// destroy sections
