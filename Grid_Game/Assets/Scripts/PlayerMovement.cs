@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	// section dimensions
 	[HideInInspector] static public float Sec_Width = 10.0f;
+	enum SECTION_LOC {CUR, L, R, T, B, TL, TR, BL, BR};
 
 	// rotation and movement information
 	private float Rotation = 0f;
@@ -23,7 +24,7 @@ public class PlayerMovement : MonoBehaviour {
 	// private bool Moving = false;
 	private bool Rotating = false;
 	private bool RotButtDown = false;
-	private Quaternion Rotate_To = Quaternion.Euler(45f, 0f, 0f);
+	private Quaternion Rotate_To = Quaternion.Euler(30f, 0f, 0f);
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
@@ -94,28 +95,111 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	// Matches up input to the player's orientation
-	void OrientAxes (float vert, float hoz) {
-		SplitMovement (vert, hoz);
+	void OrientAxes (float vert_step, float hoz_step) {
+		if (Rotation == 0f) {
+		} else if (Rotation == 90f || Rotation == -270f) {
+		} else if (Rotation == 180f || Rotation == -180f) {
+		} else {
+		}
+		SplitMovement ((int) vert_step, (int) hoz_step);
 	}
 
 	// Prevents diagonal movement
-	void SplitMovement (float vert, float hoz) {
+	void SplitMovement (int vert_step, int hoz_step) {
+		if (vert_step != 0 && hoz_step != 0) {
+			// move horizontally
+			GetDestCoordinates(0, hoz_step);
+			// move vertically
+			GetDestCoordinates(vert_step, 0);
+		} else {
+			GetDestCoordinates (vert_step, hoz_step);
+		}
 	}
 
-	// Finds out what the destiniation coordinates are for the current movement step
-	// void GetDest()
+	// Gets the destiniation x,z coordinates for the current movement step
+	void GetDestCoordinates (int vert_step, int hoz_step) {
+		// vertical movement
+		if (vert_step != 0) {
+			int dest_row = Cur_Row + vert_step;
+			if (dest_row < 0) {
+				// move to top section
+			} else if (dest_row >= (int)Sec_Width) {
+				// move to bottom section
+			} else {
+				// stay in current section
+				GetStartCellType(SECTION_LOC.CUR, Cur_Col, dest_row);
+			}
+		}
+		// horizontal movement
+		else {
+			int dest_col = Cur_Col + hoz_step;
+			if (dest_col < 0) {
+				// move to left section
+			} else if (dest_col >= (int)Sec_Width) {
+				// move to right section
+			} else {
+				// stay in current section
+				GetStartCellType(SECTION_LOC.CUR, dest_col, Cur_Row);
+			}
+		}
+	}
+
+	// Determines which type of cell the player is on
+	void GetStartCellType (SECTION_LOC dest_sec, int x_dest, int z_dest) {
+		if (SectionData.Cur_Sec [Cur_Row] [Cur_Col] [0] == 'p') {
+			PlatformStart (dest_sec, x_dest, z_dest);
+		} else if (SectionData.Cur_Sec [Cur_Row] [Cur_Col] [0] == 'r') {
+			RampStart (dest_sec, x_dest, z_dest);
+		} else {
+			FloorStart (dest_sec, x_dest, z_dest);
+		}
+	}
 
 	// Determines how the player moves when starting on a floor cell
-	// void FloorStart()
+	void FloorStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
+		if (dest_sec == SECTION_LOC.T) {
+		} else if (dest_sec == SECTION_LOC.B) {
+		} else if (dest_sec == SECTION_LOC.L) {
+		} else if (dest_sec == SECTION_LOC.R) {
+		} else if (dest_sec == SECTION_LOC.TL) {
+		} else if (dest_sec == SECTION_LOC.TR) {
+		} else if (dest_sec == SECTION_LOC.BL) {
+		} else if (dest_sec == SECTION_LOC.BR) {
+		} else {
+		}
+	}
 
 	// Determines how the player moves when starting on a platform
-	// void PlatformStart()
+	void PlatformStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
+		if (dest_sec == SECTION_LOC.T) {
+		} else if (dest_sec == SECTION_LOC.B) {
+		} else if (dest_sec == SECTION_LOC.L) {
+		} else if (dest_sec == SECTION_LOC.R) {
+		} else if (dest_sec == SECTION_LOC.TL) {
+		} else if (dest_sec == SECTION_LOC.TR) {
+		} else if (dest_sec == SECTION_LOC.BL) {
+		} else if (dest_sec == SECTION_LOC.BR) {
+		} else {
+		}
+	}
 
 	// Determines how the player moves when starting on a ramp
-	// void RampStart()
+	void RampStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
+		if (dest_sec == SECTION_LOC.T) {
+		} else if (dest_sec == SECTION_LOC.B) {
+		} else if (dest_sec == SECTION_LOC.L) {
+		} else if (dest_sec == SECTION_LOC.R) {
+		} else if (dest_sec == SECTION_LOC.TL) {
+		} else if (dest_sec == SECTION_LOC.TR) {
+		} else if (dest_sec == SECTION_LOC.BL) {
+		} else if (dest_sec == SECTION_LOC.BR) {
+		} else {
+		}
+	}
 
 	// Moves the player to the destination
-	// void Move()
+	void Move () {
+	}
 
 	// rotate player based on input
 	IEnumerator RotatePlayer(float rot) {
@@ -124,7 +208,7 @@ public class PlayerMovement : MonoBehaviour {
 		} else if (rot > 0f) {
 			Rotation -= 90f;
 		}
-		Rotate_To = Quaternion.Euler (45f, Rotation, 0f);
+		Rotate_To = Quaternion.Euler (30f, Rotation, 0f);
 		Rotating = true;
 		while (Quaternion.Angle (transform.rotation, Rotate_To) > 1.0f) {
 			transform.rotation = Quaternion.RotateTowards (transform.rotation, Rotate_To, Rot_Speed * Time.deltaTime);
