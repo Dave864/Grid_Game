@@ -17,12 +17,13 @@ public class PlayerMovement : MonoBehaviour {
 	[HideInInspector] static public float Sec_Width = 10.0f;
 
 	// rotation and movement information
-	/*private float rotation = 0f;
-	private float rotSpeed = 200f;
-	private float movSpeed = 2f;
-	private bool moving = false;
-	private bool rotating = false;
-	private Quaternion rotateTo = Quaternion.Euler(45f, 0f, 0f);*/
+	private float Rotation = 0f;
+	private float Rot_Speed = 200f;
+	// private float Mov_Speed = 2f;
+	// private bool Moving = false;
+	private bool Rotating = false;
+	private bool RotButtDown = false;
+	private Quaternion Rotate_To = Quaternion.Euler(45f, 0f, 0f);
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
@@ -49,21 +50,24 @@ public class PlayerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// get the player's y coordinate
-		/*string cellData = SectionData.Cur_Sec [cur_row][cur_col];
-		float height = (float)char.GetNumericValue (cellData [3])/2;
+		string cellData = SectionData.Cur_Sec [Cur_Row][Cur_Col];
+		float height = (float)(char.GetNumericValue (cellData [3]) / 2);
 		if (cellData [0] == 'r') {
-			height += 0.25;
+			height += 0.25f;
 		} else if (cellData [0] == 'p') {
-			height += 0.5;
-		}*/
+			height += 0.5f;
+		}
 		// place player at coordinates
-		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y, transform.position.z - Cur_Row);
+		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y + height, transform.position.z - Cur_Row);
 		DisplayPos ();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		// receive player input
+		// player rotation
+		PrevHoldRot ();
+		// player movement
+		OrientAxes(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"));
 	}
 
 	// Updates the display that shows player coordinates
@@ -74,7 +78,62 @@ public class PlayerMovement : MonoBehaviour {
 			+ "\ncol: " + Cur_Col.ToString ();
 	}
 
+	// Keeps player from rotating when rotate button is held down
+	void PrevHoldRot () {
+		if (!Rotating) {
+			float rot_val = Input.GetAxisRaw ("Rotate");
+			if (rot_val != 0) {
+				if (!RotButtDown) {
+					StartCoroutine (RotatePlayer (rot_val));
+					RotButtDown = true;
+				}
+			} else {
+				RotButtDown = false;
+			}
+		}
+	}
+
+	// Matches up input to the player's orientation
+	void OrientAxes (float vert, float hoz) {
+		SplitMovement (vert, hoz);
+	}
+
+	// Prevents diagonal movement
+	void SplitMovement (float vert, float hoz) {
+	}
+
+	// Finds out what the destiniation coordinates are for the current movement step
+	// void GetDest()
+
+	// Determines how the player moves when starting on a floor cell
+	// void FloorStart()
+
+	// Determines how the player moves when starting on a platform
+	// void PlatformStart()
+
+	// Determines how the player moves when starting on a ramp
+	// void RampStart()
+
+	// Moves the player to the destination
+	// void Move()
+
 	// rotate player based on input
+	IEnumerator RotatePlayer(float rot) {
+		if (rot < 0f) {
+			Rotation += 90f;
+		} else if (rot > 0f) {
+			Rotation -= 90f;
+		}
+		Rotate_To = Quaternion.Euler (45f, Rotation, 0f);
+		Rotating = true;
+		while (Quaternion.Angle (transform.rotation, Rotate_To) > 1.0f) {
+			transform.rotation = Quaternion.RotateTowards (transform.rotation, Rotate_To, Rot_Speed * Time.deltaTime);
+			yield return null;
+		}
+		Rotating = false;
+		yield return null;
+	}
+
 	// move player based on input and player rotation
 	// update section and coordinates
 }

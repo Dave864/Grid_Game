@@ -36,7 +36,6 @@ public class WorldGenerator : MonoBehaviour {
 		
 	// Loads the visible sections of the world
 	void LoadWorld () {
-		//float origin_offset = PlayerMovement.Sec_Width;
 		LoadSection (Cur_Sec, SECTION_LOC.CUR);
 		LoadSection (Cur_Sec - 1, SECTION_LOC.L);
 		LoadSection (Cur_Sec + 1, SECTION_LOC.R);

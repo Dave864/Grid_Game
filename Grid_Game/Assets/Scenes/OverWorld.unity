@@ -874,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8719c196038e6cf41b103333f327f754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Test_Sec: 11
-  Test_Row: 0
-  Test_Col: 0
+  Test_Sec: 0
+  Test_Row: 6
+  Test_Col: 5
   Coordinates_Text: {fileID: 724167694}
