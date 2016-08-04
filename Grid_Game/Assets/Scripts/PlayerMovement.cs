@@ -21,13 +21,14 @@ public class PlayerMovement : MonoBehaviour {
 	private float Rotation = 0f;
 	private float Rot_Speed = 200f;
 	// private float Mov_Speed = 2f;
-	// private bool Moving = false;
+	private bool Moving = false;
 	private bool Rotating = false;
 	private bool RotButtDown = false;
 	private Quaternion Rotate_To = Quaternion.Euler(30f, 0f, 0f);
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
+	public Text Debug_Text;
 
 	// Initialize initial section and intial row and column
 	void Awake () {
@@ -60,6 +61,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		// place player at coordinates
 		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y + height, transform.position.z - Cur_Row);
+		Debug_Text.text = "Waiting...";
 		DisplayPos ();
 	}
 
@@ -68,7 +70,10 @@ public class PlayerMovement : MonoBehaviour {
 		// player rotation
 		PrevHoldRot ();
 		// player movement
-		OrientAxes(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal"));
+		if (!Moving) {
+			OrientAxes (-Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
+		}
+		DisplayPos ();
 	}
 
 	// Updates the display that shows player coordinates
@@ -93,114 +98,7 @@ public class PlayerMovement : MonoBehaviour {
 			}
 		}
 	}
-
-	// Matches up input to the player's orientation
-	void OrientAxes (float vert_step, float hoz_step) {
-		if (Rotation == 0f) {
-		} else if (Rotation == 90f || Rotation == -270f) {
-		} else if (Rotation == 180f || Rotation == -180f) {
-		} else {
-		}
-		SplitMovement ((int) vert_step, (int) hoz_step);
-	}
-
-	// Prevents diagonal movement
-	void SplitMovement (int vert_step, int hoz_step) {
-		if (vert_step != 0 && hoz_step != 0) {
-			// move horizontally
-			GetDestCoordinates(0, hoz_step);
-			// move vertically
-			GetDestCoordinates(vert_step, 0);
-		} else {
-			GetDestCoordinates (vert_step, hoz_step);
-		}
-	}
-
-	// Gets the destiniation x,z coordinates for the current movement step
-	void GetDestCoordinates (int vert_step, int hoz_step) {
-		// vertical movement
-		if (vert_step != 0) {
-			int dest_row = Cur_Row + vert_step;
-			if (dest_row < 0) {
-				// move to top section
-			} else if (dest_row >= (int)Sec_Width) {
-				// move to bottom section
-			} else {
-				// stay in current section
-				GetStartCellType(SECTION_LOC.CUR, Cur_Col, dest_row);
-			}
-		}
-		// horizontal movement
-		else {
-			int dest_col = Cur_Col + hoz_step;
-			if (dest_col < 0) {
-				// move to left section
-			} else if (dest_col >= (int)Sec_Width) {
-				// move to right section
-			} else {
-				// stay in current section
-				GetStartCellType(SECTION_LOC.CUR, dest_col, Cur_Row);
-			}
-		}
-	}
-
-	// Determines which type of cell the player is on
-	void GetStartCellType (SECTION_LOC dest_sec, int x_dest, int z_dest) {
-		if (SectionData.Cur_Sec [Cur_Row] [Cur_Col] [0] == 'p') {
-			PlatformStart (dest_sec, x_dest, z_dest);
-		} else if (SectionData.Cur_Sec [Cur_Row] [Cur_Col] [0] == 'r') {
-			RampStart (dest_sec, x_dest, z_dest);
-		} else {
-			FloorStart (dest_sec, x_dest, z_dest);
-		}
-	}
-
-	// Determines how the player moves when starting on a floor cell
-	void FloorStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
-		if (dest_sec == SECTION_LOC.T) {
-		} else if (dest_sec == SECTION_LOC.B) {
-		} else if (dest_sec == SECTION_LOC.L) {
-		} else if (dest_sec == SECTION_LOC.R) {
-		} else if (dest_sec == SECTION_LOC.TL) {
-		} else if (dest_sec == SECTION_LOC.TR) {
-		} else if (dest_sec == SECTION_LOC.BL) {
-		} else if (dest_sec == SECTION_LOC.BR) {
-		} else {
-		}
-	}
-
-	// Determines how the player moves when starting on a platform
-	void PlatformStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
-		if (dest_sec == SECTION_LOC.T) {
-		} else if (dest_sec == SECTION_LOC.B) {
-		} else if (dest_sec == SECTION_LOC.L) {
-		} else if (dest_sec == SECTION_LOC.R) {
-		} else if (dest_sec == SECTION_LOC.TL) {
-		} else if (dest_sec == SECTION_LOC.TR) {
-		} else if (dest_sec == SECTION_LOC.BL) {
-		} else if (dest_sec == SECTION_LOC.BR) {
-		} else {
-		}
-	}
-
-	// Determines how the player moves when starting on a ramp
-	void RampStart (SECTION_LOC dest_sec, int x_dest, int z_dest) {
-		if (dest_sec == SECTION_LOC.T) {
-		} else if (dest_sec == SECTION_LOC.B) {
-		} else if (dest_sec == SECTION_LOC.L) {
-		} else if (dest_sec == SECTION_LOC.R) {
-		} else if (dest_sec == SECTION_LOC.TL) {
-		} else if (dest_sec == SECTION_LOC.TR) {
-		} else if (dest_sec == SECTION_LOC.BL) {
-		} else if (dest_sec == SECTION_LOC.BR) {
-		} else {
-		}
-	}
-
-	// Moves the player to the destination
-	void Move () {
-	}
-
+		
 	// rotate player based on input
 	IEnumerator RotatePlayer(float rot) {
 		if (rot < 0f) {
@@ -208,6 +106,7 @@ public class PlayerMovement : MonoBehaviour {
 		} else if (rot > 0f) {
 			Rotation -= 90f;
 		}
+		Rotation = (Rotation == 360 || Rotation == -360) ? 0 : Rotation;
 		Rotate_To = Quaternion.Euler (30f, Rotation, 0f);
 		Rotating = true;
 		while (Quaternion.Angle (transform.rotation, Rotate_To) > 1.0f) {
@@ -218,6 +117,94 @@ public class PlayerMovement : MonoBehaviour {
 		yield return null;
 	}
 
-	// move player based on input and player rotation
+	// Adjust input based on player rotation
+	void OrientAxes (float hoz_inc, float vert_inc) {
+		if (Rotation == 0) {
+			PrevDiagMove (hoz_inc, vert_inc);
+		} else if (Rotation == 90 || Rotation == -270) {
+			PrevDiagMove (vert_inc, -hoz_inc);
+		} else if (Rotation == 180 || Rotation == -180) {
+			PrevDiagMove (-hoz_inc, -vert_inc);
+		} else {
+			PrevDiagMove (-vert_inc, hoz_inc);
+		}
+	}
+
+	// Prevent the player from moving diagonally
+	void PrevDiagMove (float hoz_inc, float vert_inc) {
+		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
+		+ "\nCoordinates: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z;
+		Move (hoz_inc, vert_inc);
+	}
+
+	// Gets the cell type of the destination
+	string GetEndCell (int hoz_inc, int vert_inc) {
+		int dest_row = Cur_Row + vert_inc;
+		int dest_col = Cur_Col + hoz_inc;
+		string destCellInfo = "";
+		// vertical movement
+		if (vert_inc != 0) {
+			if (dest_row < 0) {
+				// Move to top section
+				destCellInfo = SectionData.Cur_Sec [0] [Cur_Col];
+			} else if (dest_row >= (int)Sec_Width) {
+				// Move to bottom section
+				destCellInfo = SectionData.Cur_Sec [(int)Sec_Width-1] [Cur_Col];
+			} else {
+				// Stay in current section
+				destCellInfo = SectionData.Cur_Sec [dest_row] [Cur_Col];
+			}
+		}
+		// horzontal movement
+		else if (hoz_inc != 0) {
+			if (dest_col < 0) {
+				// Move to left section
+				destCellInfo = SectionData.Cur_Sec [Cur_Row] [0];
+			} else if (dest_col >= (int)Sec_Width) {
+				// Move to right section
+				destCellInfo = SectionData.Cur_Sec [Cur_Row] [(int)Sec_Width-1];
+			} else {
+				// Stay in current section
+				destCellInfo = SectionData.Cur_Sec [Cur_Row] [dest_col];
+			}
+		} else {
+			destCellInfo = SectionData.Cur_Sec [dest_row] [dest_col];
+		}
+		return destCellInfo;
+	}
+
+	// Alters the destTransform when the start cell is a floor
+	void FloorStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		string destCellInfo = GetEndCell (hoz_inc, vert_inc);
+		if (destCellInfo [0] == 'w') {
+		} else if (destCellInfo [0] == 'p') {
+		} else if (destCellInfo [0] == 'r') {
+		} else {
+		}
+	}
+
+	// Alters the destTransform when the start cell is a platform
+	void PlatformStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+	}
+
+	// Alters the destTransform when the start cell is a ramp
+	void RampStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+	}
+
+	// Move the player to destTransform
+	void Move (float hoz_inc, float vert_inc) {
+		string startCellInfo = SectionData.Cur_Sec [Cur_Row] [Cur_Col];
+		Vector3 destTransform = new Vector3 (transform.position.x + hoz_inc, transform.position.y, transform.position.z + vert_inc);
+		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
+			+ "\nCoordinates: " + destTransform.x + ", " + destTransform.y + ", " + destTransform.z;
+		if (startCellInfo [0] == 'p') {
+			PlatformStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
+		} else if (startCellInfo [0] == 'r') {
+			RampStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
+		} else {
+			FloorStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
+		}
+	}
+
 	// update section and coordinates
 }
