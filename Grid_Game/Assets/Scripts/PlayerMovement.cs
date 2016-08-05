@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour {
 	// rotation and movement information
 	private float Rotation = 0f;
 	private float Rot_Speed = 200f;
-	// private float Mov_Speed = 2f;
+	private float Mov_Speed = 2.5f;
 	private bool Moving = false;
 	private bool Rotating = false;
 	private bool RotButtDown = false;
@@ -192,9 +192,9 @@ public class PlayerMovement : MonoBehaviour {
 		yield return 0;
 	}
 
-	// Gets the cell type of the destination
-	string GetEndCell (int hoz_inc, int vert_inc) {
-		int dest_row = Cur_Row + vert_inc;
+	// Gets the cell type of the destination and updates Cur_Row, Cur_Col, and Cur_Sec values
+	string GetEndCell (ref SECTION_LOC dest_sec, int hoz_inc, int vert_inc) {
+		int dest_row = Cur_Row - vert_inc;
 		int dest_col = Cur_Col + hoz_inc;
 		string destCellInfo = "";
 		// vertical movement
@@ -202,12 +202,15 @@ public class PlayerMovement : MonoBehaviour {
 			if (dest_row < 0) {
 				// Move to top section
 				destCellInfo = SectionData.Cur_Sec [0] [Cur_Col];
+				dest_sec = SECTION_LOC.T;
 			} else if (dest_row >= (int)Sec_Width) {
 				// Move to bottom section
 				destCellInfo = SectionData.Cur_Sec [(int)Sec_Width-1] [Cur_Col];
+				dest_sec = SECTION_LOC.B;
 			} else {
 				// Stay in current section
 				destCellInfo = SectionData.Cur_Sec [dest_row] [Cur_Col];
+				Cur_Row -= vert_inc;
 			}
 		}
 		// horzontal movement
@@ -215,23 +218,34 @@ public class PlayerMovement : MonoBehaviour {
 			if (dest_col < 0) {
 				// Move to left section
 				destCellInfo = SectionData.Cur_Sec [Cur_Row] [0];
+				dest_sec = SECTION_LOC.L;
 			} else if (dest_col >= (int)Sec_Width) {
 				// Move to right section
 				destCellInfo = SectionData.Cur_Sec [Cur_Row] [(int)Sec_Width-1];
+				dest_sec = SECTION_LOC.R;
 			} else {
 				// Stay in current section
 				destCellInfo = SectionData.Cur_Sec [Cur_Row] [dest_col];
+				Cur_Col += hoz_inc;
 			}
 		} else {
 			destCellInfo = SectionData.Cur_Sec [dest_row] [dest_col];
+			Cur_Col += hoz_inc;
+			Cur_Row -= vert_inc;
 		}
 		return destCellInfo;
 	}
 
 	// Alters the destTransform when the start cell is a floor
 	void FloorStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
-		string destCellInfo = GetEndCell (hoz_inc, vert_inc);
+		SECTION_LOC dest_sec = SECTION_LOC.CUR;
+		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
+		if (dest_sec != SECTION_LOC.CUR) {
+			destTransform = transform.position;
+			return;
+		}
 		if (destCellInfo [0] == 'w') {
+			destTransform = transform.position;
 		} else if (destCellInfo [0] == 'p') {
 		} else if (destCellInfo [0] == 'r') {
 		} else {
@@ -259,7 +273,10 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			FloorStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		}
-		yield return null;
+		while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+			transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+			yield return null;
+		}
 	}
 
 	// update section and coordinates
