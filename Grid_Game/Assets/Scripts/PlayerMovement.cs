@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour {
 	private bool Moving = false;
 	private bool Rotating = false;
 	private bool RotButtDown = false;
-	private Quaternion Rotate_To = Quaternion.Euler(30f, 0f, 0f);
+	private Quaternion Rotate_To = Quaternion.Euler(50f, 0f, 0f);
 	enum HELD_DIR_BUTT {VERT, HOZ, NONE};
 	HELD_DIR_BUTT Held_Butt;
 
@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour {
 			Rotation -= 90f;
 		}
 		Rotation = (Rotation == 360 || Rotation == -360) ? 0 : Rotation;
-		Rotate_To = Quaternion.Euler (30f, Rotation, 0f);
+		Rotate_To = Quaternion.Euler (50f, Rotation, 0f);
 		Rotating = true;
 		while (Quaternion.Angle (transform.rotation, Rotate_To) > 1.0f) {
 			transform.rotation = Quaternion.RotateTowards (transform.rotation, Rotate_To, Rot_Speed * Time.deltaTime);
@@ -169,18 +169,19 @@ public class PlayerMovement : MonoBehaviour {
 	// Prevent the player from moving diagonally
 	IEnumerator PrevDiagMove (float hoz_inc, float vert_inc) {
 		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
-		+ "\nCoordinates: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z;
+		+ "\nCoordinates: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z
+		+ "\nCurrent Cell: " + SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		// Determine if an input button is being held down
 		HeldDirButton (hoz_inc, vert_inc);
 		// Split horizontal and vertical movement
 		Moving = true;
 		if (hoz_inc != 0 && vert_inc != 0) {
 			if (Held_Butt == HELD_DIR_BUTT.HOZ) {
-				yield return StartCoroutine (Move (hoz_inc, 0.0f));
 				yield return StartCoroutine (Move (0.0f, vert_inc));
+				yield return StartCoroutine (Move (hoz_inc, 0.0f));
 			} else if (Held_Butt == HELD_DIR_BUTT.VERT) {
-				yield return StartCoroutine (Move (0.0f, vert_inc));
 				yield return StartCoroutine (Move (hoz_inc, 0.0f));
+				yield return StartCoroutine (Move (0.0f, vert_inc));
 			} else {
 				yield return StartCoroutine (Move (hoz_inc, 0.0f));
 				yield return StartCoroutine (Move (0.0f, vert_inc));
@@ -245,19 +246,315 @@ public class PlayerMovement : MonoBehaviour {
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
+			// don't move
 			destTransform = transform.position;
+			Cur_Col -= hoz_inc;
+			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
+			// don't move
+			if (destCellInfo [3] == startCellInfo [3]) {
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
+			}
 		} else if (destCellInfo [0] == 'r') {
-		} else {
+			// move up onto ramp
+			if (destCellInfo [3] == startCellInfo [3]) {
+				destTransform.y += 0.25f;
+			}
+			// move down onto ramp
+			else {
+				destTransform.y -= 0.25f;
+			}
 		}
 	}
 
 	// Alters the destTransform when the start cell is a platform
 	void PlatformStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		SECTION_LOC dest_sec = SECTION_LOC.CUR;
+		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
+		if (dest_sec != SECTION_LOC.CUR) {
+			destTransform = transform.position;
+			return;
+		}
+		if (destCellInfo [0] == 'w') {
+			// don't move
+			destTransform = transform.position;
+			Cur_Col -= hoz_inc;
+			Cur_Row += vert_inc;
+		} else if (destCellInfo [0] == 'p') {
+		} else if (destCellInfo [0] == 'r') {
+			// move up onto ramp
+			if (destCellInfo [3] > startCellInfo [3]) {
+				destTransform.y += 0.25f;
+			}
+			// don't move
+			else if (destCellInfo [3] < startCellInfo [3]) {
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
+			}
+			// move down onto ramp
+			else {
+				if (startCellInfo [1] == 'w') {
+					// the cliff is to the left
+					if (startCellInfo [2] == '0') {
+						// move left
+						if (hoz_inc < 0) {
+							// dont move
+							destTransform = transform.position;
+							Cur_Col -= hoz_inc;
+							Cur_Row += vert_inc;
+						}
+						// move right
+						else if (hoz_inc > 0) {
+							if (destCellInfo [2] == '1') {
+								destTransform.y -= 0.25f;
+							} else {
+								// dont move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move top
+						else if (vert_inc > 0) {
+							if (destCellInfo [2] == '0') {
+								destTransform.y -= 0.25f;
+							} else {
+								// dont move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move bottom
+						else {
+							if (destCellInfo [2] == '2') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+					}
+					// the cliff is to the top
+					else if (startCellInfo [2] == '1') {
+						// move left
+						if (hoz_inc < 0) {
+							if (destCellInfo [2] == '3') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move right
+						else if (hoz_inc > 0) {
+							if (destCellInfo [2] == '1') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move top
+						else if (vert_inc > 0) {
+							// don't move
+							destTransform = transform.position;
+							Cur_Col -= hoz_inc;
+							Cur_Row += vert_inc;
+						}
+						// move bottom
+						else {
+							if (destCellInfo [2] == '2') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+					}
+					// the cliff is to the right
+					else if (startCellInfo [2] == '2') {
+						// move left
+						if (hoz_inc < 0) {
+							if (destCellInfo [2] == '3') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move right
+						else if (hoz_inc > 0) {
+							// don't move
+							destTransform = transform.position;
+							Cur_Col -= hoz_inc;
+							Cur_Row += vert_inc;
+						}
+						// move top
+						else if (vert_inc > 0) {
+							if (destCellInfo [2] == '0') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move bottom
+						else {
+							if (destCellInfo [2] == '2') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+					}
+					// the cliff is to the bottom
+					else {
+						// move left
+						if (hoz_inc < 0) {
+							if (destCellInfo [2] == '3') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move right
+						else if (hoz_inc > 0) {
+							if (destCellInfo [2] == '1') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move top
+						else if (vert_inc > 0) {
+							if (destCellInfo [2] == '0') {
+								destTransform.y -= 0.25f;
+							} else {
+								// don't move
+								destTransform = transform.position;
+								Cur_Col -= hoz_inc;
+								Cur_Row += vert_inc;
+							}
+						}
+						// move bottom
+						else {
+							// don't move
+							destTransform = transform.position;
+							Cur_Col -= hoz_inc;
+							Cur_Row += vert_inc;
+						}
+					}
+				} else if (startCellInfo [1] == 'c') {
+					// the corner is to the top left
+					if (startCellInfo [2] == '0') {
+					}
+					// the corner is to the top right
+					else if (startCellInfo [2] == '1') {
+					}
+					// the corner is to the bottom right
+					else if (startCellInfo [2] == '2') {
+					}
+					// the corner is to the bottom left
+					else {
+					}
+				} else if (startCellInfo [1] == 'p') {
+					// the cliff is to the left
+					if (startCellInfo [2] == '0') {
+					}
+					// the cliff is to the top
+					else if (startCellInfo [2] == '1') {
+					}
+					// the cliff is to the right
+					else if (startCellInfo [2] == '2') {
+					}
+					// the cliff is to the bottom
+					else {
+					}
+				} else {
+				}
+			}
+		} else {
+			// don't move
+			if (destCellInfo [3] == startCellInfo [3]) {
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
+			}
+		}
 	}
 
 	// Alters the destTransform when the start cell is a ramp
 	void RampStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		SECTION_LOC dest_sec = SECTION_LOC.CUR;
+		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
+		if (dest_sec != SECTION_LOC.CUR) {
+			destTransform = transform.position;
+			return;
+		}
+		if (destCellInfo [0] == 'w') {
+			// don't move
+			destTransform = transform.position;
+			Cur_Col -= hoz_inc;
+			Cur_Row += vert_inc;
+		} else if (destCellInfo [0] == 'p') {
+			// don't move
+			if (destCellInfo [3] < startCellInfo [3]) {
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
+			}
+			// move down off of ramp
+			else if (destCellInfo [3] > startCellInfo [3]) {
+				destTransform.y -= 0.25f;
+			}
+			// move up off of ramp
+			else {
+				destTransform.y += 0.25f;
+			}
+		} else if (destCellInfo [0] == 'r') {
+			// continue up ramp
+			if (destCellInfo [3] > startCellInfo [3]) {
+				destTransform.y += 0.5f;
+			}
+			// continue down ramp
+			else if (destCellInfo [3] < startCellInfo [3]) {
+				destTransform.y -= 0.5f;
+			}
+		} else {
+			// move down off of ramp
+			if (destCellInfo [3] == startCellInfo [3]) {
+				destTransform.y -= 0.25f;
+			}
+			// move up onto ramp
+			else {
+				destTransform.y += 0.25f;
+			}
+		}
 	}
 
 	// Move the player to destTransform
@@ -265,7 +562,8 @@ public class PlayerMovement : MonoBehaviour {
 		string startCellInfo = SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		Vector3 destTransform = new Vector3 (transform.position.x + hoz_inc, transform.position.y, transform.position.z + vert_inc);
 		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
-			+ "\nCoordinates: " + destTransform.x + ", " + destTransform.y + ", " + destTransform.z;
+		+ "\nCoordinates: " + destTransform.x + ", " + destTransform.y + ", " + destTransform.z
+		+ "\nCurrent Cell: " + SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		if (startCellInfo [0] == 'p') {
 			PlatformStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		} else if (startCellInfo [0] == 'r') {
