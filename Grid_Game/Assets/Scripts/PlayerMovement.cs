@@ -299,46 +299,31 @@ public class PlayerMovement : MonoBehaviour {
 				if (startCellInfo [1] == 'w') {
 					// the cliff is to the left
 					if (startCellInfo [2] == '0') {
-						// move left
-						if (hoz_inc < 0) {
-							// dont move
-							destTransform = transform.position;
-							Cur_Col -= hoz_inc;
-							Cur_Row += vert_inc;
-						}
 						// move right
-						else if (hoz_inc > 0) {
+						if (hoz_inc > 0) {
 							if (destCellInfo [2] == '1') {
 								destTransform.y -= 0.25f;
-							} else {
-								// dont move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move top
 						else if (vert_inc > 0) {
 							if (destCellInfo [2] == '0') {
 								destTransform.y -= 0.25f;
-							} else {
-								// dont move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move bottom
-						else {
+						else if (vert_inc < 0) {
 							if (destCellInfo [2] == '2') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the cliff is to the top
 					else if (startCellInfo [2] == '1') {
@@ -346,42 +331,27 @@ public class PlayerMovement : MonoBehaviour {
 						if (hoz_inc < 0) {
 							if (destCellInfo [2] == '3') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move right
 						else if (hoz_inc > 0) {
 							if (destCellInfo [2] == '1') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
-						}
-						// move top
-						else if (vert_inc > 0) {
-							// don't move
-							destTransform = transform.position;
-							Cur_Col -= hoz_inc;
-							Cur_Row += vert_inc;
 						}
 						// move bottom
-						else {
+						else if (vert_inc < 0) {
 							if (destCellInfo [2] == '2') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the cliff is to the right
 					else if (startCellInfo [2] == '2') {
@@ -389,42 +359,27 @@ public class PlayerMovement : MonoBehaviour {
 						if (hoz_inc < 0) {
 							if (destCellInfo [2] == '3') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
-						}
-						// move right
-						else if (hoz_inc > 0) {
-							// don't move
-							destTransform = transform.position;
-							Cur_Col -= hoz_inc;
-							Cur_Row += vert_inc;
 						}
 						// move top
 						else if (vert_inc > 0) {
 							if (destCellInfo [2] == '0') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move bottom
-						else {
+						else if (vert_inc < 0) {
 							if (destCellInfo [2] == '2') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the cliff is to the bottom
 					else {
@@ -432,55 +387,112 @@ public class PlayerMovement : MonoBehaviour {
 						if (hoz_inc < 0) {
 							if (destCellInfo [2] == '3') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move right
 						else if (hoz_inc > 0) {
 							if (destCellInfo [2] == '1') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
 						// move top
 						else if (vert_inc > 0) {
 							if (destCellInfo [2] == '0') {
 								destTransform.y -= 0.25f;
-							} else {
-								// don't move
-								destTransform = transform.position;
-								Cur_Col -= hoz_inc;
-								Cur_Row += vert_inc;
+								return;
 							}
 						}
-						// move bottom
-						else {
-							// don't move
-							destTransform = transform.position;
-							Cur_Col -= hoz_inc;
-							Cur_Row += vert_inc;
-						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 				} else if (startCellInfo [1] == 'c') {
 					// the corner is to the top left
 					if (startCellInfo [2] == '0') {
+						// move right
+						if (hoz_inc > 0) {
+							if (destCellInfo [2] == '1') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// move bottom
+						else if (vert_inc < 0) {
+							if (destCellInfo [2] == '2') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the corner is to the top right
 					else if (startCellInfo [2] == '1') {
+						// move left
+						if (hoz_inc < 0) {
+							if (destCellInfo [2] == '3') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// move bottom
+						else if (vert_inc < 0) {
+							if (destCellInfo [2] == '2') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the corner is to the bottom right
 					else if (startCellInfo [2] == '2') {
+						// move left
+						if (hoz_inc < 0) {
+							if (destCellInfo [2] == '3') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// move top
+						else if (vert_inc > 0) {
+							if (destCellInfo [2] == '0') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 					// the corner is to the bottom left
 					else {
+						// move right
+						if (hoz_inc > 0) {
+							if (destCellInfo [2] == '1') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// move top
+						else if (vert_inc > 0) {
+							if (destCellInfo [2] == '0') {
+								destTransform.y -= 0.25f;
+								return;
+							}
+						}
+						// don't move
+						destTransform = transform.position;
+						Cur_Col -= hoz_inc;
+						Cur_Row += vert_inc;
 					}
 				} else if (startCellInfo [1] == 'p') {
 					// the cliff is to the left
@@ -534,7 +546,79 @@ public class PlayerMovement : MonoBehaviour {
 			}
 			// move up off of ramp
 			else {
-				destTransform.y += 0.25f;
+				if (destCellInfo [1] == 'w') {
+					// ramp ascends to the bottom
+					if (startCellInfo [2] == '0') {
+						if (vert_inc < 0 && destCellInfo [2] != '1') {
+							destTransform.y += 0.25f;
+							return;
+						}
+					}
+					// ramp ascends to the left
+					else if (startCellInfo [2] == '1') {
+						if (hoz_inc < 0 && destCellInfo [2] != '2') {
+							destTransform.y += 0.25f;
+							return;
+						}
+					}
+					// ramp ascends to the top
+					else if (startCellInfo [2] == '2') {
+						if (vert_inc > 0 && destCellInfo [2] != '3') {
+							destTransform.y += 0.25f;
+							return;
+						}
+					}
+					// ramp ascends to the right
+					else {
+						if (hoz_inc > 0 && destCellInfo [2] != '0') {
+							destTransform.y += 0.25f;
+							return;
+						}
+					}
+				} else if (destCellInfo [1] == 'c') {
+					// ramp ascends to the bottom
+					if (startCellInfo [2] == '0') {
+					}
+					// ramp ascends to the left
+					else if (startCellInfo [2] == '1') {
+					}
+					// ramp ascends to the top
+					else if (startCellInfo [2] == '2') {
+					}
+					// ramp ascends to the right
+					else {
+					}
+				} else if (destCellInfo [1] == 'p') {
+					// ramp ascends to the bottom
+					if (startCellInfo [2] == '0') {
+					}
+					// ramp ascends to the left
+					else if (startCellInfo [2] == '1') {
+					}
+					// ramp ascends to the top
+					else if (startCellInfo [2] == '2') {
+					}
+					// ramp ascends to the right
+					else {
+					}
+				} else {
+					// ramp ascends to the bottom
+					if (startCellInfo [2] == '0') {
+					}
+					// ramp ascends to the left
+					else if (startCellInfo [2] == '1') {
+					}
+					// ramp ascends to the top
+					else if (startCellInfo [2] == '2') {
+					}
+					// ramp ascends to the right
+					else {
+					}
+				}
+				// don't move
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
 			}
 		} else if (destCellInfo [0] == 'r') {
 			// continue up ramp
