@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour {
 	private Quaternion Rotate_To = Quaternion.Euler(50f, 0f, 0f);
 	enum HELD_DIR_BUTT {VERT, HOZ, NONE};
 	HELD_DIR_BUTT Held_Butt;
+	enum MOVE_PATT {LINEAR, SLERP};
+	MOVE_PATT Mov_Pat;
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
@@ -242,15 +244,18 @@ public class PlayerMovement : MonoBehaviour {
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
 		if (dest_sec != SECTION_LOC.CUR) {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
@@ -258,6 +263,7 @@ public class PlayerMovement : MonoBehaviour {
 				Cur_Row += vert_inc;
 			}
 		} else if (destCellInfo [0] == 'r') {
+			Mov_Pat = MOVE_PATT.SLERP;
 			// move up onto ramp
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform.y += 0.25f;
@@ -274,16 +280,20 @@ public class PlayerMovement : MonoBehaviour {
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
 		if (dest_sec != SECTION_LOC.CUR) {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 		} else if (destCellInfo [0] == 'r') {
+			Mov_Pat = MOVE_PATT.SLERP;
 			// move up onto ramp
 			if (destCellInfo [3] > startCellInfo [3]) {
 				destTransform.y += 0.25f;
@@ -471,6 +481,7 @@ public class PlayerMovement : MonoBehaviour {
 				}
 			}
 		} else {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
@@ -489,11 +500,13 @@ public class PlayerMovement : MonoBehaviour {
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
+			Mov_Pat = MOVE_PATT.SLERP;
 			// don't move
 			if (destCellInfo [3] < startCellInfo [3]) {
 				destTransform = transform.position;
@@ -625,6 +638,7 @@ public class PlayerMovement : MonoBehaviour {
 				Cur_Row += vert_inc;
 			}
 		} else if (destCellInfo [0] == 'r') {
+			Mov_Pat = MOVE_PATT.LINEAR;
 			// continue up ramp
 			if (destCellInfo [3] > startCellInfo [3]) {
 				destTransform.y += 0.5f;
@@ -634,6 +648,7 @@ public class PlayerMovement : MonoBehaviour {
 				destTransform.y -= 0.5f;
 			}
 		} else {
+			Mov_Pat = MOVE_PATT.SLERP;
 			// move down off of ramp
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform.y -= 0.25f;
@@ -659,9 +674,16 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			FloorStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		}
-		while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-			transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-			yield return null;
+		if (Mov_Pat == MOVE_PATT.LINEAR) {
+			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+		} else {
+			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
 		}
 	}
 
