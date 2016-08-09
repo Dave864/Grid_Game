@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour {
 	private Quaternion Rotate_To = Quaternion.Euler(50f, 0f, 0f);
 	enum HELD_DIR_BUTT {VERT, HOZ, NONE};
 	HELD_DIR_BUTT Held_Butt;
-	enum MOVE_PATT {LINEAR, SLERP};
+	enum MOVE_PATT {LINEAR, UP_ON, UP_OFF, DOWN_ON, DOWN_OFF};
 	MOVE_PATT Mov_Pat;
 
 	// text showing player coordinates
@@ -241,21 +241,19 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Alters the destTransform when the start cell is a floor
 	void FloorStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
 		if (dest_sec != SECTION_LOC.CUR) {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
@@ -263,13 +261,14 @@ public class PlayerMovement : MonoBehaviour {
 				Cur_Row += vert_inc;
 			}
 		} else if (destCellInfo [0] == 'r') {
-			Mov_Pat = MOVE_PATT.SLERP;
 			// move up onto ramp
 			if (destCellInfo [3] == startCellInfo [3]) {
+				Mov_Pat = MOVE_PATT.UP_ON;
 				destTransform.y += 0.25f;
 			}
 			// move down onto ramp
 			else {
+				Mov_Pat = MOVE_PATT.DOWN_ON;
 				destTransform.y -= 0.25f;
 			}
 		}
@@ -277,25 +276,23 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Alters the destTransform when the start cell is a platform
 	void PlatformStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
 		if (dest_sec != SECTION_LOC.CUR) {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 		} else if (destCellInfo [0] == 'r') {
-			Mov_Pat = MOVE_PATT.SLERP;
 			// move up onto ramp
 			if (destCellInfo [3] > startCellInfo [3]) {
+				Mov_Pat = MOVE_PATT.UP_ON;
 				destTransform.y += 0.25f;
 			}
 			// don't move
@@ -306,6 +303,7 @@ public class PlayerMovement : MonoBehaviour {
 			}
 			// move down onto ramp
 			else {
+				Mov_Pat = MOVE_PATT.DOWN_ON;
 				if (startCellInfo [1] == 'w') {
 					// the cliff is to the left
 					if (startCellInfo [2] == '0') {
@@ -380,6 +378,7 @@ public class PlayerMovement : MonoBehaviour {
 						}
 					}
 					// don't move
+					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
 					Cur_Col -= hoz_inc;
 					Cur_Row += vert_inc;
@@ -437,6 +436,7 @@ public class PlayerMovement : MonoBehaviour {
 						}
 					}
 					// don't move
+					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
 					Cur_Col -= hoz_inc;
 					Cur_Row += vert_inc;
@@ -474,6 +474,7 @@ public class PlayerMovement : MonoBehaviour {
 						}
 					}
 					// don't move
+					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
 					Cur_Col -= hoz_inc;
 					Cur_Row += vert_inc;
@@ -481,7 +482,6 @@ public class PlayerMovement : MonoBehaviour {
 				}
 			}
 		} else {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
@@ -493,6 +493,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Alters the destTransform when the start cell is a ramp
 	void RampStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
+		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
 		if (dest_sec != SECTION_LOC.CUR) {
@@ -500,25 +501,25 @@ public class PlayerMovement : MonoBehaviour {
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// don't move
 			destTransform = transform.position;
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
-			Mov_Pat = MOVE_PATT.SLERP;
 			// don't move
-			if (destCellInfo [3] < startCellInfo [3]) {
+			if (destCellInfo [3] > startCellInfo [3]) {
 				destTransform = transform.position;
 				Cur_Col -= hoz_inc;
 				Cur_Row += vert_inc;
 			}
 			// move down off of ramp
-			else if (destCellInfo [3] > startCellInfo [3]) {
+			else if (destCellInfo [3] < startCellInfo [3]) {
+				Mov_Pat = MOVE_PATT.DOWN_OFF;
 				destTransform.y -= 0.25f;
 			}
 			// move up off of ramp
 			else {
+				Mov_Pat = MOVE_PATT.UP_OFF;
 				if (destCellInfo [1] == 'w') {
 					// ramp ascends to the bottom
 					if (startCellInfo [2] == '0') {
@@ -632,13 +633,14 @@ public class PlayerMovement : MonoBehaviour {
 					else {
 					}
 				}
+
 				// don't move
+				Mov_Pat = MOVE_PATT.LINEAR;
 				destTransform = transform.position;
 				Cur_Col -= hoz_inc;
 				Cur_Row += vert_inc;
 			}
 		} else if (destCellInfo [0] == 'r') {
-			Mov_Pat = MOVE_PATT.LINEAR;
 			// continue up ramp
 			if (destCellInfo [3] > startCellInfo [3]) {
 				destTransform.y += 0.5f;
@@ -648,13 +650,14 @@ public class PlayerMovement : MonoBehaviour {
 				destTransform.y -= 0.5f;
 			}
 		} else {
-			Mov_Pat = MOVE_PATT.SLERP;
 			// move down off of ramp
 			if (destCellInfo [3] == startCellInfo [3]) {
+				Mov_Pat = MOVE_PATT.DOWN_OFF;
 				destTransform.y -= 0.25f;
 			}
-			// move up onto ramp
+			// move up off of ramp
 			else {
+				Mov_Pat = MOVE_PATT.UP_OFF;
 				destTransform.y += 0.25f;
 			}
 		}
@@ -679,13 +682,46 @@ public class PlayerMovement : MonoBehaviour {
 				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
 				yield return null;
 			}
+		} else if (Mov_Pat == MOVE_PATT.UP_ON) {
+			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y - 0.25f, destTransform.z - ((destTransform.z - transform.position.z)/2));
+			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+		} else if (Mov_Pat == MOVE_PATT.DOWN_ON) {
+			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y + 0.25f, destTransform.z - ((destTransform.z - transform.position.z)/2));
+			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+		} else if (Mov_Pat == MOVE_PATT.UP_OFF) {
+			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z)/2));
+			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
+			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
 		} else {
+			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z)/2));
+			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+				yield return null;
+			}
 			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
 				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
 				yield return null;
 			}
 		}
 	}
-
-	// update section and coordinates
 }
