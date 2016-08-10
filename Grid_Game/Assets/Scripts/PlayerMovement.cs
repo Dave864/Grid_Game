@@ -289,6 +289,12 @@ public class PlayerMovement : MonoBehaviour {
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
 		} else if (destCellInfo [0] == 'p') {
+			if (destCellInfo [3] != startCellInfo [3]) {
+				// don't move
+				destTransform = transform.position;
+				Cur_Col -= hoz_inc;
+				Cur_Row += vert_inc;
+			}
 		} else if (destCellInfo [0] == 'r') {
 			// move up onto ramp
 			if (destCellInfo [3] > startCellInfo [3]) {
