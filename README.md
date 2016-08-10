@@ -16,7 +16,7 @@ Each major piece of the game (the overworld, encounters, etc.) are handled in se
 This scene loads the player avatar and handles player movement. This scene handles world creation.
 * Player Movement
   * Input for player movement and/or player rotation is recieved.
-  * Rotation input is recieved 1b
+  * Rotation input is recieved.
     1. Rotates the player clockwise or counter-clockwise along the y-axis.
   * Movement input is recieved.
     1. Look at the player's current rotation and changes movement input values. The changes are made so movement corresponds to the player's orientation.
