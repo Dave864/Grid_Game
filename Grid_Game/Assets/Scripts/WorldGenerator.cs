@@ -32,6 +32,42 @@ public class WorldGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		int sec_diff = PlayerMovement.Cur_Sec - Cur_Sec;
+		// player moves to top section
+		if (sec_diff == -10) {
+			// delete cells in bot_left, bot, and bot_right sections
+			DestroySections(SECTION_LOC.B);
+			// reassign cells in left, cur, and right sections to bot_left, bot, and bot_right sections respectively
+			// reassign cells in top_left, top, and top_right sections to left, cur, and right sections respectively
+			// load cells of new section numbers in top_left, top, and top_right
+		}
+		// player moves to bottom section
+		else if (sec_diff == 10) {
+			// delete cells in top_left, top, and top_right sections
+			DestroySections(SECTION_LOC.T);
+			// reassign cells in left, cur, and right sections to top_left, top, and top_right sections respectively
+			// reassign cells in bot_left, bot, and bot_right sections to left, cur, and right sections respectively
+			// load cells of new section numbers in bot_left, bot, and bot_right
+		}
+		// player moves to left section
+		else if (sec_diff == 1) {
+			// delete cells in top_right, right, and bot_right sections
+			DestroySections(SECTION_LOC.R);
+			// reassign cells in top, cur, and bot sections to top_right, right, and bot_right sections respectively
+			// reassign cells in top_left, left, and bot_left section to top, cur, and bot sections respectively
+			// load cells of new section numbers in top_left, left, and bot_left
+		}
+		// player moves to right section
+		else if (sec_diff == -1) {
+			// delete cells in top_left, left, and bot_left sections
+			DestroySections(SECTION_LOC.L);
+			// reassign cells in top, cur, and bot sections to top_left, left, and bot_left sections respectively
+			// reassign cells in top_right, right, and bot_right sections to top, cur, and bot sections respectively
+			// load cells of new section numers in top_right, right, and bot_right
+		}
+		// player stays in cur section
+		else {
+		}
 	}
 		
 	// Loads the visible sections of the world
@@ -303,5 +339,56 @@ public class WorldGenerator : MonoBehaviour {
 		AssignTag (cell, info);
 	}
 
+	// delete cells in Transform section
+	void DeleteCells(Transform section){
+		foreach (Transform cell in section) {
+			cell.parent = null;
+			Destroy (cell.gameObject);
+		}
+	}
+
 	// destroy sections
+	void DestroySections(SECTION_LOC section_group){
+		if (section_group == SECTION_LOC.T) {
+			foreach (string[] row in SectionData.TL_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			foreach (string[] row in SectionData.T_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			foreach (string[] row in SectionData.TR_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			DeleteCells (Top_L);
+			DeleteCells (Top);
+			DeleteCells (Top_R);
+		} else if (section_group == SECTION_LOC.B) {
+			foreach (string[] row in SectionData.BL_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			foreach (string[] row in SectionData.B_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			foreach (string[] row in SectionData.BR_Sec) {
+				for (int i = 0; i < row.Length - 1; i++) {
+					row [i] = null;
+				}
+			}
+			DeleteCells (Bot_L);
+			DeleteCells (Bot);
+			DeleteCells (Bot_R);
+		} else if (section_group == SECTION_LOC.L) {
+		} else {
+		}
+	}
 }

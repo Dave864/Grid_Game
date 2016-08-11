@@ -204,12 +204,16 @@ public class PlayerMovement : MonoBehaviour {
 		if (vert_inc != 0) {
 			if (dest_row < 0) {
 				// Move to top section
-				destCellInfo = SectionData.Cur_Sec [0] [Cur_Col];
+				destCellInfo = SectionData.T_Sec [(int)Sec_Width-1] [Cur_Col];
 				dest_sec = SECTION_LOC.T;
+				Cur_Row = (int)Sec_Width - 1;
+				Cur_Sec -= 10;
 			} else if (dest_row >= (int)Sec_Width) {
 				// Move to bottom section
-				destCellInfo = SectionData.Cur_Sec [(int)Sec_Width-1] [Cur_Col];
+				destCellInfo = SectionData.B_Sec [0] [Cur_Col];
 				dest_sec = SECTION_LOC.B;
+				Cur_Row = 0;
+				Cur_Sec += 10;
 			} else {
 				// Stay in current section
 				destCellInfo = SectionData.Cur_Sec [dest_row] [Cur_Col];
@@ -239,12 +243,30 @@ public class PlayerMovement : MonoBehaviour {
 		return destCellInfo;
 	}
 
+	// Reverts Cur_Sec, Cur_Row, and Cur_Col to what they were previously
+	void RestoreStart (SECTION_LOC dest_sec, int hoz_inc, int vert_inc) {
+		if (dest_sec == SECTION_LOC.T) {
+			Cur_Sec += (int)Sec_Width;
+			Cur_Row = 0;
+			Cur_Col -= hoz_inc;
+		} else if (dest_sec == SECTION_LOC.B) {
+			Cur_Sec -= (int)Sec_Width;
+			Cur_Row = (int)Sec_Width - 1;
+			Cur_Col -= hoz_inc;
+		} else if (dest_sec == SECTION_LOC.L) {
+		} else if (dest_sec == SECTION_LOC.R) {
+		} else {
+			Cur_Col -= hoz_inc;
+			Cur_Row += vert_inc;
+		}
+	}
+
 	// Alters the destTransform when the start cell is a floor
 	void FloorStart (ref Vector3 destTransform, string startCellInfo, int hoz_inc, int vert_inc) {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec != SECTION_LOC.CUR) {
+		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
 			destTransform = transform.position;
 			return;
 		}
@@ -257,8 +279,7 @@ public class PlayerMovement : MonoBehaviour {
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 		} else if (destCellInfo [0] == 'r') {
 			// move up onto ramp
@@ -279,21 +300,19 @@ public class PlayerMovement : MonoBehaviour {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec != SECTION_LOC.CUR) {
+		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
 			// don't move
 			destTransform = transform.position;
-			Cur_Col -= hoz_inc;
-			Cur_Row += vert_inc;
+			RestoreStart (dest_sec, hoz_inc, vert_inc);
 		} else if (destCellInfo [0] == 'p') {
 			if (destCellInfo [3] != startCellInfo [3]) {
 				// don't move
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 		} else if (destCellInfo [0] == 'r') {
 			// move up onto ramp
@@ -304,8 +323,7 @@ public class PlayerMovement : MonoBehaviour {
 			// don't move
 			else if (destCellInfo [3] < startCellInfo [3]) {
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 			// move down onto ramp
 			else {
@@ -386,8 +404,7 @@ public class PlayerMovement : MonoBehaviour {
 					// don't move
 					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
-					Cur_Col -= hoz_inc;
-					Cur_Row += vert_inc;
+					RestoreStart (dest_sec, hoz_inc, vert_inc);
 				} else if (startCellInfo [1] == 'c') {
 					// the corner is to the top left
 					if (startCellInfo [2] == '0') {
@@ -444,8 +461,7 @@ public class PlayerMovement : MonoBehaviour {
 					// don't move
 					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
-					Cur_Col -= hoz_inc;
-					Cur_Row += vert_inc;
+					RestoreStart (dest_sec, hoz_inc, vert_inc);
 				} else if (startCellInfo [1] == 'p') {
 					// the cliff is to the left
 					if (startCellInfo [2] == '0') {
@@ -482,8 +498,7 @@ public class PlayerMovement : MonoBehaviour {
 					// don't move
 					Mov_Pat = MOVE_PATT.LINEAR;
 					destTransform = transform.position;
-					Cur_Col -= hoz_inc;
-					Cur_Row += vert_inc;
+					RestoreStart (dest_sec, hoz_inc, vert_inc);
 				} else {
 				}
 			}
@@ -491,8 +506,7 @@ public class PlayerMovement : MonoBehaviour {
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 		}
 	}
@@ -502,21 +516,19 @@ public class PlayerMovement : MonoBehaviour {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec != SECTION_LOC.CUR) {
+		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
 			destTransform = transform.position;
 			return;
 		}
 		if (destCellInfo [0] == 'w') {
 			// don't move
 			destTransform = transform.position;
-			Cur_Col -= hoz_inc;
-			Cur_Row += vert_inc;
+			RestoreStart (dest_sec, hoz_inc, vert_inc);
 		} else if (destCellInfo [0] == 'p') {
 			// don't move
 			if (destCellInfo [3] > startCellInfo [3]) {
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 			// move down off of ramp
 			else if (destCellInfo [3] < startCellInfo [3]) {
@@ -643,8 +655,7 @@ public class PlayerMovement : MonoBehaviour {
 				// don't move
 				Mov_Pat = MOVE_PATT.LINEAR;
 				destTransform = transform.position;
-				Cur_Col -= hoz_inc;
-				Cur_Row += vert_inc;
+				RestoreStart (dest_sec, hoz_inc, vert_inc);
 			}
 		} else if (destCellInfo [0] == 'r') {
 			// continue up ramp
