@@ -39,27 +39,23 @@ public class WorldGenerator : MonoBehaviour {
 			Cur_Sec = PlayerMovement.Cur_Sec;
 			// player moves to top section
 			if (sec_diff == -10) {
+				Cur_Sec_Origin_z += PlayerMovement.Sec_Width;
 				StartCoroutine (ClearSections (SECTION_LOC.B));
 			}
 			// player moves to bottom section
 			else if (sec_diff == 10) {
+				Cur_Sec_Origin_z -= PlayerMovement.Sec_Width;
 				StartCoroutine (ClearSections (SECTION_LOC.T));
 			}
 			// player moves to left section
-			else if (sec_diff == 1) {
-				// delete cells in top_right, right, and bot_right sections
+			else if (sec_diff == -1) {
+				Cur_Sec_Origin_x -= PlayerMovement.Sec_Width;
 				StartCoroutine (ClearSections (SECTION_LOC.R));
-				// reassign cells in top, cur, and bot sections to top_right, right, and bot_right sections respectively
-				// reassign cells in top_left, left, and bot_left section to top, cur, and bot sections respectively
-				// load cells of new section numbers in top_left, left, and bot_left
 			}
 			// player moves to right section
-			else if (sec_diff == -1) {
-				// delete cells in top_left, left, and bot_left sections
+			else if (sec_diff == 1) {
+				Cur_Sec_Origin_x += PlayerMovement.Sec_Width;
 				StartCoroutine (ClearSections (SECTION_LOC.L));
-				// reassign cells in top, cur, and bot sections to top_left, left, and bot_left sections respectively
-				// reassign cells in top_right, right, and bot_right sections to top, cur, and bot sections respectively
-				// load cells of new section numers in top_right, right, and bot_right
 			}
 			// player stays in cur section
 			else {
@@ -374,10 +370,28 @@ public class WorldGenerator : MonoBehaviour {
 		ChangeSection (Top_R, Right);
 	}
 	// move cells in a section column left a section column
-	void MoveCellsLeft(SECTION_LOC cur_col){
+	void MoveCellsLeft(){
+		ClearSections (SECTION_LOC.L);
+		// move cur column left
+		ChangeSection (Top, Top_L);
+		ChangeSection (Cur, Left);
+		ChangeSection (Bot, Bot_L);
+		// move right column left
+		ChangeSection (Top_R, Top);
+		ChangeSection (Right, Cur);
+		ChangeSection (Bot_R, Bot);
 	}
 	// move cells in a section column right a section column
-	void MoveCellsRight(SECTION_LOC cur_col){
+	void MoveCellsRight(){
+		ClearSections (SECTION_LOC.R);
+		// move cur column right
+		ChangeSection (Top, Top_R);
+		ChangeSection (Cur, Right);
+		ChangeSection (Bot, Bot_R);
+		// move left column right
+		ChangeSection (Top_L, Top);
+		ChangeSection (Left, Cur);
+		ChangeSection (Bot_L, Bot);
 	}
 
 	// destroy cells in Transform section
@@ -397,11 +411,11 @@ public class WorldGenerator : MonoBehaviour {
 	// Empties sections of cells
 	IEnumerator ClearSections(SECTION_LOC section_group){
 		loading = true;
-		// move to the bottom section
+		// move to the bottom section row
 		if (section_group == SECTION_LOC.T) {
 			// change current row cell data to bottom row
-			for (uint r = 0; r < PlayerMovement.Sec_Width; r++) {
-				for (uint c = 0; c < PlayerMovement.Sec_Width; c++) {
+			for (uint r = 0; r < (uint)PlayerMovement.Sec_Width; r++) {
+				for (uint c = 0; c < (uint)PlayerMovement.Sec_Width; c++) {
 					// copy the cur row cell data into the top row
 					SectionData.TL_Sec [r] [c] = SectionData.L_Sec [r] [c];
 					SectionData.T_Sec [r] [c] = SectionData.Cur_Sec [r] [c];
@@ -416,45 +430,102 @@ public class WorldGenerator : MonoBehaviour {
 					SectionData.BR_Sec [r] [c] = null;
 				}
 			}
-			// clear out top row cell game objects
+			// clear out the top row cell game objects
 			ClearCells (Top_L);
 			ClearCells (Top);
 			ClearCells (Top_R);
+			MoveCellsUp ();
 			// Load new bot row
 			LoadSection (Cur_Sec + 9, SECTION_LOC.BL);
 			LoadSection (Cur_Sec + 10, SECTION_LOC.B);
 			LoadSection (Cur_Sec + 11, SECTION_LOC.BR);
-			MoveCellsUp ();
 		}
-		// move to the top section
+		// move to the top section row
 		else if (section_group == SECTION_LOC.B) {
-			// clear out bot row cell data
-			foreach (string[] row in SectionData.BL_Sec) {
-				for (int i = 0; i < row.Length - 1; i++) {
-					row [i] = null;
+			// change current row cell data to top row
+			for (uint r = 0; r < (uint)PlayerMovement.Sec_Width; r++) {
+				for (uint c = 0; c < (uint)PlayerMovement.Sec_Width; c++) {
+					// copy cur row cell data into the bot row
+					SectionData.BL_Sec [r] [c] = SectionData.L_Sec [r] [c];
+					SectionData.B_Sec [r] [c] = SectionData.Cur_Sec [r] [c];
+					SectionData.BR_Sec [r] [c] = SectionData.R_Sec [r] [c];
+					// copy the top row cell data into the cur row
+					SectionData.L_Sec [r] [c] = SectionData.TL_Sec [r] [c];
+					SectionData.Cur_Sec [r] [c] = SectionData.T_Sec [r] [c];
+					SectionData.R_Sec [r] [c] = SectionData.TR_Sec [r] [c];
+					// clear out the top row cell data
+					SectionData.TL_Sec [r] [c] = null;
+					SectionData.T_Sec [r] [c] = null;
+					SectionData.TR_Sec [r] [c] = null;
 				}
 			}
-			foreach (string[] row in SectionData.B_Sec) {
-				for (int i = 0; i < row.Length - 1; i++) {
-					row [i] = null;
-				}
-			}
-			foreach (string[] row in SectionData.BR_Sec) {
-				for (int i = 0; i < row.Length - 1; i++) {
-					row [i] = null;
-				}
-			}
-			// clear out bot row cell game objects
+			// clear out the bot row cell game objects
 			ClearCells (Bot_L);
 			ClearCells (Bot);
 			ClearCells (Bot_R);
-			// load new top row
-			LoadSection (Cur_Sec - 9, SECTION_LOC.TL);
-			LoadSection (Cur_Sec - 10, SECTION_LOC.T);
-			LoadSection (Cur_Sec - 11, SECTION_LOC.TR);
 			MoveCellsDown ();
-		} else if (section_group == SECTION_LOC.L) {
-		} else {
+			// load new top row
+			LoadSection (Cur_Sec - 11, SECTION_LOC.TL);
+			LoadSection (Cur_Sec - 10, SECTION_LOC.T);
+			LoadSection (Cur_Sec - 9, SECTION_LOC.TR);
+		}
+		// move to the right section column
+		else if (section_group == SECTION_LOC.L) {
+			// change current column cell data to the right column
+			for (uint r = 0; r < (uint)PlayerMovement.Sec_Width; r++) {
+				for (uint c = 0; c < (uint)PlayerMovement.Sec_Width; c++) {
+					// copy cur column cell data into the left column
+					SectionData.TL_Sec [r] [c] = SectionData.T_Sec [r] [c];
+					SectionData.L_Sec [r] [c] = SectionData.Cur_Sec [r] [c];
+					SectionData.BL_Sec [r] [c] = SectionData.B_Sec [r] [c];
+					// copy the right column cell data into cur column
+					SectionData.T_Sec [r] [c] = SectionData.TR_Sec [r] [c];
+					SectionData.Cur_Sec [r] [c] = SectionData.R_Sec [r] [c];
+					SectionData.B_Sec [r] [c] = SectionData.BR_Sec [r] [c];
+					// clear out the right column cell data
+					SectionData.TR_Sec [r] [c] = null;
+					SectionData.R_Sec [r] [c] = null;
+					SectionData.BR_Sec [r] [c] = null;
+				}
+			}
+			// clear out the left column cell game objects
+			ClearCells (Top_L);
+			ClearCells (Left);
+			ClearCells (Bot_L);
+			MoveCellsLeft ();
+			// load new right section column
+			LoadSection (Cur_Sec - 9, SECTION_LOC.TR);
+			LoadSection (Cur_Sec + 1, SECTION_LOC.R);
+			LoadSection (Cur_Sec + 11, SECTION_LOC.BR);
+		}
+		// move to the left section column
+		else {
+			// change current column data to the left column
+			for (uint r = 0; r < (uint)PlayerMovement.Sec_Width; r++) {
+				for (uint c = 0; c < (uint)PlayerMovement.Sec_Width; c++) {
+					// copy cur column cell data into the right column
+					SectionData.TR_Sec [r] [c] = SectionData.T_Sec [r] [c];
+					SectionData.R_Sec [r] [c] = SectionData.Cur_Sec [r] [c];
+					SectionData.BR_Sec [r] [c] = SectionData.B_Sec [r] [c];
+					// copy the left column cell data into cur column
+					SectionData.T_Sec [r] [c] = SectionData.TL_Sec [r] [c];
+					SectionData.Cur_Sec [r] [c] = SectionData.L_Sec [r] [c];
+					SectionData.B_Sec [r] [c] = SectionData.BL_Sec [r] [c];
+					// clear out the left column cell data
+					SectionData.TL_Sec [r] [c] = null;
+					SectionData.L_Sec [r] [c] = null;
+					SectionData.BL_Sec [r] [c] = null;
+				}
+			}
+			// clear out the right column cell game objects
+			ClearCells (Top_R);
+			ClearCells (Right);
+			ClearCells (Bot_R);
+			MoveCellsRight ();
+			// load new left section column
+			LoadSection (Cur_Sec - 11, SECTION_LOC.TL);
+			LoadSection (Cur_Sec - 1, SECTION_LOC.L);
+			LoadSection (Cur_Sec + 9, SECTION_LOC.BL);
 		}
 		loading = false;
 		yield return null;

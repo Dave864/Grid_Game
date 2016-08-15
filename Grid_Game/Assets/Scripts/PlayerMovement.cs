@@ -224,12 +224,16 @@ public class PlayerMovement : MonoBehaviour {
 		else if (hoz_inc != 0) {
 			if (dest_col < 0) {
 				// Move to left section
-				destCellInfo = SectionData.Cur_Sec [Cur_Row] [0];
+				destCellInfo = SectionData.L_Sec [Cur_Row] [(int)Sec_Width-1];
 				dest_sec = SECTION_LOC.L;
+				Cur_Col = (int)Sec_Width - 1;
+				Cur_Sec -= 1;
 			} else if (dest_col >= (int)Sec_Width) {
 				// Move to right section
-				destCellInfo = SectionData.Cur_Sec [Cur_Row] [(int)Sec_Width-1];
+				destCellInfo = SectionData.R_Sec [Cur_Row] [0];
 				dest_sec = SECTION_LOC.R;
+				Cur_Col = 0;
+				Cur_Sec += 1;
 			} else {
 				// Stay in current section
 				destCellInfo = SectionData.Cur_Sec [Cur_Row] [dest_col];
@@ -254,7 +258,13 @@ public class PlayerMovement : MonoBehaviour {
 			Cur_Row = (int)Sec_Width - 1;
 			Cur_Col -= hoz_inc;
 		} else if (dest_sec == SECTION_LOC.L) {
+			Cur_Sec += 1;
+			Cur_Row -= vert_inc;
+			Cur_Col = 0;
 		} else if (dest_sec == SECTION_LOC.R) {
+			Cur_Sec -= 1;
+			Cur_Row -= vert_inc;
+			Cur_Col = (int)Sec_Width - 1;
 		} else {
 			Cur_Col -= hoz_inc;
 			Cur_Row += vert_inc;
@@ -266,15 +276,10 @@ public class PlayerMovement : MonoBehaviour {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
-			destTransform = transform.position;
-			return;
-		}
 		if (destCellInfo [0] == 'w') {
 			// don't move
 			destTransform = transform.position;
-			Cur_Col -= hoz_inc;
-			Cur_Row += vert_inc;
+			RestoreStart (dest_sec, hoz_inc, vert_inc);
 		} else if (destCellInfo [0] == 'p') {
 			// don't move
 			if (destCellInfo [3] == startCellInfo [3]) {
@@ -300,10 +305,6 @@ public class PlayerMovement : MonoBehaviour {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
-			destTransform = transform.position;
-			return;
-		}
 		if (destCellInfo [0] == 'w') {
 			// don't move
 			destTransform = transform.position;
@@ -516,10 +517,6 @@ public class PlayerMovement : MonoBehaviour {
 		Mov_Pat = MOVE_PATT.LINEAR;
 		SECTION_LOC dest_sec = SECTION_LOC.CUR;
 		string destCellInfo = GetEndCell (ref dest_sec, hoz_inc, vert_inc);
-		if (dest_sec == SECTION_LOC.L || dest_sec == SECTION_LOC.R) {
-			destTransform = transform.position;
-			return;
-		}
 		if (destCellInfo [0] == 'w') {
 			// don't move
 			destTransform = transform.position;
