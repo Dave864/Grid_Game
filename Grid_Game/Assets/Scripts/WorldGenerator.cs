@@ -29,6 +29,7 @@ public class WorldGenerator : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Cur_Sec = PlayerMovement.Cur_Sec;
+		InitializeSections ();
 		LoadWorld ();
 	}
 	
@@ -59,6 +60,41 @@ public class WorldGenerator : MonoBehaviour {
 			}
 			// player stays in cur section
 			else {
+			}
+		}
+	}
+
+	// Initializes section data maps to null
+	void InitializeSections () {
+		SectionData.Cur_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.L_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.R_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.T_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.B_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.TL_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.TR_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.BL_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		SectionData.BR_Sec = new string[(int)PlayerMovement.Sec_Width][];
+		for (uint r = 0; r < (uint)PlayerMovement.Sec_Width; r++) {
+			SectionData.Cur_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.L_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.R_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.T_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.B_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.TL_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.TR_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.BL_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			SectionData.BR_Sec [r] = new string[(int)PlayerMovement.Sec_Width];
+			for (uint c = 0; c < (uint)PlayerMovement.Sec_Width; c++) {
+				SectionData.Cur_Sec [r] = null;
+				SectionData.L_Sec [r] [c] = null;
+				SectionData.R_Sec [r] [c] = null;
+				SectionData.T_Sec [r] [c] = null;
+				SectionData.B_Sec [r] [c] = null;
+				SectionData.TL_Sec [r] [c] = null;
+				SectionData.TR_Sec [r] [c] = null;
+				SectionData.BL_Sec [r] [c] = null;
+				SectionData.BR_Sec [r] [c] = null;
 			}
 		}
 	}
@@ -288,7 +324,7 @@ public class WorldGenerator : MonoBehaviour {
 	float HeightOffset (string cell) {
 		float offset = 0.0f;
 		if (cell [0] == 'w') {
-			offset = 0.25f;
+			offset = (cell[1] == 'o') ? 0.0f : 0.25f;
 		} else if (cell [0] == 'r') {
 			offset = 0.25f;
 		}
@@ -323,7 +359,7 @@ public class WorldGenerator : MonoBehaviour {
 		else {
 			file_path += GetPrefabPath (info);
 			height += HeightOffset (info);
-			x_rot = 0f;
+			x_rot = (info.Substring (0, 2) == "wo") ? 90f : 0f;
 			y_rot = 90f*(float)(char.GetNumericValue(info[2]));
 		}
 		GameObject cell;

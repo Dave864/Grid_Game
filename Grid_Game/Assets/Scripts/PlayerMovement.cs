@@ -32,7 +32,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
-	public Text Debug_Text;
 
 	// Initialize initial section and intial row and column
 	void Awake () {
@@ -65,7 +64,6 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		// place player at coordinates
 		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y + height, transform.position.z - Cur_Row);
-		Debug_Text.text = "Waiting...";
 		DisplayPos ();
 		Held_Butt = HELD_DIR_BUTT.NONE;
 	}
@@ -170,9 +168,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Prevent the player from moving diagonally
 	IEnumerator PrevDiagMove (float hoz_inc, float vert_inc) {
-		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
-		+ "\nCoordinates: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z
-		+ "\nCurrent Cell: " + SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		// Determine if an input button is being held down
 		HeldDirButton (hoz_inc, vert_inc);
 		// Split horizontal and vertical movement
@@ -681,9 +676,6 @@ public class PlayerMovement : MonoBehaviour {
 	IEnumerator Move (float hoz_inc, float vert_inc) {
 		string startCellInfo = SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		Vector3 destTransform = new Vector3 (transform.position.x + hoz_inc, transform.position.y, transform.position.z + vert_inc);
-		Debug_Text.text = "Horizontal Input: " + hoz_inc.ToString () + "\nVertical Input: " + vert_inc.ToString ()
-		+ "\nCoordinates: " + destTransform.x + ", " + destTransform.y + ", " + destTransform.z
-		+ "\nCurrent Cell: " + SectionData.Cur_Sec [Cur_Row] [Cur_Col];
 		if (startCellInfo [0] == 'p') {
 			PlatformStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		} else if (startCellInfo [0] == 'r') {
