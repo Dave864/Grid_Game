@@ -6,9 +6,6 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
 	// player coordinates
-	public int Test_Sec;
-	public int Test_Row;
-	public int Test_Col;
 	[HideInInspector] static public int Cur_Sec;
 	[HideInInspector] static public int Cur_Row;
 	[HideInInspector] static public int Cur_Col;
@@ -18,6 +15,7 @@ public class PlayerMovement : MonoBehaviour {
 	enum SECTION_LOC {CUR, L, R, T, B, TL, TR, BL, BR};
 
 	// rotation and movement information
+	[HideInInspector] static public bool Fin_Mov = false;
 	private float Rotation = 0f;
 	private float Rot_Speed = 200f;
 	private float Mov_Speed = 2.5f;
@@ -32,25 +30,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	// text showing player coordinates
 	public Text Coordinates_Text;
-
-	// Initialize initial section and intial row and column
-	void Awake () {
-		Cur_Sec = Test_Sec;
-		if (Test_Row < 0) {
-			Cur_Row = 0;
-		} else if (Test_Row > (int)Sec_Width - 1) {
-			Cur_Row = (int)Sec_Width - 1;
-		} else {
-			Cur_Row = Test_Row;
-		}
-		if (Test_Col < 0) {
-			Cur_Col = 0;
-		} else if (Test_Col > (int)Sec_Width - 1) {
-			Cur_Col = (int)Sec_Width - 1;
-		} else {
-			Cur_Col = Test_Col;
-		}
-	}
 
 	// Use this for initialization
 	void Start () {
@@ -683,51 +662,54 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			FloorStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		}
-		if (Mov_Pat == MOVE_PATT.LINEAR) {
-			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-				yield return null;
+		if (destTransform != transform.position) {
+			if (Mov_Pat == MOVE_PATT.LINEAR) {
+				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+			} else if (Mov_Pat == MOVE_PATT.UP_ON) {
+				Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x) / 2), destTransform.y - 0.25f, destTransform.z - ((destTransform.z - transform.position.z) / 2));
+				while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+			} else if (Mov_Pat == MOVE_PATT.DOWN_ON) {
+				Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x) / 2), destTransform.y + 0.25f, destTransform.z - ((destTransform.z - transform.position.z) / 2));
+				while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+			} else if (Mov_Pat == MOVE_PATT.UP_OFF) {
+				Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x) / 2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z) / 2));
+				while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+			} else {
+				Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x) / 2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z) / 2));
+				while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
+				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
+					transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
+					yield return null;
+				}
 			}
-		} else if (Mov_Pat == MOVE_PATT.UP_ON) {
-			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y - 0.25f, destTransform.z - ((destTransform.z - transform.position.z)/2));
-			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-		} else if (Mov_Pat == MOVE_PATT.DOWN_ON) {
-			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y + 0.25f, destTransform.z - ((destTransform.z - transform.position.z)/2));
-			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-		} else if (Mov_Pat == MOVE_PATT.UP_OFF) {
-			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z)/2));
-			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-		} else {
-			Vector3 mid_point = new Vector3 (destTransform.x - ((destTransform.x - transform.position.x)/2), destTransform.y, destTransform.z - ((destTransform.z - transform.position.z)/2));
-			while (Vector3.Distance (transform.position, mid_point) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, mid_point, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
-			while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
-				transform.position = Vector3.MoveTowards (transform.position, destTransform, Mov_Speed * Time.deltaTime);
-				yield return null;
-			}
+			Fin_Mov = true;
 		}
 	}
 }
