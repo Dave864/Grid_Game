@@ -12,16 +12,13 @@ public class RandomEncounter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (PlayerMovement.Fin_Mov) {
-			PlayerMovement.Fin_Mov = false;
-			Randomizer ();
-		}
 	}
 
-	public void Randomizer(){
+	public IEnumerator Randomizer(){
 		// encounter
 		if (Random.Range (0.0f, 100.0f) > Encounter_Rate) {
 			SceneManager.LoadScene ("Encounter");
+			yield return null;
 		}
 	}
 }

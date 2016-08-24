@@ -6,6 +6,9 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
 	// player coordinates
+	public int Test_Sec;
+	public int Test_Row;
+	public int Test_Col;
 	[HideInInspector] static public int Cur_Sec;
 	[HideInInspector] static public int Cur_Row;
 	[HideInInspector] static public int Cur_Col;
@@ -15,7 +18,6 @@ public class PlayerMovement : MonoBehaviour {
 	enum SECTION_LOC {CUR, L, R, T, B, TL, TR, BL, BR};
 
 	// rotation and movement information
-	[HideInInspector] static public bool Fin_Mov = false;
 	private float Rotation = 0f;
 	private float Rot_Speed = 200f;
 	private float Mov_Speed = 2.5f;
@@ -31,6 +33,47 @@ public class PlayerMovement : MonoBehaviour {
 	// text showing player coordinates
 	public Text Coordinates_Text;
 
+	public RandomEncounter Rand_Enc;
+
+	// initialize player coordinates and player rotation
+	void Awake () {
+		if (!PlayerPrefs.HasKey ("Section")) {
+			Cur_Sec = Test_Sec;
+			PlayerPrefs.SetInt ("Section", Cur_Sec);
+		} else {
+			Cur_Sec = PlayerPrefs.GetInt ("Section");
+		}
+		if (!PlayerPrefs.HasKey ("Row")) {
+			if (Test_Row < 0) {
+				Cur_Row = 0;
+			} else if (Test_Row > (int)Sec_Width - 1) {
+				Cur_Row = (int)Sec_Width - 1;
+			} else {
+				Cur_Row = Test_Row;
+			}
+			PlayerPrefs.SetInt ("Row", Cur_Row);
+		} else {
+			Cur_Row = PlayerPrefs.GetInt ("Row");
+		}
+		if (!PlayerPrefs.HasKey ("Column")) {
+			if (Test_Col < 0) {
+				Cur_Col = 0;
+			} else if (Test_Col > (int)Sec_Width - 1) {
+				Cur_Col = (int)Sec_Width - 1;
+			} else {
+				Cur_Col = Test_Col;
+			}
+			PlayerPrefs.SetInt ("Column", Cur_Col);
+		} else {
+			Cur_Col = PlayerPrefs.GetInt ("Column");
+		}
+		if (!PlayerPrefs.HasKey ("Rotation")) {
+			PlayerPrefs.SetFloat ("Rotation", Rotation);
+		} else {
+			Rotation = PlayerPrefs.GetFloat ("Rotation");
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		// get the player's y coordinate
@@ -43,6 +86,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		// place player at coordinates
 		transform.position = new Vector3 (transform.position.x + Cur_Col, transform.position.y + height, transform.position.z - Cur_Row);
+		transform.rotation = Quaternion.Euler (50f, Rotation, 0f);
 		DisplayPos ();
 		Held_Butt = HELD_DIR_BUTT.NONE;
 	}
@@ -61,9 +105,10 @@ public class PlayerMovement : MonoBehaviour {
 	// Updates the display that shows player coordinates
 	void DisplayPos () {
 		Coordinates_Text.text = "WORLD: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z
-			+ "\nsection: " + Cur_Sec.ToString ()
-			+ "\nrow: " + Cur_Row.ToString ()
-			+ "\ncol: " + Cur_Col.ToString ();
+		+ "\nsection: " + PlayerPrefs.GetInt ("Section").ToString () + ", " + Cur_Sec.ToString ()
+		+ "\nrow: " + PlayerPrefs.GetInt ("Row").ToString () + ", " + Cur_Row.ToString ()
+		+ "\ncol: " + PlayerPrefs.GetInt ("Column").ToString () + ", " + Cur_Col.ToString ()
+		+ "\nrotation: " + Rotation;
 	}
 
 	// Determines if a directional input is held down
@@ -123,6 +168,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		Rotation = (Rotation == 360 || Rotation == -360) ? 0 : Rotation;
 		Rotate_To = Quaternion.Euler (50f, Rotation, 0f);
+		PlayerPrefs.SetFloat ("Rotation", Rotation);
 		Rotating = true;
 		while (Quaternion.Angle (transform.rotation, Rotate_To) > 1.0f) {
 			transform.rotation = Quaternion.RotateTowards (transform.rotation, Rotate_To, Rot_Speed * Time.deltaTime);
@@ -662,6 +708,9 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			FloorStart (ref destTransform, startCellInfo, (int) hoz_inc, (int) vert_inc);
 		}
+		PlayerPrefs.SetInt ("Section", Cur_Sec);
+		PlayerPrefs.SetInt ("Row", Cur_Row);
+		PlayerPrefs.SetInt ("Column", Cur_Col);
 		if (destTransform != transform.position) {
 			if (Mov_Pat == MOVE_PATT.LINEAR) {
 				while (Vector3.Distance (transform.position, destTransform) != 0.0f) {
@@ -709,7 +758,7 @@ public class PlayerMovement : MonoBehaviour {
 					yield return null;
 				}
 			}
-			Fin_Mov = true;
+			yield return StartCoroutine (Rand_Enc.Randomizer ());
 		}
 	}
 }
