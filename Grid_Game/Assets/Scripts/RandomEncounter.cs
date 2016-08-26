@@ -51,45 +51,26 @@ public class RandomEncounter : MonoBehaviour {
 			PlayerPrefs.SetInt ("Cur", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [0] [3]));
 			// cell to the right is a wall
 			if (SectionData.Cur_Sec [0] [1] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
-				PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [0] [3]));
-				PlayerPrefs.SetInt ("TL", -2);
-				PlayerPrefs.SetInt ("TR", -1);
-				PlayerPrefs.SetInt ("BL", -1);
+				ArenaDoubleUp ();
 			}
 			// cell to the bottom is a wall
 			else if (SectionData.Cur_Sec [1] [0] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
-				PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [1] [3]));
-				PlayerPrefs.SetInt ("TL", -2);
-				PlayerPrefs.SetInt ("BL", -1);
-				PlayerPrefs.SetInt ("BR", -1);
+				ArenaDoubleLeft ();
 			}
 			// cell to the bottom-right is a wall
 			else if (SectionData.Cur_Sec [1] [1] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
 				switch (Random.Range (0, 1)) {
 				case 1:
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [0] [3]));
-					PlayerPrefs.SetInt ("TL", -2);
-					PlayerPrefs.SetInt ("TR", -1);
-					PlayerPrefs.SetInt ("BL", -1);
+					ArenaDoubleUp ();
 					break;
 				default:
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [1] [3]));
-					PlayerPrefs.SetInt ("TL", -2);
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
+					ArenaDoubleLeft ();
 					break;
 				}
 			}
 			// no adjacent cells are walls
 			else {
-				PlayerPrefs.SetString ("ArenaType", "quad");
-				PlayerPrefs.SetInt ("TL", -1);
-				PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [1] [3]));
-				PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [0] [3]));
-				PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [1] [3]));
+				ArenaQuadTL ();
 			}
 		}
 		// Player is at top-right cell
@@ -97,45 +78,26 @@ public class RandomEncounter : MonoBehaviour {
 			PlayerPrefs.SetInt ("Cur", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [(int)PlayerMovement.Sec_Width - 1] [3]));
 			// cell to the left is a wall
 			if (SectionData.Cur_Sec [0] [(int)PlayerMovement.Sec_Width - 2] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
-				PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 1] [3]));
-				PlayerPrefs.SetInt ("TL", -1);
-				PlayerPrefs.SetInt ("TR", -2);
-				PlayerPrefs.SetInt ("BL", -1);
+				ArenaDoubleUp ();
 			}
 			// cell to the bottom is a wall
 			else if (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 1] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
-				PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [(int)PlayerMovement.Sec_Width - 2] [3]));
-				PlayerPrefs.SetInt ("TR", -2);
-				PlayerPrefs.SetInt ("BR", -1);
-				PlayerPrefs.SetInt ("BL", -1);
+				ArenaDoubleRight ();
 			}
 			// cell to the bottom-left is a wall
 			else if (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 2] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
 				switch (Random.Range (0, 1)) {
 				case 1:
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 1] [3]));
-					PlayerPrefs.SetInt ("TL", -1);
-					PlayerPrefs.SetInt ("TR", -2);
-					PlayerPrefs.SetInt ("BL", -1);
+					ArenaDoubleUp ();
 					break;
 				default:
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [(int)PlayerMovement.Sec_Width - 2] [3]));
-					PlayerPrefs.SetInt ("TR", -2);
-					PlayerPrefs.SetInt ("BR", -1);
-					PlayerPrefs.SetInt ("BL", -1);
+					ArenaDoubleRight ();
 					break;
 				}
 			}
 			// no adjacent cells are walls
 			else {
-				PlayerPrefs.SetString ("ArenaType", "quad");
-				PlayerPrefs.SetInt ("TR", -1);
-				PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [(int)PlayerMovement.Sec_Width - 2] [3]));
-				PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 2] [3]));
-				PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [(int)PlayerMovement.Sec_Width - 1] [3]));
+				ArenaQuadTR ();
 			}
 		}
 		// Player is in top row
@@ -145,143 +107,81 @@ public class RandomEncounter : MonoBehaviour {
 			if (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
 				// cell to the left is a wall
 				if (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("TL", -1);
-					PlayerPrefs.SetInt ("TR", -2);
+					ArenaDoubleUp ();
 				}
 				// cell to the bottom is a wall
 				else if (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("TR", -2);
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
+					ArenaDoubleRight ();
 				}
 				// cell to the bottom-left is a wall
 				else if (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", -2);
+						ArenaDoubleUp ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					}
 				}
 				// no other cells are walls
 				else {
-					PlayerPrefs.SetString ("ArenaType", "quad");
-					PlayerPrefs.SetInt ("TR", -1);
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
+					ArenaQuadTR ();
 				}
 			}
 			// cell to the left is a wall
 			else if (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
 				// cell to the right is a wall
 				if (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt ("BR", -1);
-					PlayerPrefs.SetInt ("TL", -2);
-					PlayerPrefs.SetInt ("TR", -1);
+					ArenaDoubleUp ();
 				}
 				// cell to the bottom is a wall
 				else if (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
-					PlayerPrefs.SetInt ("TL", -2);
+					ArenaDoubleLeft ();
 				}
 				// cell to the bottom-right is a wall
 				else if (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BR", -1);
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", -1);
+						ArenaDoubleUp ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
-						PlayerPrefs.SetInt ("TL", -2);
+						ArenaDoubleLeft ();
 						break;
 					}
 				}
 				// no other cells are walls
 				else {
-					PlayerPrefs.SetString ("ArenaType", "quad");
-					PlayerPrefs.SetInt ("TL", -1);
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col + 1] [3]));
+					ArenaQuadTL ();
 				}
 			}
 			// cell to the bottom is a wall
 			else if (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [0] == 'w') {
 				switch (Random.Range (0, 1)) {
 				case 1:
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("TR", -2);
-					PlayerPrefs.SetInt ("BR", -1);
-					PlayerPrefs.SetInt ("BL", -1);
+					ArenaDoubleDown ();
 					break;
 				default:
-					PlayerPrefs.SetString ("ArenaType", "double");
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt ("TL", -2);
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
+					ArenaDoubleLeft ();
 					break;
 				}
 			}
 			// cell to the bottom-right is a wall
 			else if (SectionData.Cur_Sec [1] [(int)PlayerMovement.Cur_Col + 1] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "quad");
-				PlayerPrefs.SetInt ("TR", -1);
-				PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-				PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-				PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col - 1] [3]));
+				ArenaQuadTR ();
 			}
 			// cell to the bottom-left is a wall
 			else if (SectionData.Cur_Sec [1] [(int)PlayerMovement.Cur_Col - 1] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "quad");
-				PlayerPrefs.SetInt ("TL", -1);
-				PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-				PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-				PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col + 1] [3]));
+				ArenaQuadTL ();
 			}
 			// no adjacent cells are walls
 			else {
 				switch (Random.Range (0, 1)) {
 				case 1:
-					PlayerPrefs.SetString ("ArenaType", "quad");
-					PlayerPrefs.SetInt ("TR", -1);
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col - 1] [3]));
+					ArenaQuadTR ();
 					break;
 				default:
-					PlayerPrefs.SetString ("ArenaType", "quad");
-					PlayerPrefs.SetInt ("TL", -1);
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [0] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [1] [PlayerMovement.Cur_Col + 1] [3]));
+					ArenaQuadTL ();
 					break;
 				}
 			}
@@ -399,35 +299,22 @@ public class RandomEncounter : MonoBehaviour {
 		if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [0] == 'w') {
 			// cell to the bottom is a wall
 			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [0] == 'w') {
-				PlayerPrefs.SetString ("ArenaType", "double");
 				// cell to the left is a wall
 				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-					PlayerPrefs.SetInt ("TL", -2);
-					PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
+					ArenaDoubleLeft ();
 				}
 				// cell to the right is a wall
 				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-					PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt ("TR", -2);
-					PlayerPrefs.SetInt ("BL", -1);
-					PlayerPrefs.SetInt ("BR", -1);
+					ArenaDoubleRight ();
 				}
 				// cells to the left and right are not walls
 				else {
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleLeft ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					}
 				}
@@ -438,58 +325,33 @@ public class RandomEncounter : MonoBehaviour {
 				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
 					// cell to the right is a wall
 					if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-						PlayerPrefs.SetString ("ArenaType", "double");
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", -1);
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleUp ();
 					} else {
-						PlayerPrefs.SetString ("ArenaType", "quad");
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [3]));
+						ArenaQuadTL ();
 					}
 				}
 				// cell to the right is a wall
 				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+						ArenaDoubleUp ();
 						break;
 					}
 				}
 				// cell to the bottom-right is a wall
 				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 2)) {
 					case 1:
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					case 2:
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+						ArenaDoubleUp ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleLeft ();
 						break;
 					}
 				}
@@ -497,18 +359,10 @@ public class RandomEncounter : MonoBehaviour {
 				else {
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetString ("ArenaType", "double");
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					default:
-						PlayerPrefs.SetString ("ArenaType", "quad");
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [3]));
+						ArenaQuadTL ();
 						break;
 					}
 				}
@@ -519,58 +373,33 @@ public class RandomEncounter : MonoBehaviour {
 				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
 					// cell to the left is a wall
 					if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-						PlayerPrefs.SetString ("ArenaType", "double");
-						PlayerPrefs.SetInt ("TL", -1);
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+						ArenaDoubleUp ();
 					} else {
-						PlayerPrefs.SetString ("ArenaType", "quad");
-						PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("TR", -2);
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+						ArenaQuadTR ();
 					}
 				}
 				// cell to the left is a wall
 				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt ("BL", -1);
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleLeft ();
 						break;
 					default:
-						PlayerPrefs.SetInt ("TL", -2);
-						PlayerPrefs.SetInt ("TR", -1);
-						PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt ("BR", -1);
+						ArenaDoubleUp ();
 						break;
 					}
 				}
 				// cell to the bottom-left is a wall
 				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
-					PlayerPrefs.SetString ("ArenaType", "double");
 					switch (Random.Range (0, 2)) {
 					case 1:
-						PlayerPrefs.SetInt("TL", -2);
-						PlayerPrefs.SetInt("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt("BL", -1);
-						PlayerPrefs.SetInt("BR", -1);
+						ArenaDoubleLeft ();
 						break;
 					case 2:
-						PlayerPrefs.SetInt("TL", -2);
-						PlayerPrefs.SetInt("TR", -1);
-						PlayerPrefs.SetInt("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-						PlayerPrefs.SetInt("BR", -1);
+						ArenaDoubleUp ();
 						break;
 					default:
-						PlayerPrefs.SetInt("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt("TR", -2);
-						PlayerPrefs.SetInt("BL", -1);
-						PlayerPrefs.SetInt("BR", -1);
+						ArenaDoubleRight ();
 						break;
 					}
 				}
@@ -578,72 +407,547 @@ public class RandomEncounter : MonoBehaviour {
 				else {
 					switch (Random.Range (0, 1)) {
 					case 1:
-						PlayerPrefs.SetString ("ArenaType", "double");
-						PlayerPrefs.SetInt("TL", -2);
-						PlayerPrefs.SetInt("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-						PlayerPrefs.SetInt("BL", -1);
-						PlayerPrefs.SetInt("BR", -1);
+						ArenaDoubleLeft ();
 						break;
 					default:
-						PlayerPrefs.SetString ("ArenaType", "quad");
-						PlayerPrefs.SetInt("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt("TR", -1);
-						PlayerPrefs.SetInt("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [3]));
-						PlayerPrefs.SetInt("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+						ArenaQuadTR ();
 						break;
 					}
 				}
 			}
 			// no lower adjacent cells are walls
 			else {
-				PlayerPrefs.SetString ("ArenaType", "quad");
 				switch (Random.Range (0, 1)) {
 				case 1:
-					PlayerPrefs.SetInt("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt("TR", -1);
-					PlayerPrefs.SetInt("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [3]));
-					PlayerPrefs.SetInt("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+					ArenaQuadTR ();
 					break;
 				default:
-					PlayerPrefs.SetInt("TL", -1);
-					PlayerPrefs.SetInt("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
-					PlayerPrefs.SetInt("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
-					PlayerPrefs.SetInt("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [3]));
+					ArenaQuadTL ();
 					break;
 				}
 			}
 		}
 		// cell to the bottom is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [0] == 'w') {
+			// cell to the top is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [0] == 'w') {
+				// cell to the left is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+					ArenaDoubleLeft ();
+				}
+				// cell to the right is a wall
+				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					ArenaDoubleRight ();
+				}
+				// cells to the left and right are not walls
+				else {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaDoubleLeft ();
+						break;
+					default:
+						ArenaDoubleRight ();
+						break;
+					}
+				}
+			}
+			// cell to the left is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				// cell to the right is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					ArenaDoubleDown ();
+				}
+				// cell to the top-right is a wall
+				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					default:
+						ArenaDoubleRight ();
+						break;
+					}
+				} else {
+					ArenaQuadBR ();
+				}
+			}
+			// cell to the right is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				// cell to the top-left is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					default:
+						ArenaDoubleRight ();
+						break;
+					}
+				} else {
+					ArenaQuadBR ();
+				}
+			}
+			// cell to the top-left is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				// cell to the top-right is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					case 2:
+						ArenaDoubleRight ();
+						break;
+					default:
+						ArenaDoubleLeft ();
+						break;
+					}
+				} else {
+					ArenaQuadBL ();
+				}
+			}
+			// cell to the top-right is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				ArenaQuadBR ();
+			}
+			// no upper adjacent cells are walls
+			else {
+				PlayerPrefs.SetString ("ArenaType", "quad");
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaQuadBR ();
+					break;
+				default:
+					ArenaQuadBL ();
+					break;
+				}
+			}
 		}
 		// cell to the left is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+			// cell to the right is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaDoubleDown ();
+					break;
+				default:
+					ArenaDoubleLeft ();
+					break;
+				}
+			}
+			// cell to the top-right is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				// cell to the bottom-right is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					case 2:
+						ArenaDoubleUp ();
+						break;
+					default:
+						ArenaDoubleLeft ();
+						break;
+					}
+				} else {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					default:
+						ArenaQuadTL ();
+						break;
+					}
+				}
+			}
+			// cell to the bottom-right is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaDoubleUp ();
+					break;
+				default:
+					ArenaQuadBL ();
+					break;
+				}
+			} else {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaQuadTL ();
+					break;
+				default:
+					ArenaQuadBL ();
+					break;
+				}
+			}
 		}
 		// cell to the right is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+			// cell to the top-left is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				// cell to the bottom-left is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					case 2:
+						ArenaDoubleUp ();
+						break;
+					default:
+						ArenaDoubleRight ();
+						break;
+					}
+				} else {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaDoubleDown ();
+						break;
+					default:
+						ArenaQuadTR ();
+						break;
+					}
+				}
+			}
+			// cell to the bottom-left is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaDoubleUp ();
+					break;
+				default:
+					ArenaQuadBR ();
+					break;
+				}
+			} else {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaQuadBR ();
+					break;
+				default:
+					ArenaQuadTR ();
+					break;
+				}
+			}
 		}
 		// cell to the top-left is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+			// cell to the top-right is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				// cell to the bottom-right is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					// cell to the bottom-left is a wall
+					if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+						switch (Random.Range (0, 3)) {
+						case 1:
+							ArenaDoubleLeft ();
+							break;
+						case 2:
+							ArenaDoubleUp ();
+							break;
+						case 3:
+							ArenaDoubleRight ();
+							break;
+						default:
+							ArenaDoubleDown ();
+							break;
+						}
+					} else {
+						switch (Random.Range (0, 2)) {
+						case 1:
+							ArenaDoubleDown ();
+							break;
+						case 2:
+							ArenaDoubleLeft ();
+							break;
+						default:
+							ArenaQuadTR ();
+							break;
+						}
+					}
+				}
+				// cell to the bottom-left is a wall
+				else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleRight ();
+						break;
+					case 2:
+						ArenaDoubleDown ();
+						break;
+					default:
+						ArenaQuadTL ();
+						break;
+					}
+				} else {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaQuadTR ();
+						break;
+					case 2:
+						ArenaQuadTL ();
+						break;
+					default:
+						ArenaDoubleRight ();
+						break;
+					}
+				}
+			}
+			// cell to the bottom-right is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				// cell to the bottom-left is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleRight ();
+						break;
+					case 2:
+						ArenaDoubleUp ();
+						break;
+					default:
+						ArenaQuadBL ();
+						break;
+					}
+				} else {
+					switch (Random.Range (0, 1)) {
+					case 1:
+						ArenaQuadBL ();
+						break;
+					default:
+						ArenaQuadTR ();
+						break;
+					}
+				}
+			}
+			// cell to the bottom-left is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				switch (Random.Range (0, 2)) {
+				case 1:
+					ArenaDoubleRight ();
+					break;
+				case 2:
+					ArenaQuadBL ();
+					break;
+				default:
+					ArenaQuadTL ();
+					break;
+				}
+			}
+			// no other adjacent cells is a wall
+			else {
+				switch(Random.Range(0,2)){
+				case 1:
+					ArenaQuadBL ();
+					break;
+				case 2:
+					ArenaQuadTL ();
+					break;
+				default:
+					ArenaQuadTR ();
+					break;
+				}
+			}
 		}
 		// cell to the top-right is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+			// cell to the bottom-right is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				// cell to the bottom-left is a wall
+				if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleLeft ();
+						break;
+					case 2:
+						ArenaDoubleUp ();
+						break;
+					default:
+						ArenaQuadBR ();
+						break;
+					}
+				} else {
+					switch (Random.Range (0, 2)) {
+					case 1:
+						ArenaDoubleLeft ();
+						break;
+					case 2:
+						ArenaQuadBR ();
+						break;
+					default:
+						ArenaQuadTR ();
+						break;
+					}
+				}
+			}
+			// cell to the bottom-left is a wall
+			else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+				switch (Random.Range (0, 1)) {
+				case 1:
+					ArenaQuadBR ();
+					break;
+				default:
+					ArenaQuadTL ();
+					break;
+				}
+			}
+			// no other adjacent cells is a wall
+			else {
+				switch (Random.Range (0, 2)) {
+				case 1:
+					ArenaQuadBR ();
+					break;
+				case 2:
+					ArenaQuadTR ();
+					break;
+				default:
+					ArenaQuadTL ();
+					break;
+				}
+			}
 		}
 		// cell to the bottom-left is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [0] == 'w') {
+			// cell to the bottom-right is a wall
+			if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+				switch (Random.Range (0, 2)) {
+				case 1:
+					ArenaDoubleUp ();
+					break;
+				case 2:
+					ArenaQuadBR ();
+					break;
+				default:
+					ArenaQuadBL ();
+					break;
+				}
+			}
+			// no other adjacent cells is a wall
+			else {
+				switch (Random.Range (0, 2)) {
+				case 1:
+					ArenaQuadBR ();
+					break;
+				case 2:
+					ArenaQuadBL ();
+					break;
+				default:
+					ArenaQuadTL ();
+					break;
+				}
+			}
 		}
 		// cell to the bottom-right is a wall
 		else if (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [0] == 'w') {
+			switch (Random.Range (0, 2)) {
+			case 1:
+				ArenaQuadBR ();
+				break;
+			case 2:
+				ArenaQuadBL ();
+				break;
+			default:
+				ArenaQuadTL ();
+				break;
+			}
 		}
 		// no adjacent cells are walls
 		else {
+			switch (Random.Range (0, 3)) {
+			case 1:
+				ArenaQuadTL ();
+				break;
+			case 2:
+				ArenaQuadTR ();
+				break;
+			case 3:
+				ArenaQuadBL ();
+				break;
+			default:
+				ArenaQuadBR ();
+				break;
+			}
 		}
 	}
 
+	// set up double left-right arena with player at left
+	void ArenaDoubleLeft(){
+		PlayerPrefs.SetString ("ArenaType", "double");
+		PlayerPrefs.SetInt ("TL", -2);
+		PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
+		PlayerPrefs.SetInt ("BL", -1);
+		PlayerPrefs.SetInt ("BR", -1);
+	}
+
+	// set up double left-right arena with player at right
+	void ArenaDoubleRight(){
+		PlayerPrefs.SetString ("ArenaType", "double");
+		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
+		PlayerPrefs.SetInt ("TR", -2);
+		PlayerPrefs.SetInt ("BL", -1);
+		PlayerPrefs.SetInt ("BR", -1);
+	}
+
+	// set up double up-down arena with player at up
+	void ArenaDoubleUp(){
+		PlayerPrefs.SetString ("ArenaType", "double");
+		PlayerPrefs.SetInt ("TL", -2);
+		PlayerPrefs.SetInt ("TR", -1);
+		PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [3]));
+		PlayerPrefs.SetInt ("BR", -1);
+	}
+
+	// set up double up-down arena with player at down
+	void ArenaDoubleDown(){
+		PlayerPrefs.SetString ("ArenaType", "double");
+		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+		PlayerPrefs.SetInt ("TR", -1);
+		PlayerPrefs.SetInt ("BL", -1);
+		PlayerPrefs.SetInt ("BR", -2);
+	}
+
+	// set up quad arena with player at top-left
+	void ArenaQuadTL(){
+		PlayerPrefs.SetString ("ArenaType", "quad");
+		PlayerPrefs.SetInt ("TL", -1);
+		PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
+		PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+		PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col + 1] [3]));
+	}
+
+	// set up quad arena with player at top-right
+	void ArenaQuadTR(){
+		PlayerPrefs.SetString ("ArenaType", "quad");
+		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
+		PlayerPrefs.SetInt ("TR", -1);
+		PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col - 1] [3]));
+		PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row + 1] [PlayerMovement.Cur_Col] [3]));
+	}
+
+	// set up quad arena with player at bottom-left
+	void ArenaQuadBL(){
+		PlayerPrefs.SetString ("ArenaType", "quad");
+		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [3]));
+		PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col + 1] [3]));
+		PlayerPrefs.SetInt ("BL", -1);
+		PlayerPrefs.SetInt ("BR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col + 1] [3]));
+	}
+
+	// set up quad arena with player at bottom-right
+	void ArenaQuadBR(){
+		PlayerPrefs.SetString ("ArenaType", "quad");
+		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col - 1] [3]));
+		PlayerPrefs.SetInt ("TR", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [3]));
+		PlayerPrefs.SetInt ("BL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row] [PlayerMovement.Cur_Col - 1] [3]));
+		PlayerPrefs.SetInt ("BR", -1);
+	}
 
 	// Determines when the player enters a random encounter
 	public IEnumerator Randomizer () {
 		// encounter
 		if (Random.Range (0.0f, 100.0f) > Encounter_Rate) {
+			WhichEdge ();
 			SceneManager.LoadScene ("Encounter");
 			yield return null;
 		}
