@@ -8,6 +8,7 @@ TagManager:
   - Platform
   - Wall
   - Ramp
+  - Arena Cell
   layers:
   - Default
   - TransparentFX
