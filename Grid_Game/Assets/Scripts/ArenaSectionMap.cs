@@ -17,7 +17,7 @@ public class ArenaSectionMap : MonoBehaviour {
 		// physical object in the game world
 		public GameObject arena_object;
 
-		public Cell(int num){
+		public Cell(int num, GameObject obj){
 			node_0 = null;
 			node_1 = null;
 			node_2 = null;
@@ -25,6 +25,7 @@ public class ArenaSectionMap : MonoBehaviour {
 			node_4 = null;
 			node_5 = null;
 			sec_key = num;
+			arena_object = obj;
 		}
 
 		public void LinkNode0 (Cell adj = null){
