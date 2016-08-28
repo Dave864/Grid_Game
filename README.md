@@ -29,6 +29,7 @@ This scene loads the player avatar and handles player movement. This scene handl
     3. Calculate the destination coordinates based on input.
     4. Get the start cell type. Alter the destination coordinates based on the destination's cell type.
     5. Move the player to the updated destination coordinates
+
 * World Creation
   * The starting coordinates of the player are initialized. The starting coordinates are section, row, column.
   * The visible world is made up of 9 sections: Curent, Top_Left, Top, Top_Right, Left, Right, Bottom_Left, Bottom, Bottom_Right.
