@@ -13,8 +13,10 @@ Overworld
  * rotate counter-clockwise : q, right click
 Encounter Controls
  * return to overworld : Escape key
+
 ### How it Works
 Each major piece of the game (the overworld, encounters, etc.) are handled in seperate scenes.
+
 ##### OverWorld
 This scene loads the player avatar and handles player movement. This scene handles world creation.
 * Player Movement
@@ -58,7 +60,6 @@ This scene loads the player avatar and handles player movement. This scene handl
 ##### Encounter
 This scene loads the arena where the encounter will take place.
 * Arena Creation
- 1. 
 
 ### Bug Report
 Sometimes the layout of the terrain will show the empty areas of the world space when rotating the player. When loading up the arena for encounters, the game will only load adjacent sections under certain conditions. When in the Encounter scene, the player can only exit the scene.
