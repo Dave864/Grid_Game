@@ -2,16 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapMaker : MonoBehaviour {
+public class MapMaker : MonoBehaviour
+{
 
-    // fields
     // The dimensions of the map
     public int mapRowCnt;
     public int mapColCnt;
     public int secWidth;
 
-    public int Sections { get { return mapRowCnt * mapColCnt; } }
-	public int CellCount { get { return secWidth * secWidth; } }
+    public int Sections
+    {
+        get
+        {
+            return mapRowCnt * mapColCnt;
+        }
+    }
+
+	public int CellCount
+    {
+        get
+        {
+            return secWidth * secWidth;
+        }
+    }
 
     // Use this for initialization
 	void Start ()

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapMakerEditor : MonoBehaviour {
+public class MapMakerEditor : MonoBehaviour
+{
 
 	// Use this for initialization
 	void Start () {
