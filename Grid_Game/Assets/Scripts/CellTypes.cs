@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class CellTypes : MonoBehaviour
 {
 
-    List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
+    private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
     
     // Containers for each type of cell
     Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
@@ -15,7 +16,7 @@ public class CellTypes : MonoBehaviour
     Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();
 
 	// Use this for initialization
-	void Start () {
+	void LoadTypes () {
         // Load up default cells
         floors.Add("D", Instantiate(Resources.Load("Prefabs/Panel_0")) as GameObject);
         ramps.Add("D", Instantiate(Resources.Load("Prefabs/ramp")) as GameObject);
@@ -32,7 +33,7 @@ public class CellTypes : MonoBehaviour
     // Add new floor
     void NewFloor(string newKey, GameObject newFloor)
     {
-
+        floors[newKey] = newFloor;
     }
 
     // Remove floor cell
@@ -47,7 +48,7 @@ public class CellTypes : MonoBehaviour
     // Add new wall
     void NewWall(string newKey, GameObject newWall)
     {
-
+        walls[newKey] = newWall;
     }
 
     // Remove wall cell
@@ -62,7 +63,7 @@ public class CellTypes : MonoBehaviour
     // Add new platform
     void NewPlat(string newKey, GameObject newPlat)
     {
-
+        platforms[newKey] = newPlat;
     }
 
     // Remove platform cell
