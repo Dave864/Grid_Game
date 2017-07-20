@@ -7,18 +7,26 @@ public class CellTypes : MonoBehaviour
 {
 
     private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
-    
+
     // Containers for each type of cell
-    Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
+    /*Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> walls = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> platforms = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> ramps = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();
+    */
+    // Debugging containers to test editor
+    public string[] floors;
+    public string[] walls;
+    public string[] platforms;
+    public string[] ramps;
+    public string[] special;
 
 	// Use this for initialization
-	void LoadTypes () {
+	void LoadTypes ()
+    {
         // Load up default cells
-        floors.Add("D", Instantiate(Resources.Load("Prefabs/Panel_0")) as GameObject);
+        /*floors.Add("D", Instantiate(Resources.Load("Prefabs/Panel_0")) as GameObject);
         ramps.Add("D", Instantiate(Resources.Load("Prefabs/ramp")) as GameObject);
         walls.Add("DC", Instantiate(Resources.Load("Prefabs/wall_c")) as GameObject);
         walls.Add("DI", Instantiate(Resources.Load("Prefabs/wall_i")) as GameObject);
@@ -26,10 +34,12 @@ public class CellTypes : MonoBehaviour
         platforms.Add("DC", Instantiate(Resources.Load("Prefabs/platform_c")) as GameObject);
         platforms.Add("DI", Instantiate(Resources.Load("Prefabs/platform_i")) as GameObject);
         platforms.Add("DW", Instantiate(Resources.Load("Prefabs/platform_w")) as GameObject);
+        */
 
         // Load up rest of cells
     }
 
+    /*
     // Add new floor
     void NewFloor(string newKey, GameObject newFloor)
     {
@@ -74,7 +84,7 @@ public class CellTypes : MonoBehaviour
         { platforms.Remove(key); }
         else { Debug.Log("Can't remove a default cell"); }
     }
-
+    */
     // Add special cell
     // Remove special cell
 }
