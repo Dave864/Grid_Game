@@ -19,6 +19,7 @@ public class CellTypesEditor : Editor
 
     private List<string> curStrList;
     private int listSz;
+    //private char keyBase;
 
     public CELLTYPES curList = 0;
 
@@ -48,22 +49,40 @@ public class CellTypesEditor : Editor
         }
     }
 
-    // Add a new cell to the current list
-    void addCell()
-    {
-        Debug.Log("Add another cell");
-        curStrList.Add("NEW CELL");
-        setList();
-    }
-
     // Displays each element in the current list
     void dispList()
     {
         for (int ind = 0; ind < curStrList.Count; ind++)
         {
-            curStrList[ind] = EditorGUILayout.DelayedTextField((ind + 1).ToString(), curStrList[ind]);
+            // EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginVertical(GUILayout.Height(50));
+            curStrList[ind] = EditorGUILayout.DelayedTextField(curStrList[ind]);
+            // Button that removes the cell from the current list
+            if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
+            {
+                removeCell(ind);
+            }
+            EditorGUILayout.EndVertical();
+            // EditorGUILayout.EndHorizontal();
         }
         setList();
+    }
+
+    // Add a new cell to the current list
+    void addCell()
+    {
+        Debug.Log("Added another cell");
+        //string newKey = keyBase + curStrList.Count.ToString();
+        //curStrList.Add(newKey, "NEW CELL");
+        curStrList.Add("NEW CELL");
+        setList();
+    }
+
+    // Remove a cell from the current list
+    void removeCell(int ind)
+    {
+        Debug.Log("A cell has been removed");
+        curStrList.Remove(curStrList[ind]);
     }
 
     // Changes the current list being displayed
@@ -74,22 +93,27 @@ public class CellTypesEditor : Editor
             case CELLTYPES.FLOOR:
                 Debug.Log("Current List: Floors");
                 curStrList = cellTypesRef.floors;
+                // keyBase = 'F';
                 break;
             case CELLTYPES.WALL:
                 Debug.Log("Current List: Walls");
                 curStrList = cellTypesRef.walls;
+                // keyBase = 'W';
                 break;
             case CELLTYPES.PLATFORM:
                 Debug.Log("Current List: Platform");
                 curStrList = cellTypesRef.platforms;
+                // keyBase = 'P';
                 break;
             case CELLTYPES.RAMP:
                 Debug.Log("Current List: Ramp");
                 curStrList = cellTypesRef.ramps;
+                // keyBase = 'R';
                 break;
             case CELLTYPES.SPECIAL:
                 Debug.Log("Current List: Special");
                 curStrList = cellTypesRef.special;
+                // keyBase = 'S';
                 break;
             default:
                 Debug.LogError("Unkown cell list type!");

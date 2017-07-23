@@ -9,18 +9,18 @@ public class CellTypes : MonoBehaviour
     private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
 
     // Containers for each type of cell
-    /*Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
-    Dictionary<string, GameObject> walls = new Dictionary<string, GameObject>();
-    Dictionary<string, GameObject> platforms = new Dictionary<string, GameObject>();
-    Dictionary<string, GameObject> ramps = new Dictionary<string, GameObject>();
-    Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();
-    */
+    /*public Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> walls = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> platforms = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> ramps = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();*/
+
     // Debugging containers to test editor
-    public List<string> floors;
-    public List<string> walls;
-    public List<string> platforms;
-    public List<string> ramps;
-    public List<string> special;
+    public List<string> floors;// = new Dictionary<string, string>();
+    public List<string> walls;// = new Dictionary<string, string>();
+    public List<string> platforms;// = new Dictionary<string, string>();
+    public List<string> ramps;// = new Dictionary<string, string>();
+    public List<string> special;// = new Dictionary<string, string>();
 
 	// Use this for initialization
 	void LoadTypes ()
