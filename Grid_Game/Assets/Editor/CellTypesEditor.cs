@@ -15,52 +15,113 @@ public enum CELLTYPES
 [CustomEditor(typeof(CellTypes))]
 public class CellTypesEditor : Editor
 {
+    private CellTypes cellTypesRef;
+
+    private List<string> curStrList;
+    private int listSz;
+
     public CELLTYPES curList = 0;
 
     private void OnEnable()
     {
-        
+        cellTypesRef = (CellTypes)target;
+        getList();
     }
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField("Size of Current List: ", listSz.ToString());
+        
         // Popup that lets you choose between the different cell lists
         curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
 
         // Update the currently displayed list
-        string[] curListDisplay = getList();
+        getList();
+
+        // Display the elements of the current list
+        dispList();
 
         // Button that lets you add another cell type to the current list
         if (GUILayout.Button("Add new cell"))
         {
-
+            addCell();
         }
     }
 
-    string[] getList()
+    // Add a new cell to the current list
+    void addCell()
     {
-        CellTypes cellTypesRef = (CellTypes)target;
+        Debug.Log("Add another cell");
+        curStrList.Add("NEW CELL");
+        setList();
+    }
 
+    // Displays each element in the current list
+    void dispList()
+    {
+        for (int ind = 0; ind < curStrList.Count; ind++)
+        {
+            curStrList[ind] = EditorGUILayout.DelayedTextField((ind + 1).ToString(), curStrList[ind]);
+        }
+        setList();
+    }
+
+    // Changes the current list being displayed
+    void getList()
+    {
         switch (curList)
         {
             case CELLTYPES.FLOOR:
                 Debug.Log("Current List: Floors");
-                return cellTypesRef.floors;
+                curStrList = cellTypesRef.floors;
+                break;
             case CELLTYPES.WALL:
                 Debug.Log("Current List: Walls");
-                return cellTypesRef.walls;
+                curStrList = cellTypesRef.walls;
+                break;
             case CELLTYPES.PLATFORM:
                 Debug.Log("Current List: Platform");
-                return cellTypesRef.platforms;
+                curStrList = cellTypesRef.platforms;
+                break;
             case CELLTYPES.RAMP:
                 Debug.Log("Current List: Ramp");
-                return cellTypesRef.ramps;
+                curStrList = cellTypesRef.ramps;
+                break;
             case CELLTYPES.SPECIAL:
                 Debug.Log("Current List: Special");
-                return cellTypesRef.special;
+                curStrList = cellTypesRef.special;
+                break;
             default:
-                Debug.LogError("Unkown cell list type");
-                return null;
+                Debug.LogError("Unkown cell list type!");
+                curStrList = null;
+                break;
+        }
+        listSz = curStrList.Count;
+    }
+
+    // Update the current list
+    void setList()
+    {
+        switch (curList)
+        {
+            case CELLTYPES.FLOOR:
+                cellTypesRef.floors = new List<string>(curStrList);
+                break;
+            case CELLTYPES.WALL:
+                cellTypesRef.walls = new List<string>(curStrList);
+                break;
+            case CELLTYPES.PLATFORM:
+                cellTypesRef.platforms = new List<string>(curStrList);
+                break;
+            case CELLTYPES.RAMP:
+                cellTypesRef.ramps = new List<string>(curStrList);
+                break;
+            case CELLTYPES.SPECIAL:
+                cellTypesRef.special = new List<string>(curStrList);
+                break;
+            default:
+                Debug.LogError("Unable to add cell! Unkown cell list type!");
+                break;
         }
     }
 }

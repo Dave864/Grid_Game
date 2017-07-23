@@ -371,7 +371,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -449,6 +449,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9addb4fd41eda54abad2ebb89df541e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floors:
+  - floor_1
+  - floor_2
+  - floor_3
+  walls:
+  - wall_1
+  - wall_2
+  platforms:
+  - platform_1
+  ramps:
+  - ramp_1
+  - ramp_2
+  - ramp_3
+  - ramp_4
+  special: []
 --- !u!1 &963198614
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,11 +16,11 @@ public class CellTypes : MonoBehaviour
     Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();
     */
     // Debugging containers to test editor
-    public string[] floors;
-    public string[] walls;
-    public string[] platforms;
-    public string[] ramps;
-    public string[] special;
+    public List<string> floors;
+    public List<string> walls;
+    public List<string> platforms;
+    public List<string> ramps;
+    public List<string> special;
 
 	// Use this for initialization
 	void LoadTypes ()
