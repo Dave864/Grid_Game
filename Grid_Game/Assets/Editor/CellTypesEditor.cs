@@ -31,7 +31,7 @@ public class CellTypesEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        EditorGUILayout.LabelField("Size of Current List: ", listSz.ToString());
+        // EditorGUILayout.LabelField("Size of Current List: ", listSz.ToString());
         
         // Popup that lets you choose between the different cell lists
         curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
