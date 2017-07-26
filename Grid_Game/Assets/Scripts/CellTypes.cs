@@ -13,42 +13,47 @@ public struct CellData
     // bit 0: down movement
 
     // Movement options for the 'ground' layer
-    int mvLyr1;
+    private int mvLyr1;
     // Movemnet options for the next layer up
-    int mvLyr2;
-    // Path to the 3D object
-    private string path;
+    private int mvLyr2;
 
-    CellData(string p, int type)
+    // Arena map for the cell
+    // TODO: need to plan out the data structure
+
+    // The path for the cell model
+    private string path;
+    // The model for the 3D object
+    private GameObject model;
+
+    public CellData(int type)
     {
-        mvLyr1 = 0;
-        mvLyr2 = 0;
-        path = p;
+        this.model = null;// new GameObject();
+        this.path = "";
         switch (type)
         {
             // Default floor
             case 0:
-                mvLyr1 = 15; // 1111
-                mvLyr2 = 0; // 0000
+                this.mvLyr1 = 15; // 1111
+                this.mvLyr2 = 0; // 0000
                 break;
             // Default wall
             case 1:
-                mvLyr1 = 0; // 0000
-                mvLyr2 = 0; // 0000
+                this.mvLyr1 = 0; // 0000
+                this.mvLyr2 = 0; // 0000
                 break;
             // Default platform
             case 2:
-                mvLyr1 = 0; // 0000
-                mvLyr2 = 15; // 1111
+                this.mvLyr1 = 0; // 0000
+                this.mvLyr2 = 15; // 1111
                 break;
             // Default ramp
             case 3:
-                mvLyr1 = 15; // 1111
-                mvLyr2 = 15; // 1111
+                this.mvLyr1 = 15; // 1111
+                this.mvLyr2 = 15; // 1111
                 break;
             default:
-                mvLyr1 = 0; // 0000
-                mvLyr2 = 0; // 0000
+                this.mvLyr1 = 0; // 0000
+                this.mvLyr2 = 0; // 0000
                 break;
         }
     }
@@ -89,7 +94,7 @@ public struct CellData
     // Set bit 3 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    void setTop(bool mv, bool lyr)
+    public void setTop(bool mv, bool lyr)
     {
         int mvMask = 8; // 1000
         int stpMask = 7; // 0111
@@ -99,7 +104,7 @@ public struct CellData
     // Set bit 0 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    void setBot(bool mv, bool lyr)
+    public void setBot(bool mv, bool lyr)
     {
         int mvMask = 1; // 0001
         int stpMask = 14; // 1110
@@ -109,7 +114,7 @@ public struct CellData
     // Set bit 2 of mvLyr lyr to value of mv 
     // 0 is layer 1
     // 1 is layer 2
-    void setLeft(bool mv, bool lyr)
+    public void setLeft(bool mv, bool lyr)
     {
         int mvMask = 4; // 0100
         int stpMask = 11; // 1011
@@ -119,7 +124,7 @@ public struct CellData
     // Set bit 1 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    void setRight(bool mv, bool lyr)
+    public void setRight(bool mv, bool lyr)
     {
         int mvMask = 2; // 0010
         int stpMask = 13; // 1101
@@ -129,7 +134,7 @@ public struct CellData
     // Return if you can move up from the cell
     // 0 is layer 1
     // 1 is layer 2
-    bool canMvTop(bool lyr)
+    public bool canMvTop(bool lyr)
     {
         int mask = 8; // 1000
         return mvCheck(mask, lyr);
@@ -138,7 +143,7 @@ public struct CellData
     // Return if you can move down from the cell
     // 0 is layer 1
     // 1 is layer 2
-    bool canMvBot(bool lyr)
+    public bool canMvBot(bool lyr)
     {
         int mask = 1; // 0001
         return mvCheck(mask, lyr);
@@ -147,7 +152,7 @@ public struct CellData
     // Return if you can move left from the cell
     // 0 is layer 1
     // 1 is layer 2
-    bool canMvLeft(bool lyr)
+    public bool canMvLeft(bool lyr)
     {
         int mask = 4; // 0100
         return mvCheck(mask, lyr);
@@ -156,13 +161,24 @@ public struct CellData
     // Return if you can move right from the cell
     // 0 is layer 1
     // 1 is layer 2
-    bool canMvRight(bool lyr)
+    public bool canMvRight(bool lyr)
     {
         int mask = 4; // 0010
         return mvCheck(mask, lyr);
     }
 
-    string getPath()
+    // Set the path to the cell 3D model
+    public void setPath(string m)
+    {
+        path = m;
+    }
+
+    public GameObject getModel()
+    {
+        return model;
+    }
+
+    public string getPath()
     {
         return path;
     }
@@ -182,11 +198,19 @@ public class CellTypes : MonoBehaviour
     public Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();*/
 
     // Debugging containers to test editor
-    public List<string> floors;// = new Dictionary<string, string>();
+    /*public List<string> floors;// = new Dictionary<string, string>();
     public List<string> walls;// = new Dictionary<string, string>();
     public List<string> platforms;// = new Dictionary<string, string>();
     public List<string> ramps;// = new Dictionary<string, string>();
-    public List<string> special;// = new Dictionary<string, string>();
+    public List<string> special;// = new Dictionary<string, string>();*/
+
+    // Containers to test CellData structure
+    public List<CellData> floors = new List<CellData>();
+    public List<CellData> walls = new List<CellData>();
+    public List<CellData> platforms = new List<CellData>();
+    public List<CellData> ramps = new List<CellData>();
+    public List<CellData> special = new List<CellData>();
+
 
 	// Use this for initialization
 	void LoadTypes ()

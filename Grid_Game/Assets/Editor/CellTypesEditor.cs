@@ -17,7 +17,7 @@ public class CellTypesEditor : Editor
 {
     private CellTypes cellTypesRef;
 
-    private List<string> curStrList;
+    private List<CellData> curStrList;
     private int listSz;
     //private char keyBase;
 
@@ -30,9 +30,7 @@ public class CellTypesEditor : Editor
     }
 
     public override void OnInspectorGUI()
-    {
-        // EditorGUILayout.LabelField("Size of Current List: ", listSz.ToString());
-        
+    {        
         // Popup that lets you choose between the different cell lists
         curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
 
@@ -52,11 +50,17 @@ public class CellTypesEditor : Editor
     // Displays each element in the current list
     void dispList()
     {
+        GameObject mObj;
         for (int ind = 0; ind < curStrList.Count; ind++)
         {
             // EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
-            curStrList[ind] = EditorGUILayout.DelayedTextField(curStrList[ind]);
+            //curStrList[ind] = EditorGUILayout.DelayedTextField(curStrList[ind]);
+            // Drag and drop 3D model of cell into slot
+            // Get the path to the 3D model and save it
+            mObj = (GameObject)EditorGUILayout.ObjectField("Model Object", curStrList[ind].getModel(), typeof(GameObject), false);
+            curStrList[ind].setPath(AssetDatabase.GetAssetPath(mObj));
+            EditorGUILayout.LabelField(curStrList[ind].getPath());
             // Button that removes the cell from the current list
             if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
             {
@@ -74,7 +78,8 @@ public class CellTypesEditor : Editor
         Debug.Log("Added another cell");
         //string newKey = keyBase + curStrList.Count.ToString();
         //curStrList.Add(newKey, "NEW CELL");
-        curStrList.Add("NEW CELL");
+        //curStrList.Add("NEW CELL");
+        curStrList.Add(new CellData((int)curList));
         setList();
     }
 
@@ -129,19 +134,19 @@ public class CellTypesEditor : Editor
         switch (curList)
         {
             case CELLTYPES.FLOOR:
-                cellTypesRef.floors = new List<string>(curStrList);
+                cellTypesRef.floors = new List<CellData>(curStrList);
                 break;
             case CELLTYPES.WALL:
-                cellTypesRef.walls = new List<string>(curStrList);
+                cellTypesRef.walls = new List<CellData>(curStrList);
                 break;
             case CELLTYPES.PLATFORM:
-                cellTypesRef.platforms = new List<string>(curStrList);
+                cellTypesRef.platforms = new List<CellData>(curStrList);
                 break;
             case CELLTYPES.RAMP:
-                cellTypesRef.ramps = new List<string>(curStrList);
+                cellTypesRef.ramps = new List<CellData>(curStrList);
                 break;
             case CELLTYPES.SPECIAL:
-                cellTypesRef.special = new List<string>(curStrList);
+                cellTypesRef.special = new List<CellData>(curStrList);
                 break;
             default:
                 Debug.LogError("Unable to add cell! Unkown cell list type!");
