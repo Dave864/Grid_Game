@@ -56,14 +56,16 @@ public class CellTypesEditor : Editor
         {
             curInfo = curStrList[ind];
             EditorGUILayout.BeginHorizontal();
-            // Intended to be an image of the model
-            GUILayout.Label(AssetDatabase.GetCachedIcon(curInfo.getPath()), GUILayout.MinWidth(30));
+            // Displays a preview of the model
+            GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.getModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
             // Field to insert the model to use
-            curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model", curInfo.getModel(), typeof(GameObject), false, GUILayout.MinWidth(150)));
+            EditorGUIUtility.labelWidth = 50.0f;
+            EditorGUIUtility.fieldWidth = 150.0f;
+            curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model:", curInfo.getModel(), typeof(GameObject), false));
             // Get the path to the 3D model and save it
             curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
-            EditorGUILayout.LabelField("Model Path", curInfo.getPath(), GUILayout.MinWidth(150));
+            EditorGUILayout.LabelField("Path:", curInfo.getPath());
             curStrList[ind] = new CellData(curInfo);
             
             // Button that removes the cell from the current list
