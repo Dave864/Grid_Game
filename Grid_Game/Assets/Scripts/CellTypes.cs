@@ -25,10 +25,11 @@ public struct CellData
     // The model for the 3D object
     private GameObject model;
 
+    // Constructor
     public CellData(int type)
     {
         this.model = null;// new GameObject();
-        this.path = "";
+        this.path = "No Model Assigned";
         switch (type)
         {
             // Default floor
@@ -56,6 +57,15 @@ public struct CellData
                 this.mvLyr2 = 0; // 0000
                 break;
         }
+    }
+
+    // Copy constructor
+    public CellData(CellData toCopy)
+    {
+        mvLyr1 = toCopy.mvLyr1;
+        mvLyr2 = toCopy.mvLyr2;
+        path = toCopy.path;
+        model = toCopy.model;
     }
 
     // Helper function used to set movement options
@@ -167,10 +177,16 @@ public struct CellData
         return mvCheck(mask, lyr);
     }
 
-    // Set the path to the cell 3D model
+    // Set the path to some string
     public void setPath(string m)
     {
         path = m;
+    }
+
+    // Set the 3D model of the cell
+    public void setModel(GameObject m)
+    {
+        model = m;
     }
 
     public GameObject getModel()

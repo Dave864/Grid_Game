@@ -50,24 +50,29 @@ public class CellTypesEditor : Editor
     // Displays each element in the current list
     void dispList()
     {
-        GameObject mObj;
+        CellData curInfo;
+        // GameObject mObj;
         for (int ind = 0; ind < curStrList.Count; ind++)
         {
-            // EditorGUILayout.BeginHorizontal();
+            curInfo = curStrList[ind];
+            EditorGUILayout.BeginHorizontal();
+            // Intended to be an image of the model
+            GUILayout.Label(AssetDatabase.GetCachedIcon(curInfo.getPath()), GUILayout.MinWidth(30));
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
-            //curStrList[ind] = EditorGUILayout.DelayedTextField(curStrList[ind]);
-            // Drag and drop 3D model of cell into slot
+            // Field to insert the model to use
+            curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model", curInfo.getModel(), typeof(GameObject), false, GUILayout.MinWidth(150)));
             // Get the path to the 3D model and save it
-            mObj = (GameObject)EditorGUILayout.ObjectField("Model Object", curStrList[ind].getModel(), typeof(GameObject), false);
-            curStrList[ind].setPath(AssetDatabase.GetAssetPath(mObj));
-            EditorGUILayout.LabelField(curStrList[ind].getPath());
+            curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
+            EditorGUILayout.LabelField("Model Path", curInfo.getPath(), GUILayout.MinWidth(150));
+            curStrList[ind] = new CellData(curInfo);
+            
             // Button that removes the cell from the current list
             if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
             {
                 removeCell(ind);
             }
             EditorGUILayout.EndVertical();
-            // EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
         }
         setList();
     }
