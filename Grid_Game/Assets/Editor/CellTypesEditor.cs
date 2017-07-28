@@ -57,7 +57,14 @@ public class CellTypesEditor : Editor
             curInfo = curStrList[ind];
             EditorGUILayout.BeginHorizontal();
             // Displays a preview of the model
-            GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.getModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+            if(curInfo.getModel() != null)
+            {
+                GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.getModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+            }
+            else
+            {
+                GUILayout.Box("No Model", GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+            }
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
             // Field to insert the model to use
             EditorGUIUtility.labelWidth = 50.0f;
@@ -66,13 +73,21 @@ public class CellTypesEditor : Editor
             // Get the path to the 3D model and save it
             curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
             EditorGUILayout.LabelField("Path:", curInfo.getPath());
+            EditorGUILayout.BeginHorizontal();
+            // Button to clear the info of the cell
+            GUI.enabled = (curInfo.getModel() != null) ? true : false;
+            if(GUILayout.Button("Clear Cell", GUILayout.Width(100)))
+            {
+                curInfo = new CellData((int)curList);
+            }
             curStrList[ind] = new CellData(curInfo);
-            
             // Button that removes the cell from the current list
+            GUI.enabled = true;
             if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
             {
                 removeCell(ind);
             }
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
         }
@@ -83,9 +98,6 @@ public class CellTypesEditor : Editor
     void addCell()
     {
         Debug.Log("Added another cell");
-        //string newKey = keyBase + curStrList.Count.ToString();
-        //curStrList.Add(newKey, "NEW CELL");
-        //curStrList.Add("NEW CELL");
         curStrList.Add(new CellData((int)curList));
         setList();
     }

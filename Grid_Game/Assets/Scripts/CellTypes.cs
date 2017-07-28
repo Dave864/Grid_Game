@@ -29,7 +29,7 @@ public struct CellData
     public CellData(int type)
     {
         this.model = null;// new GameObject();
-        this.path = "No Model Assigned";
+        this.path = "";
         switch (type)
         {
             // Default floor
