@@ -15,6 +15,7 @@ public enum CELLTYPES
 [CustomEditor(typeof(CellTypes))]
 public class CellTypesEditor : Editor
 {
+    private Texture2D advOptBut;
     private CellTypes cellTypesRef;
 
     private List<CellData> curStrList;
@@ -25,6 +26,7 @@ public class CellTypesEditor : Editor
 
     private void OnEnable()
     {
+        this.advOptBut = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/Adv_Cell_Opt_Icon.png", typeof(Texture2D));
         cellTypesRef = (CellTypes)target;
         getList();
     }
@@ -47,6 +49,7 @@ public class CellTypesEditor : Editor
         }
     }
 
+    // h_s1 v_s1 v_e1 h_e1 h_s2 h_e2
     // Displays each element in the current list
     void dispList()
     {
@@ -55,7 +58,7 @@ public class CellTypesEditor : Editor
         for (int ind = 0; ind < curStrList.Count; ind++)
         {
             curInfo = curStrList[ind];
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal("Box");
             // Displays a preview of the model
             if(curInfo.getModel() != null)
             {
@@ -66,13 +69,24 @@ public class CellTypesEditor : Editor
                 GUILayout.Box("No Model", GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
             }
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
+            EditorGUILayout.BeginHorizontal();
+            // Button for advanced options
+            GUI.enabled = (curInfo.getModel() != null) ? true : false;
+            if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30)))
+            {
+
+            }
+            EditorGUILayout.BeginVertical();
             // Field to insert the model to use
             EditorGUIUtility.labelWidth = 50.0f;
             EditorGUIUtility.fieldWidth = 150.0f;
+            GUI.enabled = true;
             curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model:", curInfo.getModel(), typeof(GameObject), false));
-            // Get the path to the 3D model and save it
+            // Get the path to the 3D model; record and display path
             curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
             EditorGUILayout.LabelField("Path:", curInfo.getPath());
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
             // Button to clear the info of the cell
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
@@ -87,7 +101,7 @@ public class CellTypesEditor : Editor
             {
                 removeCell(ind);
             }
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
         }
