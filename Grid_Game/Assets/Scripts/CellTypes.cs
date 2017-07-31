@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct CellData
+[System.Serializable]
+public class CellData
 {
     // Movement options are coded in 4 bits
     // 1, you can move in that direction
@@ -201,96 +202,36 @@ public struct CellData
 }
 
 [ExecuteInEditMode]
+[System.Serializable]
 public class CellTypes : MonoBehaviour
 {
-
-    private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
+    public static CellTypes cur;
+    //private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
 
     // Containers for each type of cell
-    /*public Dictionary<string, GameObject> floors = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> walls = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> platforms = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> ramps = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> special = new Dictionary<string, GameObject>();*/
+    public List<CellData> floors;// = new List<CellData>();
+    public List<CellData> walls;// = new List<CellData>();
+    public List<CellData> platforms;// = new List<CellData>();
+    public List<CellData> ramps;// = new List<CellData>();
+    public List<CellData> special;// = new List<CellData>();
 
-    // Debugging containers to test editor
-    /*public List<string> floors;// = new Dictionary<string, string>();
-    public List<string> walls;// = new Dictionary<string, string>();
-    public List<string> platforms;// = new Dictionary<string, string>();
-    public List<string> ramps;// = new Dictionary<string, string>();
-    public List<string> special;// = new Dictionary<string, string>();*/
-
-    // Containers to test CellData structure
-    public List<CellData> floors = new List<CellData>();
-    public List<CellData> walls = new List<CellData>();
-    public List<CellData> platforms = new List<CellData>();
-    public List<CellData> ramps = new List<CellData>();
-    public List<CellData> special = new List<CellData>();
-
-
-	// Use this for initialization
-	void LoadTypes ()
+    // constructor
+    public CellTypes()
     {
-        // Load up default cells
-        /*floors.Add("D", Instantiate(Resources.Load("Prefabs/Panel_0")) as GameObject);
-        ramps.Add("D", Instantiate(Resources.Load("Prefabs/ramp")) as GameObject);
-        walls.Add("DC", Instantiate(Resources.Load("Prefabs/wall_c")) as GameObject);
-        walls.Add("DI", Instantiate(Resources.Load("Prefabs/wall_i")) as GameObject);
-        walls.Add("DW", Instantiate(Resources.Load("Prefabs/wall_w")) as GameObject);
-        platforms.Add("DC", Instantiate(Resources.Load("Prefabs/platform_c")) as GameObject);
-        platforms.Add("DI", Instantiate(Resources.Load("Prefabs/platform_i")) as GameObject);
-        platforms.Add("DW", Instantiate(Resources.Load("Prefabs/platform_w")) as GameObject);
-        */
-
-        // Load up rest of cells
+        floors = new List<CellData>();
+        walls = new List<CellData>();
+        platforms = new List<CellData>();
+        ramps = new List<CellData>();
+        special = new List<CellData>();
     }
 
-    /*
-    // Add new floor
-    void NewFloor(string newKey, GameObject newFloor)
+    // Copy constructor
+    public CellTypes(CellTypes toCopy)
     {
-        floors[newKey] = newFloor;
+        floors = new List<CellData>(toCopy.floors);
+        walls = new List<CellData>(toCopy.walls);
+        platforms = new List<CellData>(toCopy.platforms);
+        ramps = new List<CellData>(toCopy.ramps);
+        special = new List<CellData>(toCopy.special);
     }
-
-    // Remove floor cell
-    void RmvFloor(string key)
-    {
-        // Don't remove the defaults
-        if(!defaults.Contains(key))
-        { floors.Remove(key); }
-        else { Debug.Log("Can't remove a default cell"); }
-    }
-
-    // Add new wall
-    void NewWall(string newKey, GameObject newWall)
-    {
-        walls[newKey] = newWall;
-    }
-
-    // Remove wall cell
-    void RmvWall(string key)
-    {
-        // Don't remove the defaults
-        if (!defaults.Contains(key))
-        { walls.Remove(key); }
-        else { Debug.Log("Can't remove a default cell"); }
-    }
-
-    // Add new platform
-    void NewPlat(string newKey, GameObject newPlat)
-    {
-        platforms[newKey] = newPlat;
-    }
-
-    // Remove platform cell
-    void RmvPlat(string key)
-    {
-        // Don't remove the defaults
-        if (!defaults.Contains(key))
-        { platforms.Remove(key); }
-        else { Debug.Log("Can't remove a default cell"); }
-    }
-    */
-    // Add special cell
-    // Remove special cell
 }

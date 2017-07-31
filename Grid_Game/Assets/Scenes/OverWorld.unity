@@ -449,6 +449,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9addb4fd41eda54abad2ebb89df541e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floors: []
+  walls: []
+  platforms: []
+  ramps: []
+  special: []
 --- !u!1 &963198614
 GameObject:
   m_ObjectHideFlags: 0

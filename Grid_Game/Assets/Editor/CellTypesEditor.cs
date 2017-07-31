@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
@@ -12,6 +14,45 @@ public enum CELLTYPES
     SPECIAL = 4
 }
 
+public static class SaveLoadCell
+{
+    public static CellTypes cellsOfSec = new CellTypes();
+
+    public static void save()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        cellsOfSec = CellTypes.cur;
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(filePth);
+        bf.Serialize(file, SaveLoadCell.cellsOfSec);
+        file.Close();
+    }
+
+    public static bool load()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        if (File.Exists(filePth))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(filePth, FileMode.Open);
+            SaveLoadCell.cellsOfSec = (CellTypes)bf.Deserialize(file);
+            file.Close();
+            return true;
+        }
+        return false;
+    }
+
+    public static void destroy()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        if (File.Exists(filePth))
+        {
+            File.Delete(filePth);
+            AssetDatabase.Refresh();
+        }
+    }
+}
+
 [CustomEditor(typeof(CellTypes))]
 public class CellTypesEditor : Editor
 {
@@ -19,18 +60,29 @@ public class CellTypesEditor : Editor
     private CellTypes cellTypesRef;
 
     private List<CellData> curStrList;
-    private int listSz;
-    //private char keyBase;
 
     public CELLTYPES curList = 0;
 
     private void OnEnable()
     {
-        this.advOptBut = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/Adv_Cell_Opt_Icon.png", typeof(Texture2D));
-        cellTypesRef = (CellTypes)target;
+        advOptBut = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/Adv_Cell_Opt.png", typeof(Texture2D));
+        CellTypes.cur = (CellTypes)target;
+        cellTypesRef = /*(SaveLoadCell.load()) ? SaveLoadCell.cellsOfSec :*/ (CellTypes)target;
         getList();
     }
+    /*
+    private void OnDisable()
+    {
+        CellTypes.cur = (CellTypes)target;
+        SaveLoadCell.save();
+    }
 
+    private void OnDestroy()
+    {
+        CellTypes.cur = (CellTypes)target;
+        SaveLoadCell.destroy();
+    }
+    */
     public override void OnInspectorGUI()
     {        
         // Popup that lets you choose between the different cell lists
@@ -49,12 +101,10 @@ public class CellTypesEditor : Editor
         }
     }
 
-    // h_s1 v_s1 v_e1 h_e1 h_s2 h_e2
     // Displays each element in the current list
     void dispList()
     {
         CellData curInfo;
-        // GameObject mObj;
         for (int ind = 0; ind < curStrList.Count; ind++)
         {
             curInfo = curStrList[ind];
@@ -74,7 +124,7 @@ public class CellTypesEditor : Editor
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
             if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30)))
             {
-
+                advOptMenu();
             }
             EditorGUILayout.BeginVertical();
             // Field to insert the model to use
@@ -123,6 +173,19 @@ public class CellTypesEditor : Editor
         curStrList.Remove(curStrList[ind]);
     }
 
+    // Menu for altering the information of a cell
+    void advOptMenu()
+    {
+        if(curList != CELLTYPES.SPECIAL)
+        {
+            Debug.Log("Change standard cell");
+        }
+        else
+        {
+            Debug.Log("Attempt to change special cell");
+        }
+    }
+
     // Changes the current list being displayed
     void getList()
     {
@@ -158,7 +221,6 @@ public class CellTypesEditor : Editor
                 curStrList = null;
                 break;
         }
-        listSz = curStrList.Count;
     }
 
     // Update the current list
