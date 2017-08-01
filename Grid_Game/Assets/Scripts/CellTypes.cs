@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public class CellData
 {
     // Movement options are coded in 4 bits
@@ -201,13 +200,8 @@ public class CellData
     }
 }
 
-[ExecuteInEditMode]
-[System.Serializable]
 public class CellTypes : MonoBehaviour
 {
-    public static CellTypes cur;
-    //private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
-
     // Containers for each type of cell
     public List<CellData> floors;// = new List<CellData>();
     public List<CellData> walls;// = new List<CellData>();
