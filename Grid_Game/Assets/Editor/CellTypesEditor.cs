@@ -28,7 +28,8 @@ public class CellTypesEditor : Editor
         cellTypesRef = (CellTypes)target;
         getList();
     }
-    
+
+
     public override void OnInspectorGUI()
     {        
         // Popup that lets you choose between the different cell lists
@@ -41,9 +42,14 @@ public class CellTypesEditor : Editor
         dispList();
 
         // Button that lets you add another cell type to the current list
+        EditorGUI.BeginChangeCheck();
         if (GUILayout.Button("Add new cell"))
         {
             addCell();
+        }
+        if(EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(target, "Added a new cell type");
         }
     }
 
@@ -55,6 +61,7 @@ public class CellTypesEditor : Editor
         {
             curInfo = curStrList[ind];
             EditorGUILayout.BeginHorizontal("Box");
+
             // Displays a preview of the model
             if(curInfo.getModel() != null)
             {
@@ -66,50 +73,73 @@ public class CellTypesEditor : Editor
             }
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
             EditorGUILayout.BeginHorizontal();
+
             // Button for advanced options
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
+            // Begin Change Check
             if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30)))
             {
                 advOptMenu();
             }
+            // End Change check
             EditorGUILayout.BeginVertical();
+
             // Field to insert the model to use
             EditorGUIUtility.labelWidth = 50.0f;
             EditorGUIUtility.fieldWidth = 150.0f;
+            EditorGUI.BeginChangeCheck();
             GUI.enabled = true;
             curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model:", curInfo.getModel(), typeof(GameObject), false));
+            if(EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Set a model for a cell");
+            }
+           
             // Get the path to the 3D model; record and display path
             curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
             EditorGUILayout.LabelField("Path:", curInfo.getPath());
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
+
             // Button to clear the info of the cell
+            EditorGUI.BeginChangeCheck();
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
             if(GUILayout.Button("Clear Cell", GUILayout.Width(100)))
             {
                 curInfo = new CellData((int)curList);
             }
             curStrList[ind] = new CellData(curInfo);
+            if(EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Cleared the information of a cell");
+            }
+            
             // Button that removes the cell from the current list
+            EditorGUI.BeginChangeCheck();
             GUI.enabled = true;
             if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
             {
                 removeCell(ind);
             }
+            if(EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Removed an item from the cell");
+            }
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
         }
-        setList();
     }
 
     // Add a new cell to the current list
     void addCell()
     {
         Debug.Log("Added another cell");
-        curStrList.Add(new CellData((int)curList));
-        setList();
+        curStrList.Add(CreateInstance<CellData>());
+        //curStrList.Add(new CellData((int)curList));
     }
 
     // Remove a cell from the current list
@@ -140,57 +170,26 @@ public class CellTypesEditor : Editor
             case CELLTYPES_ENUM.FLOOR:
                 Debug.Log("Current List: Floors");
                 curStrList = cellTypesRef.floors;
-                // keyBase = 'F';
                 break;
             case CELLTYPES_ENUM.WALL:
                 Debug.Log("Current List: Walls");
                 curStrList = cellTypesRef.walls;
-                // keyBase = 'W';
                 break;
             case CELLTYPES_ENUM.PLATFORM:
                 Debug.Log("Current List: Platform");
                 curStrList = cellTypesRef.platforms;
-                // keyBase = 'P';
                 break;
             case CELLTYPES_ENUM.RAMP:
                 Debug.Log("Current List: Ramp");
                 curStrList = cellTypesRef.ramps;
-                // keyBase = 'R';
                 break;
             case CELLTYPES_ENUM.SPECIAL:
                 Debug.Log("Current List: Special");
                 curStrList = cellTypesRef.special;
-                // keyBase = 'S';
                 break;
             default:
                 Debug.LogError("Unkown cell list type!");
                 curStrList = null;
-                break;
-        }
-    }
-
-    // Update the current list
-    void setList()
-    {
-        switch (curList)
-        {
-            case CELLTYPES_ENUM.FLOOR:
-                cellTypesRef.floors = new List<CellData>(curStrList);
-                break;
-            case CELLTYPES_ENUM.WALL:
-                cellTypesRef.walls = new List<CellData>(curStrList);
-                break;
-            case CELLTYPES_ENUM.PLATFORM:
-                cellTypesRef.platforms = new List<CellData>(curStrList);
-                break;
-            case CELLTYPES_ENUM.RAMP:
-                cellTypesRef.ramps = new List<CellData>(curStrList);
-                break;
-            case CELLTYPES_ENUM.SPECIAL:
-                cellTypesRef.special = new List<CellData>(curStrList);
-                break;
-            default:
-                Debug.LogError("Unable to add cell! Unkown cell list type!");
                 break;
         }
     }
