@@ -10,8 +10,8 @@ public class CellData
     // 0, you can't move in that direction
     // bit 3: up movement
     // bit 2: left movement
-    // bit 1: right movement
-    // bit 0: down movement
+    // bit 1: down movement
+    // bit 0: right movement
 
     // Movement options for the 'ground' layer
     [SerializeField]
@@ -116,16 +116,6 @@ public class CellData
         mvSet(mvMask, stpMask, mv, lyr);
     }
 
-    // Set bit 0 of mvLyr lyr to value of mv
-    // 0 is layer 1
-    // 1 is layer 2
-    public void setBot(bool mv, bool lyr)
-    {
-        int mvMask = 1; // 0001
-        int stpMask = 14; // 1110
-        mvSet(mvMask, stpMask, mv, lyr);
-    }
-
     // Set bit 2 of mvLyr lyr to value of mv 
     // 0 is layer 1
     // 1 is layer 2
@@ -139,10 +129,20 @@ public class CellData
     // Set bit 1 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    public void setRight(bool mv, bool lyr)
+    public void setBot(bool mv, bool lyr)
     {
         int mvMask = 2; // 0010
         int stpMask = 13; // 1101
+        mvSet(mvMask, stpMask, mv, lyr);
+    }
+
+    // Set bit 0 of mvLyr lyr to value of mv
+    // 0 is layer 1
+    // 1 is layer 2
+    public void setRight(bool mv, bool lyr)
+    {
+        int mvMask = 1; // 0001
+        int stpMask = 14; // 1110
         mvSet(mvMask, stpMask, mv, lyr);
     }
 
@@ -155,15 +155,6 @@ public class CellData
         return mvCheck(mask, lyr);
     }
 
-    // Return if you can move down from the cell
-    // 0 is layer 1
-    // 1 is layer 2
-    public bool canMvBot(bool lyr)
-    {
-        int mask = 1; // 0001
-        return mvCheck(mask, lyr);
-    }
-
     // Return if you can move left from the cell
     // 0 is layer 1
     // 1 is layer 2
@@ -173,12 +164,21 @@ public class CellData
         return mvCheck(mask, lyr);
     }
 
+    // Return if you can move down from the cell
+    // 0 is layer 1
+    // 1 is layer 2
+    public bool canMvBot(bool lyr)
+    {
+        int mask = 2; // 0010
+        return mvCheck(mask, lyr);
+    }
+
     // Return if you can move right from the cell
     // 0 is layer 1
     // 1 is layer 2
     public bool canMvRight(bool lyr)
     {
-        int mask = 4; // 0010
+        int mask = 1; // 0001
         return mvCheck(mask, lyr);
     }
 

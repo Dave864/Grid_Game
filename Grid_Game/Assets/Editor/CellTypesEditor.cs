@@ -63,9 +63,11 @@ public class CellTypesEditor : Editor
     void dispList()
     {
         CellData curInfo;
+        bool cellRemoved;
         for (int ind = 0; ind < curCellList.Count; ind++)
         {
             curInfo = curCellList[ind];
+            cellRemoved = false;
             EditorGUILayout.BeginHorizontal("Box");
 
             // Displays a preview of the model
@@ -75,7 +77,7 @@ public class CellTypesEditor : Editor
             }
             else
             {
-                GUILayout.Box("No Model", GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+                GUILayout.Box("No Model", GUILayout.Width(50), GUILayout.Height(50));
             }
             EditorGUILayout.BeginVertical(GUILayout.Height(50));
             EditorGUILayout.BeginHorizontal();
@@ -83,7 +85,7 @@ public class CellTypesEditor : Editor
             // Button for advanced options
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
             // Begin Change Check
-            if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30)))
+            if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
                 advOptMenu();
             }
@@ -107,36 +109,40 @@ public class CellTypesEditor : Editor
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-
-            // Button to clear the info of the cell
-            EditorGUI.BeginChangeCheck();
-            GUI.enabled = (curInfo.getModel() != null) ? true : false;
-            if(GUILayout.Button("Clear Cell", GUILayout.Width(100)))
-            {
-                curInfo = new CellData((int)curList);
-            }
-            curCellList[ind] = new CellData(curInfo);
-            if(EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Cleared the information of a cell");        EditorUtility.SetDirty(target);
-            }
+            EditorGUILayout.BeginHorizontal();  
 
             // Button that removes the cell from the current list
             EditorGUI.BeginChangeCheck();
             GUI.enabled = true;
-            if (GUILayout.Button("Remove Cell", GUILayout.Width(150)))
+            if (GUILayout.Button("Remove", GUILayout.MinWidth(50), GUILayout.MaxWidth(75)))
             {
                 removeCell(ind);
+                cellRemoved = true;
             }
             if(EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Removed an item from the cell");
             }
 
+            // Button to clear the info of the cell
+            if (!cellRemoved)
+            {
+                EditorGUI.BeginChangeCheck();
+                GUI.enabled = (curInfo.getModel() != null) ? true : false;
+                if (GUILayout.Button("Clear", GUILayout.MinWidth(50), GUILayout.ExpandWidth(true)))
+                {
+                    curInfo = new CellData((int)curList);
+                }
+                curCellList[ind] = new CellData(curInfo);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(target, "Cleared the information of a cell");
+                }
+            }
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+            GUI.enabled = true;
         }
         setList();
     }
