@@ -1,15 +1,56 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-public enum CELLTYPES_ENUM
+public enum CELLTYPES
 {
     FLOOR = 0,
     WALL = 1,
     PLATFORM = 2,
     RAMP = 3,
     SPECIAL = 4
+}
+
+public static class SaveLoadCell
+{
+    public static CellTypes cellsOfSec = new CellTypes();
+
+    public static void save()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        cellsOfSec = CellTypes.cur;
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(filePth);
+        bf.Serialize(file, SaveLoadCell.cellsOfSec);
+        file.Close();
+    }
+
+    public static bool load()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        if (File.Exists(filePth))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(filePth, FileMode.Open);
+            SaveLoadCell.cellsOfSec = (CellTypes)bf.Deserialize(file);
+            file.Close();
+            return true;
+        }
+        return false;
+    }
+
+    public static void destroy()
+    {
+        string filePth = Application.persistentDataPath + "/" + CellTypes.cur.gameObject.name + "_cells.mapc";
+        if (File.Exists(filePth))
+        {
+            File.Delete(filePth);
+            AssetDatabase.Refresh();
+        }
+    }
 }
 
 [CustomEditor(typeof(CellTypes))]
@@ -20,20 +61,20 @@ public class CellTypesEditor : Editor
 
     private List<CellData> curStrList;
 
-    public CELLTYPES_ENUM curList = 0;
+    public CELLTYPES curList = 0;
 
     private void OnEnable()
     {
         advOptBut = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/Adv_Cell_Opt.png", typeof(Texture2D));
-        cellTypesRef = (CellTypes)target;
+        CellTypes.cur = (CellTypes)target;
+        cellTypesRef = /*(SaveLoadCell.load()) ? SaveLoadCell.cellsOfSec :*/ (CellTypes)target;
         getList();
     }
-
 
     public override void OnInspectorGUI()
     {        
         // Popup that lets you choose between the different cell lists
-        curList = (CELLTYPES_ENUM)EditorGUILayout.EnumPopup("Types: ", curList);
+        curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
 
         // Update the currently displayed list
         getList();
@@ -152,7 +193,7 @@ public class CellTypesEditor : Editor
     // Menu for altering the information of a cell
     void advOptMenu()
     {
-        if(curList != CELLTYPES_ENUM.SPECIAL)
+        if(curList != CELLTYPES.SPECIAL)
         {
             Debug.Log("Change standard cell");
         }
@@ -167,23 +208,23 @@ public class CellTypesEditor : Editor
     {
         switch (curList)
         {
-            case CELLTYPES_ENUM.FLOOR:
+            case CELLTYPES.FLOOR:
                 Debug.Log("Current List: Floors");
                 curStrList = cellTypesRef.floors;
                 break;
-            case CELLTYPES_ENUM.WALL:
+            case CELLTYPES.WALL:
                 Debug.Log("Current List: Walls");
                 curStrList = cellTypesRef.walls;
                 break;
-            case CELLTYPES_ENUM.PLATFORM:
+            case CELLTYPES.PLATFORM:
                 Debug.Log("Current List: Platform");
                 curStrList = cellTypesRef.platforms;
                 break;
-            case CELLTYPES_ENUM.RAMP:
+            case CELLTYPES.RAMP:
                 Debug.Log("Current List: Ramp");
                 curStrList = cellTypesRef.ramps;
                 break;
-            case CELLTYPES_ENUM.SPECIAL:
+            case CELLTYPES.SPECIAL:
                 Debug.Log("Current List: Special");
                 curStrList = cellTypesRef.special;
                 break;

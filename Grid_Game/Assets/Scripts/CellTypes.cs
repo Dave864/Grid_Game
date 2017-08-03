@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class CellData : ScriptableObject
+public class CellData
 {
     // Movement options are coded in 4 bits
     // 1, you can move in that direction
@@ -14,20 +13,16 @@ public class CellData : ScriptableObject
     // bit 0: down movement
 
     // Movement options for the 'ground' layer
-    [SerializeField]
     private int mvLyr1;
     // Movemnet options for the next layer up
-    [SerializeField]
     private int mvLyr2;
 
     // Arena map for the cell
     // TODO: need to plan out the data structure
 
     // The path for the cell model
-    [SerializeField]
     private string path;
     // The model for the 3D object
-    [SerializeField]
     private GameObject model;
 
     // Constructor
@@ -205,17 +200,20 @@ public class CellData : ScriptableObject
     }
 }
 
+[ExecuteInEditMode]
 [System.Serializable]
 public class CellTypes : MonoBehaviour
 {
-    
+    public static CellTypes cur;
+    //private List<string> defaults = new List<string> { "D", "DC", "DI", "DW" };
+
     // Containers for each type of cell
     public List<CellData> floors;
     public List<CellData> walls;
     public List<CellData> platforms;
     public List<CellData> ramps;
     public List<CellData> special;
-    /*
+
     // constructor
     public CellTypes()
     {
@@ -224,31 +222,6 @@ public class CellTypes : MonoBehaviour
         platforms = new List<CellData>();
         ramps = new List<CellData>();
         special = new List<CellData>();
-    }
-    */
-    public void OnEnable()
-    {
-        if (floors == null)
-        {
-            floors = new List<CellData>();
-        }
-        if (walls == null)
-        {
-            walls = new List<CellData>();
-        }
-        if (platforms == null)
-        {
-            platforms = new List<CellData>();
-        }
-        if (ramps == null)
-        {
-            ramps = new List<CellData>();
-        }
-        if (special == null)
-        {
-            special = new List<CellData>();
-        }
-        hideFlags = HideFlags.HideAndDontSave;
     }
 
     // Copy constructor
