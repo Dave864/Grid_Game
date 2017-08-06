@@ -182,7 +182,7 @@ public class CellData
         return mvCheck(mask, lyr);
     }
 
-    // Set the path to some string
+    // Set the path to the model
     public void setPath(string m)
     {
         path = m;

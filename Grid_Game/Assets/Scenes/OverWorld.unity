@@ -449,7 +449,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9addb4fd41eda54abad2ebb89df541e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floors: []
+  floors:
+  - mvLyr1: 15
+    mvLyr2: 0
+    path: Assets/Resources/Prefabs/arena_cell.mb
+    model: {fileID: 100000, guid: 720c83670c13d3c428bda7a58c948ffd, type: 3}
   walls: []
   platforms: []
   ramps: []

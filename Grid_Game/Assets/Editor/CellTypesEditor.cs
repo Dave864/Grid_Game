@@ -17,7 +17,7 @@ public enum CELLTYPES
 [CustomEditor(typeof(CellTypes))]
 public class CellTypesEditor : Editor
 {
-    private Texture2D advOptBut;
+    private Texture2D advOptButImg;
     private CellTypes cellTypesRef;
 
     private List<CellData> curCellList;
@@ -26,7 +26,7 @@ public class CellTypesEditor : Editor
 
     private void OnEnable()
     {
-        advOptBut = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/Adv_Cell_Opt.png", typeof(Texture2D));
+        advOptButImg = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/GUI Images/Adv_Cell_Opt.png", typeof(Texture2D));
         cellTypesRef = (CellTypes)target;
         getList();
     }
@@ -85,9 +85,9 @@ public class CellTypesEditor : Editor
             // Button for advanced options
             GUI.enabled = (curInfo.getModel() != null) ? true : false;
             // Begin Change Check
-            if (GUILayout.Button(new GUIContent(advOptBut), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
-                advOptMenu();
+                curInfo = new CellData(advOptMenu(curInfo));
             }
             // End Change check
             EditorGUILayout.BeginVertical();
@@ -162,16 +162,18 @@ public class CellTypesEditor : Editor
     }
 
     // Menu for altering the information of a cell
-    void advOptMenu()
+    CellData advOptMenu(CellData cell)
     {
         if(curList != CELLTYPES.SPECIAL)
         {
             Debug.Log("Change standard cell");
+            CellDataWindow.advCellOpt(cell);
         }
         else
         {
             Debug.Log("Attempt to change special cell");
         }
+        return null;
     }
 
     // Changes the current list being displayed
