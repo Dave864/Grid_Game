@@ -6,7 +6,12 @@ using UnityEditor;
 // Window for editing the information of a cell
 public class CellDataWindow : EditorWindow
 {
+    Editor modelPreviewEditor;
+    GUIStyle modelPreviewStyle;
+    GameObject mdl;
+
     public CellData info;
+    public CELLTYPES curType;
 
     private int lyrx = 60;
     private int lyr1y = 225;
@@ -21,23 +26,85 @@ public class CellDataWindow : EditorWindow
     private string mvArrLROff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off LR.png";
     private string mvArrUDOff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off UD.png";
 
-    public static CellData advCellOpt(CellData cell)
+    public static void advCellOpt(CellData cell, CELLTYPES t)
     {
         CellDataWindow window = (CellDataWindow)GetWindow(typeof(CellDataWindow), true, "Cell Data");
         window.info = new CellData(cell);
+        window.curType = t;
+
+        window.modelPreviewStyle = new GUIStyle();
+        window.modelPreviewStyle.stretchWidth = true;
+        window.modelPreviewStyle.normal.background = EditorGUIUtility.whiteTexture;
+
         window.ShowAuxWindow();
-        return cell;
     }
 
     private void OnGUI()
     {
-        // Layer 2 Cell movement editor
-        GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
-        MovementGui(true);
-        // Layer 1 Cell movement editor
-        GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
-        MovementGui(false);
+        switch (curType)
+        {
+            case CELLTYPES.FLOOR:
+                // Layer 2 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
+                GUI.enabled = false;
+                MovementGui(true);
+                // Layer 1 Cell movement editor
+                GUI.enabled = true;
+                GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
+                MovementGui(false);
+                break;
+            case CELLTYPES.WALL:
+                // Layer 2 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
+                GUI.enabled = false;
+                MovementGui(true);
+                // Layer 1 Cell movement editor
+                GUI.enabled = true;
+                GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
+                GUI.enabled = false;
+                MovementGui(false);
+                break;
+            case CELLTYPES.PLATFORM:
+                // Layer 2 Cell movement editor
+                GUI.enabled = true;
+                GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
+                MovementGui(true);
+                // Layer 1 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
+                GUI.enabled = false;
+                MovementGui(false);
+                break;
+            case CELLTYPES.RAMP:
+                GUI.enabled = true;
+                // Layer 2 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
+                MovementGui(true);
+                // Layer 1 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
+                MovementGui(false);
+                break;
+            default:
+                GUI.enabled = false;
+                // Layer 2 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr2y, boxLen, boxLen), "Layer 2");
+                MovementGui(true);
+                // Layer 1 Cell movement editor
+                GUI.Box(new Rect(lyrx, lyr1y, boxLen, boxLen), "Layer 1");
+                MovementGui(false);
+                Debug.LogError("Tried to access CellData of special");
+                break;
+        }
         
+        // Create preview of model
+        mdl = info.getModel();
+        if(mdl != null)
+        {
+            if(modelPreviewEditor == null)
+            {
+                modelPreviewEditor = Editor.CreateEditor(mdl);
+            }
+            modelPreviewEditor.OnPreviewGUI(new Rect(lyrx + (3 * boxLen), lyr2y - mvButWdth, 400, 300), modelPreviewStyle);
+        }
     }
 
     // Interface for editing the movement options of a cell

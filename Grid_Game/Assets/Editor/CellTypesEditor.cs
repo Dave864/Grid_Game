@@ -87,7 +87,8 @@ public class CellTypesEditor : Editor
             // Begin Change Check
             if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
-                curInfo = new CellData(advOptMenu(curInfo));
+                //curInfo = new CellData(advOptMenu(curInfo));
+                advOptMenu(curInfo);
             }
             // End Change check
             EditorGUILayout.BeginVertical();
@@ -162,18 +163,18 @@ public class CellTypesEditor : Editor
     }
 
     // Menu for altering the information of a cell
-    CellData advOptMenu(CellData cell)
+    void advOptMenu(CellData cell)
     {
         if(curList != CELLTYPES.SPECIAL)
         {
             Debug.Log("Change standard cell");
-            CellDataWindow.advCellOpt(cell);
+            CellDataWindow.advCellOpt(cell, curList);
         }
         else
         {
             Debug.Log("Attempt to change special cell");
         }
-        return null;
+        //return null;
     }
 
     // Changes the current list being displayed
