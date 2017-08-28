@@ -20,8 +20,13 @@ public class CellData
     [SerializeField]
     private int mvLyr2;
 
-    // Arena map for the cell
-    // TODO: need to plan out the data structure
+    // Arena map info for the cell
+    // TODO: need to test for the "optimal" size
+    // TODO: need datatype to allow for detailed encounter maps
+    private int cols = 9;
+    private int cellsPerCol = 8;
+    public int[,] encounterMapUD;
+    public int[,] encounterMapLR;
 
     // The path for the cell model
     [SerializeField]
@@ -35,31 +40,116 @@ public class CellData
     {
         model = null;
         path = "";
+        encounterMapUD = new int[cols, cellsPerCol];
+        encounterMapLR = new int[cols, cellsPerCol];
         switch (type)
         {
             // Default floor
             case 0:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 0; // 0000
+                for(int c = 0; c < cellsPerCol; c++)
+                {
+                    for(int cl = 0; cl < cols; cl++)
+                    {
+                        if((c == 0) && (cl % 2 == 0))
+                        {
+                            encounterMapUD[cl, c] = -1;
+                            encounterMapLR[cl, c] = -1;
+                        }
+                        else
+                        {
+                            encounterMapUD[cl, c] = 0;
+                            encounterMapLR[cl, c] = 0;
+                        }
+                    }
+                }
                 break;
             // Default wall
             case 1:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
+                for (int c = 0; c < cellsPerCol; c++)
+                {
+                    for (int cl = 0; cl < cols; cl++)
+                    {
+                        if ((c == 0) && (cl % 2 == 0))
+                        {
+                            encounterMapUD[cl, c] = -1;
+                            encounterMapLR[cl, c] = -1;
+                        }
+                        else
+                        {
+                            encounterMapUD[cl, c] = 0;
+                            encounterMapLR[cl, c] = 0;
+                        }
+                    }
+                }
                 break;
             // Default platform
             case 2:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 15; // 1111
+                for (int c = 0; c < cellsPerCol; c++)
+                {
+                    for (int cl = 0; cl < cols; cl++)
+                    {
+                        if ((c == 0) && (cl % 2 == 0))
+                        {
+                            encounterMapUD[cl, c] = -1;
+                            encounterMapLR[cl, c] = -1;
+                        }
+                        else
+                        {
+                            // Borders
+                            // Inner Border
+                            // Interior
+                            encounterMapUD[cl, c] = 0;
+                            encounterMapLR[cl, c] = 0;
+                        }
+                    }
+                }
                 break;
             // Default ramp
             case 3:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 15; // 1111
+                for (int c = 0; c < cellsPerCol; c++)
+                {
+                    for (int cl = 0; cl < cols; cl++)
+                    {
+                        if ((c == 0) && (cl % 2 == 0))
+                        {
+                            encounterMapUD[cl, c] = -1;
+                            encounterMapLR[cl, c] = -1;
+                        }
+                        else
+                        {
+                            encounterMapUD[cl, c] = (c == 0) ? cellsPerCol - 1 : cellsPerCol - c;
+                            encounterMapLR[cl, c] = cols - c;
+                        }
+                    }
+                }
                 break;
             default:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
+                for (int c = 0; c < cellsPerCol; c++)
+                {
+                    for (int cl = 0; cl < cols; cl++)
+                    {
+                        if ((c == 0) && (cl % 2 == 0))
+                        {
+                            encounterMapUD[cl, c] = -1;
+                            encounterMapLR[cl, c] = -1;
+                        }
+                        else
+                        {
+                            encounterMapUD[cl, c] = 0;
+                            encounterMapLR[cl, c] = 0;
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -71,6 +161,8 @@ public class CellData
         mvLyr2 = toCopy.mvLyr2;
         path = toCopy.path;
         model = toCopy.model;
+        encounterMapUD = toCopy.encounterMapUD;
+        encounterMapLR = toCopy.encounterMapLR;
     }
 
     // Helper function used to set movement options
