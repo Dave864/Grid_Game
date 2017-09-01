@@ -166,7 +166,7 @@ public class CellData
     }
 
     // Helper function used to set movement options
-    private void mvSet(int mvMask, int stpMask, bool mv, bool lyr)
+    private void MvSet(int mvMask, int stpMask, bool mv, bool lyr)
     {
         if (lyr) // layer 2
         {
@@ -179,7 +179,7 @@ public class CellData
     }
 
     // Helper function used to check movement options
-    private bool mvCheck(int mask, bool lyr)
+    private bool MvCheck(int mask, bool lyr)
     {
         if (lyr) // layer 2
         {
@@ -201,97 +201,97 @@ public class CellData
     // Set bit 3 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    public void setTop(bool mv, bool lyr)
+    public void SetTop(bool mv, bool lyr)
     {
         int mvMask = 8; // 1000
         int stpMask = 7; // 0111
-        mvSet(mvMask, stpMask, mv, lyr);
+        MvSet(mvMask, stpMask, mv, lyr);
     }
 
     // Set bit 2 of mvLyr lyr to value of mv 
     // 0 is layer 1
     // 1 is layer 2
-    public void setLeft(bool mv, bool lyr)
+    public void SetLeft(bool mv, bool lyr)
     {
         int mvMask = 4; // 0100
         int stpMask = 11; // 1011
-        mvSet(mvMask, stpMask, mv, lyr);
+        MvSet(mvMask, stpMask, mv, lyr);
     }
 
     // Set bit 1 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    public void setBot(bool mv, bool lyr)
+    public void SetBot(bool mv, bool lyr)
     {
         int mvMask = 2; // 0010
         int stpMask = 13; // 1101
-        mvSet(mvMask, stpMask, mv, lyr);
+        MvSet(mvMask, stpMask, mv, lyr);
     }
 
     // Set bit 0 of mvLyr lyr to value of mv
     // 0 is layer 1
     // 1 is layer 2
-    public void setRight(bool mv, bool lyr)
+    public void SetRight(bool mv, bool lyr)
     {
         int mvMask = 1; // 0001
         int stpMask = 14; // 1110
-        mvSet(mvMask, stpMask, mv, lyr);
+        MvSet(mvMask, stpMask, mv, lyr);
     }
 
     // Return if you can move up from the cell
     // 0 is layer 1
     // 1 is layer 2
-    public bool canMvTop(bool lyr)
+    public bool CanMvTop(bool lyr)
     {
         int mask = 8; // 1000
-        return mvCheck(mask, lyr);
+        return MvCheck(mask, lyr);
     }
 
     // Return if you can move left from the cell
     // 0 is layer 1
     // 1 is layer 2
-    public bool canMvLeft(bool lyr)
+    public bool CanMvLeft(bool lyr)
     {
         int mask = 4; // 0100
-        return mvCheck(mask, lyr);
+        return MvCheck(mask, lyr);
     }
 
     // Return if you can move down from the cell
     // 0 is layer 1
     // 1 is layer 2
-    public bool canMvBot(bool lyr)
+    public bool CanMvBot(bool lyr)
     {
         int mask = 2; // 0010
-        return mvCheck(mask, lyr);
+        return MvCheck(mask, lyr);
     }
 
     // Return if you can move right from the cell
     // 0 is layer 1
     // 1 is layer 2
-    public bool canMvRight(bool lyr)
+    public bool CanMvRight(bool lyr)
     {
         int mask = 1; // 0001
-        return mvCheck(mask, lyr);
+        return MvCheck(mask, lyr);
     }
 
     // Set the path to the model
-    public void setPath(string m)
+    public void SetPath(string m)
     {
         path = m;
     }
 
     // Set the 3D model of the cell
-    public void setModel(GameObject m)
+    public void SetModel(GameObject m)
     {
         model = m;
     }
 
-    public GameObject getModel()
+    public GameObject GetModel()
     {
         return model;
     }
 
-    public string getPath()
+    public string GetPath()
     {
         return path;
     }

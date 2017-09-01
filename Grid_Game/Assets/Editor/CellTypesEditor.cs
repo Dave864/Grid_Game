@@ -28,7 +28,7 @@ public class CellTypesEditor : Editor
     {
         advOptButImg = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/Materials/GUI Images/Adv_Cell_Opt.png", typeof(Texture2D));
         cellTypesRef = (CellTypes)target;
-        getList();
+        GetList();
     }
 
     public override void OnInspectorGUI()
@@ -37,16 +37,16 @@ public class CellTypesEditor : Editor
         curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
 
         // Update the currently displayed list
-        getList();
+        GetList();
 
         // Display the elements of the current list
-        dispList();
+        DispList();
 
         // Button that lets you add another cell type to the current list
         EditorGUI.BeginChangeCheck();
         if (GUILayout.Button("Add new cell"))
         {
-            addCell();
+            AddCell();
         }
         if(EditorGUI.EndChangeCheck())
         {
@@ -60,7 +60,7 @@ public class CellTypesEditor : Editor
     }
 
     // Displays each element in the current list
-    void dispList()
+    void DispList()
     {
         CellData curInfo;
         bool cellRemoved;
@@ -71,9 +71,9 @@ public class CellTypesEditor : Editor
             EditorGUILayout.BeginHorizontal("Box");
 
             // Displays a preview of the model
-            if(curInfo.getModel() != null)
+            if(curInfo.GetModel() != null)
             {
-                GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.getModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+                GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.GetModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
             }
             else
             {
@@ -83,12 +83,12 @@ public class CellTypesEditor : Editor
             EditorGUILayout.BeginHorizontal();
 
             // Button for advanced options
-            GUI.enabled = (curInfo.getModel() != null) ? true : false;
+            GUI.enabled = (curInfo.GetModel() != null) ? true : false;
             // Begin Change Check
             if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
                 //curInfo = new CellData(advOptMenu(curInfo));
-                advOptMenu(curInfo);
+                AdvOptMenu(curInfo);
             }
             // End Change check
             EditorGUILayout.BeginVertical();
@@ -98,15 +98,15 @@ public class CellTypesEditor : Editor
             EditorGUIUtility.fieldWidth = 150.0f;
             EditorGUI.BeginChangeCheck();
             GUI.enabled = true;
-            curInfo.setModel((GameObject)EditorGUILayout.ObjectField("Model:", curInfo.getModel(), typeof(GameObject), false));
+            curInfo.SetModel((GameObject)EditorGUILayout.ObjectField("Model:", curInfo.GetModel(), typeof(GameObject), false));
             if(EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set a model for a cell");
             }
 
             // Get the path to the 3D model; record and display path
-            curInfo.setPath(AssetDatabase.GetAssetPath(curInfo.getModel()));
-            EditorGUILayout.LabelField("Path:", curInfo.getPath());
+            curInfo.SetPath(AssetDatabase.GetAssetPath(curInfo.GetModel()));
+            EditorGUILayout.LabelField("Path:", curInfo.GetPath());
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
@@ -117,7 +117,7 @@ public class CellTypesEditor : Editor
             GUI.enabled = true;
             if (GUILayout.Button("Remove", GUILayout.MinWidth(50), GUILayout.MaxWidth(75)))
             {
-                removeCell(ind);
+                RemoveCell(ind);
                 cellRemoved = true;
             }
             if(EditorGUI.EndChangeCheck())
@@ -129,7 +129,7 @@ public class CellTypesEditor : Editor
             if (!cellRemoved)
             {
                 EditorGUI.BeginChangeCheck();
-                GUI.enabled = (curInfo.getModel() != null) ? true : false;
+                GUI.enabled = (curInfo.GetModel() != null) ? true : false;
                 if (GUILayout.Button("Clear", GUILayout.MinWidth(50), GUILayout.ExpandWidth(true)))
                 {
                     curInfo = new CellData((int)curList);
@@ -145,30 +145,30 @@ public class CellTypesEditor : Editor
             EditorGUILayout.EndHorizontal();
             GUI.enabled = true;
         }
-        setList();
+        SetList();
     }
 
     // Add a new cell to the current list
-    void addCell()
+    void AddCell()
     {
         Debug.Log("Added another cell");
         curCellList.Add(new CellData((int)curList));
     }
 
     // Remove a cell from the current list
-    void removeCell(int ind)
+    void RemoveCell(int ind)
     {
         Debug.Log("A cell has been removed");
         curCellList.Remove(curCellList[ind]);
     }
 
     // Menu for altering the information of a cell
-    void advOptMenu(CellData cell)
+    void AdvOptMenu(CellData cell)
     {
         if(curList != CELLTYPES.SPECIAL)
         {
             Debug.Log("Change standard cell");
-            CellDataWindow.advCellOpt(cell, curList);
+            CellDataWindow.AdvCellOpt(cell, curList);
         }
         else
         {
@@ -178,7 +178,7 @@ public class CellTypesEditor : Editor
     }
 
     // Changes the current list being displayed
-    void getList()
+    void GetList()
     {
         switch (curList)
         {
@@ -209,7 +209,7 @@ public class CellTypesEditor : Editor
         }
     }
 
-    void setList()
+    void SetList()
     {
         switch (curList)
         {

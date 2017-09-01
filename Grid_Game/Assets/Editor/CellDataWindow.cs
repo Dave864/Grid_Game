@@ -46,7 +46,7 @@ public class CellDataWindow : EditorWindow
         prevWdth = mvGuiGroupPosY + lyr1y + boxLen + mvButWdth;
     }
 
-    public static void advCellOpt(CellData cell, CELLTYPES t)
+    public static void AdvCellOpt(CellData cell, CELLTYPES t)
     {
         CellDataWindow window = (CellDataWindow)GetWindow(typeof(CellDataWindow), true, "Cell Data");
         window.info = new CellData(cell);
@@ -110,7 +110,7 @@ public class CellDataWindow : EditorWindow
         GUI.enabled = true;
 
         // Create preview of model
-        mdl = info.getModel();
+        mdl = info.GetModel();
         if(mdl != null)
         {
             if(modelPreviewEditor == null)
@@ -133,7 +133,7 @@ public class CellDataWindow : EditorWindow
         Vector2 pos;
 
         // Top
-        if (info.canMvTop(lyr))
+        if (info.CanMvTop(lyr))
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -144,11 +144,11 @@ public class CellDataWindow : EditorWindow
         pos = (lyr) ? new Vector2(lyrx, lyr2y - mvButWdth) : new Vector2(lyrx, lyr1y - mvButWdth);
         if(GUI.Button(new Rect(pos, new Vector2(mvButLen, mvButWdth)), mvArrowUD))
         {
-            info.setTop(!info.canMvTop(lyr), lyr);
+            info.SetTop(!info.CanMvTop(lyr), lyr);
         }
 
         // Left
-        if (info.canMvLeft(lyr))
+        if (info.CanMvLeft(lyr))
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -159,11 +159,11 @@ public class CellDataWindow : EditorWindow
         pos = (lyr) ? new Vector2(lyrx - (mvButWdth * LRButScale), lyr2y) : new Vector2(lyrx - (mvButWdth * LRButScale), lyr1y);
         if (GUI.Button(new Rect(pos, new Vector2(mvButWdth * LRButScale, mvButLen)), mvArrowLR))
         {
-            info.setLeft(!info.canMvLeft(lyr), lyr);
+            info.SetLeft(!info.CanMvLeft(lyr), lyr);
         }
 
         // Bot
-        if (info.canMvBot(lyr))
+        if (info.CanMvBot(lyr))
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -174,11 +174,11 @@ public class CellDataWindow : EditorWindow
         pos = (lyr) ? new Vector2(lyrx, lyr2y + mvButLen) : new Vector2(lyrx, lyr1y + mvButLen);
         if (GUI.Button(new Rect(pos, new Vector2(mvButLen, mvButWdth)), mvArrowUD))
         {
-            info.setBot(!info.canMvBot(lyr), lyr);
+            info.SetBot(!info.CanMvBot(lyr), lyr);
         }
 
         // Right
-        if (info.canMvRight(lyr))
+        if (info.CanMvRight(lyr))
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -189,7 +189,7 @@ public class CellDataWindow : EditorWindow
         pos = (lyr) ? new Vector2(lyrx + mvButLen, lyr2y) : new Vector2(lyrx + mvButLen, lyr1y);
         if (GUI.Button(new Rect(pos, new Vector2(mvButWdth * LRButScale, mvButLen)), mvArrowLR))
         {
-            info.setRight(!info.canMvRight(lyr), lyr);
+            info.SetRight(!info.CanMvRight(lyr), lyr);
         }
     }
 }
