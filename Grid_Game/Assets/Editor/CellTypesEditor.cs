@@ -63,6 +63,7 @@ public class CellTypesEditor : Editor
     void DispList()
     {
         CellData curInfo;
+        Texture2D mdlPrev;
         bool cellRemoved;
         for (int ind = 0; ind < curCellList.Count; ind++)
         {
@@ -73,7 +74,12 @@ public class CellTypesEditor : Editor
             // Displays a preview of the model
             if(curInfo.GetModel() != null)
             {
-                GUILayout.Label(AssetPreview.GetAssetPreview(curInfo.GetModel()), GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
+                mdlPrev = AssetPreview.GetAssetPreview(curInfo.GetModel());
+                if(mdlPrev == null)
+                {
+                    mdlPrev = AssetPreview.GetMiniThumbnail(curInfo.GetModel());
+                }
+                GUILayout.Label(mdlPrev, GUILayout.MaxWidth(50), GUILayout.MaxHeight(50));
             }
             else
             {
