@@ -6,6 +6,28 @@ using UnityEditor;
 [CustomEditor(typeof(CellDataWindow))]
 public class CellModelPreview : Editor
 {
+    public override bool HasPreviewGUI()
+    {
+        return true;
+    }
+
+    public override GUIContent GetPreviewTitle()
+    {
+        return new GUIContent("Cell Model View");
+    }
+
+    public override void OnPreviewSettings()
+    {
+        GUIStyle preButton = new GUIStyle("preButton");
+        GUILayout.Button("Test But", preButton);
+    }
+
+    public override void OnPreviewGUI(Rect r, GUIStyle background)
+    {
+        GUI.Box (r, "Test Custom Preview");
+    }
+
+    /*
     private PreviewRenderUtility pru;
     private MeshFilter tMf;
     private MeshRenderer tMr;
@@ -51,4 +73,5 @@ public class CellModelPreview : Editor
     {
         pru.Cleanup();
     }
+    */
 }

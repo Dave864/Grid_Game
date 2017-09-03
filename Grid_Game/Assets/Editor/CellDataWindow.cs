@@ -52,8 +52,11 @@ public class CellDataWindow : EditorWindow
         window.info = new CellData(cell);
         window.curType = t;
 
-        window.modelPreviewStyle = new GUIStyle();
-        window.modelPreviewStyle.stretchWidth = true;
+        window.modelPreviewStyle = new GUIStyle
+        {
+            stretchWidth = true
+        };
+
         window.modelPreviewStyle.normal.background = EditorGUIUtility.whiteTexture;
 
         window.ShowAuxWindow();
@@ -115,7 +118,7 @@ public class CellDataWindow : EditorWindow
         {
             if(modelPreviewEditor == null)
             {
-                modelPreviewEditor = Editor.CreateEditor(mdl);
+                modelPreviewEditor = Editor.CreateEditor(mdl/*, typeof(CellModelPreview)*/);
             }
             modelPreviewEditor.OnPreviewGUI(new Rect(prevX, prevY, prevLen, prevWdth), modelPreviewStyle);
         }

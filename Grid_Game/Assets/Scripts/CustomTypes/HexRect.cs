@@ -256,17 +256,17 @@ public class HexRect<D>
                     // trim top-right corner
                     else if (TR && (c >= (2 * r)))
                     {
-                        hRectTrim[r, c] = default(D);
+                        hRectTrim[r, c + (col - corColCnt - 1)] = default(D);
                     }
                     // trim bottom-left corner
                     else if (BL && (c < 2 * (r + 1)))
                     {
-                        hRectTrim[r, c] = default(D);
+                        hRectTrim[r + (tCorRowCnt - hPc - 1), c] = default(D);
                     }
                     // trim bottom-riht corner
                     else if (BR && (c >= corColCnt - (2 * (c + 1))))
                     {
-                        hRectTrim[r, c] = default(D);
+                        hRectTrim[r + (tCorRowCnt - hPc - 1), c + (col - corColCnt - 1)] = default(D);
                     }
                 }
             }
@@ -283,24 +283,24 @@ public class HexRect<D>
                     // trim top-left corner
                     if (TL)
                     {
-
+                        hRectTrim[r, c] = default(D);
                     }
                     // trim top-right corner
                     else if (TR)
                     {
-
+                        hRectTrim[r, c + (col - corColCnt - 1)] = default(D);
                     }
                     if (r < bCorRowCnt)
                     {
                         // trim bottom-left corner
                         if (BL)
                         {
-
+                            hRectTrim[r + (tCorRowCnt - hPc - 1), c] = default(D);
                         }
                         // trim bottom-riht corner
                         else if (BR)
                         {
-
+                            hRectTrim[r + (tCorRowCnt - hPc - 1), c + (col - corColCnt - 1)] = default(D);
                         }
                     }
                 }
