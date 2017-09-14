@@ -6,16 +6,12 @@ using UnityEditor;
 // Window for editing the information of a cell
 public class CellDataWindow : EditorWindow
 {
-    Editor modelPreviewEditor;
-    GUIStyle modelPreviewStyle;
-    GameObject mdl;
-
     public CellData info;
     public CELLTYPES curType;
 
     // position and size for model preview
-    private int prevX = 120;
-    private int prevY = 0;
+    private int prevX;
+    private int prevY = 4;
     private int prevLen = 500;
     private int prevWdth = 200;
 
@@ -37,37 +33,16 @@ public class CellDataWindow : EditorWindow
         window.info = new CellData(cell);
         window.curType = t;
 
-        window.modelPreviewStyle = new GUIStyle
-        {
-            stretchWidth = true
-        };
-
-        window.modelPreviewStyle.normal.background = EditorGUIUtility.whiteTexture;
-
         window.ShowAuxWindow();
     }
 
     private void OnGUI()
     {
-        EditorGUILayout.BeginHorizontal();
+        Rect topGUIGrpRect = EditorGUILayout.BeginHorizontal();
         // Movement GUI
         MovementGui();
-        // Model Preview
-        Rect mdlPrevSpace = new Rect(prevX, prevY, prevLen, prevWdth);
-        //EditorGUILayout.Space();
-        GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(prevWdth));
-        // Create preview of model
-        mdl = info.GetModel();
-        if (mdl != null)
-        {
-            if (modelPreviewEditor == null)
-            {
-                modelPreviewEditor = Editor.CreateEditor(mdl/*, typeof(CellModelPreview)*/);
-            }
-            //modelPreviewEditor.OnPreviewGUI(new Rect(prevX, prevY, prevLen, prevWdth), modelPreviewStyle);
-            //modelPreviewEditor.OnPreviewGUI(new Rect(120, 0, 500, 200), modelPreviewStyle);
-        }
-        EditorGUILayout.EndHorizontal();
+
+        // Where a preview of model should go
         // Encounter area GUI
     }
 
@@ -116,6 +91,7 @@ public class CellDataWindow : EditorWindow
         }
         MovementGuiButtons(true, butEnableLyr2);
         // Rotation reference image
+        GUILayout.Space(25);
         MovementGuiButtons(false, butEnableLyr1);
         EditorGUILayout.EndVertical();
     }
@@ -129,7 +105,8 @@ public class CellDataWindow : EditorWindow
         Texture2D mvArrowUD;
 
         GUI.enabled = butEnable;
-        Rect mvButGUIRect = EditorGUILayout.BeginVertical();
+        Rect movemntGUIRect = EditorGUILayout.BeginVertical();
+        prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
 
         // Top button
         if (info.CanMvTop(lyr))
@@ -150,7 +127,6 @@ public class CellDataWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-
         // Left button
         if (info.CanMvLeft(lyr))
         {
@@ -213,8 +189,5 @@ public class CellDataWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.EndVertical();
-        prevWdth = (int)mvButGUIRect.height;
-        prevLen = (int)1.25 * prevWdth;
-        prevX = (int)mvButGUIRect.width;
     }
 }
