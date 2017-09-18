@@ -159,11 +159,11 @@ public class CellDataWindow : EditorWindow
         GUI.enabled = true;
         if(lyr)
         {
-            GUILayout.Box("Label 2", GUILayout.Width(boxLen), GUILayout.Height(boxLen));
+            GUILayout.Box("Layer 2", GUILayout.Width(boxLen), GUILayout.Height(boxLen));
         }
         else
         {
-            GUILayout.Box("Label 1", GUILayout.Width(boxLen), GUILayout.Height(boxLen));
+            GUILayout.Box("Layer 1", GUILayout.Width(boxLen), GUILayout.Height(boxLen));
         }
         GUI.enabled = butEnable;
 

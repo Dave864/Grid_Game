@@ -37,10 +37,10 @@ public class CellData
     {
         model = null;
         path = "";
-        encounterMapUD = new HexRect<EnctrCell>(2);
-        encounterMapLR = new HexRect<EnctrCell>(2);
-        int cellsPerCol = encounterMapUD.HexPerRow();
-        int cols = encounterMapUD.ColCnt();
+        encounterMapUD = new HexRect<EnctrCell>(GlobalVals.ENC_MAP_RAD);
+        encounterMapLR = new HexRect<EnctrCell>(GlobalVals.ENC_MAP_RAD);
+        int cellsPerCol = GlobalVals.ENC_MAP_HPC;
+        int cols = GlobalVals.ENC_MAP_COL;
         EnctrCell val = new EnctrCell();
 
         switch (type)
@@ -87,7 +87,7 @@ public class CellData
                         // Center
                         else
                         {
-                            val.height = cols;
+                            val.height = GlobalVals.ENC_MAP_MX_HT;
                         }
                         encounterMapUD[c, cl] = val;
                         encounterMapLR[c, cl] = val;
