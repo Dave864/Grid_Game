@@ -45,6 +45,18 @@ public class HexRect<D>
         }
     }
 
+    // Get row count
+    public int HexPerRow()
+    {
+        return hPc;
+    }
+
+    // Get column count
+    public int ColCnt()
+    {
+        return col;
+    }
+
     // Index Operator
     public D this[int rowKey, int colKey]
     {

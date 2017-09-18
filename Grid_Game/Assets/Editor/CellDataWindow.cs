@@ -10,10 +10,12 @@ public class CellDataWindow : EditorWindow
     public CELLTYPES curType;
 
     // position and size for model preview
+    /*
     private int prevX;
     private int prevY = 4;
     private int prevLen = 500;
     private int prevWdth = 200;
+    */
 
     // position and sizes for movement GUI
     private int boxLen = 40;
@@ -22,10 +24,12 @@ public class CellDataWindow : EditorWindow
     private int elemSpacing = 8;
     private float LRButScale = 1.3f;
 
+    // GUI images
     private string mvArrLROn_path = "Assets/Resources/Materials/GUI Images/Movement Arrow On LR.png";
     private string mvArrUDOn_path = "Assets/Resources/Materials/GUI Images/Movement Arrow On UD.png";
     private string mvArrLROff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off LR.png";
     private string mvArrUDOff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off UD.png";
+    private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
 
     public static void AdvCellOpt(CellData cell, CELLTYPES t)
     {
@@ -38,12 +42,16 @@ public class CellDataWindow : EditorWindow
 
     private void OnGUI()
     {
-        Rect topGUIGrpRect = EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.BeginHorizontal();
         // Movement GUI
         MovementGui();
 
         // Where a preview of model should go
-        // Encounter area GUI
+        EditorGUILayout.EndHorizontal();
+        // Encounter map GUI
+        EncounterMapGUI();
+        EditorGUILayout.EndVertical();
     }
 
     // Interface for editing movement settings of a cell
@@ -51,6 +59,8 @@ public class CellDataWindow : EditorWindow
     {
         bool butEnableLyr1;
         bool butEnableLyr2;
+        Texture2D mvReference = (Texture2D)AssetDatabase.LoadAssetAtPath(mvReference_path, typeof(Texture2D));
+
         EditorGUILayout.BeginVertical("Box", GUILayout.Width((2 * elemSpacing) + (2 * LRButScale * mvButWdth) + boxLen));
         GUILayout.Label("Movement Settings");
         switch (curType)
@@ -89,9 +99,13 @@ public class CellDataWindow : EditorWindow
                 Debug.LogError("Tried to access CellData of special");
                 break;
         }
+
         MovementGuiButtons(true, butEnableLyr2);
+        
         // Rotation reference image
-        GUILayout.Space(25);
+        GUI.enabled = true;
+        GUILayout.Label(mvReference, GUILayout.Height(100), GUILayout.Width((2 * elemSpacing) + (2 * LRButScale * mvButWdth) + boxLen));
+
         MovementGuiButtons(false, butEnableLyr1);
         EditorGUILayout.EndVertical();
     }
@@ -106,7 +120,7 @@ public class CellDataWindow : EditorWindow
 
         GUI.enabled = butEnable;
         Rect movemntGUIRect = EditorGUILayout.BeginVertical();
-        prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
+        // prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
 
         // Top button
         if (info.CanMvTop(lyr))
@@ -189,5 +203,22 @@ public class CellDataWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.EndVertical();
+    }
+
+    // Interface for editing the layout of a cell's encounter map
+    private void EncounterMapGUI()
+    {
+        GUIContent[] selGridLR = new GUIContent[0];
+        GUIContent[] selGridUD = new GUIContent[0];
+
+        GUILayout.BeginHorizontal();
+        // Height color reference image
+        // Current cell reference
+
+        // Left-Right orientation of map
+        
+        // Up-Down orientation of map
+
+        GUILayout.EndHorizontal();
     }
 }

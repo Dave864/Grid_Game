@@ -22,11 +22,8 @@ public class CellData
 
     // Arena map info for the cell
     // TODO: need to test for the "optimal" size
-    // TODO: need datatype to allow for detailed encounter maps
-    private int cols = 9;
-    private int cellsPerCol = 8;
-    public int[,] encounterMapUD;
-    public int[,] encounterMapLR;
+    public HexRect<EnctrCell> encounterMapUD;
+    public HexRect<EnctrCell> encounterMapLR;
 
     // The path for the cell model
     [SerializeField]
@@ -40,8 +37,12 @@ public class CellData
     {
         model = null;
         path = "";
-        encounterMapUD = new int[cols, cellsPerCol];
-        encounterMapLR = new int[cols, cellsPerCol];
+        encounterMapUD = new HexRect<EnctrCell>(2);
+        encounterMapLR = new HexRect<EnctrCell>(2);
+        int cellsPerCol = encounterMapUD.HexPerRow();
+        int cols = encounterMapUD.ColCnt();
+        EnctrCell val = new EnctrCell();
+
         switch (type)
         {
             // Default floor
@@ -52,16 +53,8 @@ public class CellData
                 {
                     for (int cl = 0; cl < cols; cl++)
                     {
-                        if ((c == 0) && (cl % 2 == 0))
-                        {
-                            encounterMapUD[cl, c] = -1;
-                            encounterMapLR[cl, c] = -1;
-                        }
-                        else
-                        {
-                            encounterMapUD[cl, c] = 0;
-                            encounterMapLR[cl, c] = 0;
-                        }
+                        encounterMapUD[c, cl] = val;
+                        encounterMapLR[c, cl] = val;
                     }
                 }
                 break;
@@ -73,16 +66,8 @@ public class CellData
                 {
                     for (int cl = 0; cl < cols; cl++)
                     {
-                        if ((c == 0) && (cl % 2 == 0))
-                        {
-                            encounterMapUD[cl, c] = -1;
-                            encounterMapLR[cl, c] = -1;
-                        }
-                        else
-                        {
-                            encounterMapUD[cl, c] = 0;
-                            encounterMapLR[cl, c] = 0;
-                        }
+                        encounterMapUD[c, cl] = val;
+                        encounterMapLR[c, cl] = val;
                     }
                 }
                 break;
@@ -94,19 +79,18 @@ public class CellData
                 {
                     for (int cl = 0; cl < cols; cl++)
                     {
-                        if ((c == 0) && (cl % 2 == 0))
+                        // Borders
+                        if (c == 0 || c == (cellsPerCol - 1) || cl == 0 || cl == (cols - 1))
                         {
-                            encounterMapUD[cl, c] = -1;
-                            encounterMapLR[cl, c] = -1;
+                            val.height = 0;
                         }
+                        // Center
                         else
                         {
-                            // Borders
-                            // Inner Border
-                            // Interior
-                            encounterMapUD[cl, c] = 0;
-                            encounterMapLR[cl, c] = 0;
+                            val.height = cols;
                         }
+                        encounterMapUD[c, cl] = val;
+                        encounterMapLR[c, cl] = val;
                     }
                 }
                 break;
@@ -118,16 +102,12 @@ public class CellData
                 {
                     for (int cl = 0; cl < cols; cl++)
                     {
-                        if ((c == 0) && (cl % 2 == 0))
-                        {
-                            encounterMapUD[cl, c] = -1;
-                            encounterMapLR[cl, c] = -1;
-                        }
-                        else
-                        {
-                            encounterMapUD[cl, c] = (c == 0) ? cellsPerCol - 1 : cellsPerCol - c;
-                            encounterMapLR[cl, c] = cols - c;
-                        }
+                        // Up-Down orientation
+                        val.height = cellsPerCol - c;
+                        encounterMapUD[c, cl] = val;
+                        // Left-Right orientation
+                        val.height = cl;
+                        encounterMapLR[c, cl] = val;
                     }
                 }
                 break;
@@ -138,16 +118,8 @@ public class CellData
                 {
                     for (int cl = 0; cl < cols; cl++)
                     {
-                        if ((c == 0) && (cl % 2 == 0))
-                        {
-                            encounterMapUD[cl, c] = -1;
-                            encounterMapLR[cl, c] = -1;
-                        }
-                        else
-                        {
-                            encounterMapUD[cl, c] = 0;
-                            encounterMapLR[cl, c] = 0;
-                        }
+                        encounterMapUD[c, cl] = null;
+                        encounterMapLR[c, cl] = null;
                     }
                 }
                 break;
