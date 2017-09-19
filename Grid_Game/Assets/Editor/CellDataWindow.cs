@@ -31,10 +31,14 @@ public class CellDataWindow : EditorWindow
     private string mvArrUDOff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off UD.png";
     private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
 
+    // Used for editing encounter maps
+    //private GUIContent[] selGridLR = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
+    //private GUIContent[] selGridUD = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
+
     public static void AdvCellOpt(CellData cell, CELLTYPES t)
     {
         CellDataWindow window = (CellDataWindow)GetWindow(typeof(CellDataWindow), true, "Cell Data");
-        window.info = new CellData(cell);
+        window.info = cell;
         window.curType = t;
 
         window.ShowAuxWindow();
@@ -119,7 +123,7 @@ public class CellDataWindow : EditorWindow
         Texture2D mvArrowUD;
 
         GUI.enabled = butEnable;
-        Rect movemntGUIRect = EditorGUILayout.BeginVertical();
+        /*Rect movemntGUIRect =*/ EditorGUILayout.BeginVertical();
         // prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
 
         // Top button
@@ -208,15 +212,37 @@ public class CellDataWindow : EditorWindow
     // Interface for editing the layout of a cell's encounter map
     private void EncounterMapGUI()
     {
-        GUIContent[] selGridLR = new GUIContent[0];
-        GUIContent[] selGridUD = new GUIContent[0];
-
+        GUIContent[] selGridLR = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
+        GUIContent[] selGridUD = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
+        for (int r = 0; r < GlobalVals.ENC_MAP_HPC; r++)
+        {
+            for (int c = 0; c < GlobalVals.ENC_MAP_COL; c++)
+            {
+                if (info.encounterMapLR[r, c] != null)
+                {
+                    selGridLR[(r * GlobalVals.ENC_MAP_HPC) + c] = new GUIContent(info.encounterMapLR[r, c].height.ToString());
+                }
+                else
+                {
+                    selGridLR[(r * GlobalVals.ENC_MAP_HPC) + c] = new GUIContent("empty");
+                }
+                if (info.encounterMapUD[r, c] != null)
+                {
+                    selGridUD[(r * GlobalVals.ENC_MAP_HPC) + c] = new GUIContent(info.encounterMapUD[r, c].height.ToString());
+                }
+                else
+                {
+                    selGridUD[(r * GlobalVals.ENC_MAP_HPC) + c] = new GUIContent("empty");
+                }
+            }
+        }
+        GUI.enabled = true;
         GUILayout.BeginHorizontal();
         // Height color reference image
         // Current cell reference
 
         // Left-Right orientation of map
-        
+        GUILayout.SelectionGrid(0, selGridLR, GlobalVals.ENC_MAP_COL);
         // Up-Down orientation of map
 
         GUILayout.EndHorizontal();

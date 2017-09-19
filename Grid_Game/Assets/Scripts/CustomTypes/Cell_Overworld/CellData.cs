@@ -22,8 +22,8 @@ public class CellData
 
     // Arena map info for the cell
     // TODO: need to test for the "optimal" size
-    public HexRect<EnctrCell> encounterMapUD;
-    public HexRect<EnctrCell> encounterMapLR;
+    public HexRect encounterMapUD;
+    public HexRect encounterMapLR;
 
     // The path for the cell model
     [SerializeField]
@@ -37,11 +37,10 @@ public class CellData
     {
         model = null;
         path = "";
-        encounterMapUD = new HexRect<EnctrCell>(GlobalVals.ENC_MAP_RAD);
-        encounterMapLR = new HexRect<EnctrCell>(GlobalVals.ENC_MAP_RAD);
+        encounterMapUD = new HexRect(GlobalVals.ENC_MAP_RAD);
+        encounterMapLR = new HexRect(GlobalVals.ENC_MAP_RAD);
         int cellsPerCol = GlobalVals.ENC_MAP_HPC;
         int cols = GlobalVals.ENC_MAP_COL;
-        EnctrCell val = new EnctrCell();
 
         switch (type)
         {
@@ -49,12 +48,12 @@ public class CellData
             case 0:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 0; // 0000
-                for (int c = 0; c < cellsPerCol; c++)
+                for (int r = 0; r < cellsPerCol; r++)
                 {
-                    for (int cl = 0; cl < cols; cl++)
+                    for (int c = 0; c < cols; c++)
                     {
-                        encounterMapUD[c, cl] = val;
-                        encounterMapLR[c, cl] = val;
+                        encounterMapUD[r, c] = new EnctrCell(0);
+                        encounterMapLR[r, c] = new EnctrCell(0);
                     }
                 }
                 break;
@@ -62,12 +61,12 @@ public class CellData
             case 1:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
-                for (int c = 0; c < cellsPerCol; c++)
+                for (int r = 0; r < cellsPerCol; r++)
                 {
-                    for (int cl = 0; cl < cols; cl++)
+                    for (int c = 0; c < cols; c++)
                     {
-                        encounterMapUD[c, cl] = val;
-                        encounterMapLR[c, cl] = val;
+                        encounterMapUD[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
+                        encounterMapLR[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
                     }
                 }
                 break;
@@ -75,22 +74,22 @@ public class CellData
             case 2:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 15; // 1111
-                for (int c = 0; c < cellsPerCol; c++)
+                for (int r = 0; r < cellsPerCol; r++)
                 {
-                    for (int cl = 0; cl < cols; cl++)
+                    for (int c = 0; c < cols; c++)
                     {
                         // Borders
-                        if (c == 0 || c == (cellsPerCol - 1) || cl == 0 || cl == (cols - 1))
+                        if (r == 0 || r == (cellsPerCol - 1) || c == 0 || c == (cols - 1))
                         {
-                            val.height = 0;
+                            encounterMapUD[r, c] = new EnctrCell(0);
+                            encounterMapLR[r, c] = new EnctrCell(0);
                         }
                         // Center
                         else
                         {
-                            val.height = GlobalVals.ENC_MAP_MX_HT;
+                            encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
+                            encounterMapLR[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
                         }
-                        encounterMapUD[c, cl] = val;
-                        encounterMapLR[c, cl] = val;
                     }
                 }
                 break;
@@ -98,28 +97,26 @@ public class CellData
             case 3:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 15; // 1111
-                for (int c = 0; c < cellsPerCol; c++)
+                for (int r = 0; r < cellsPerCol; r++)
                 {
-                    for (int cl = 0; cl < cols; cl++)
+                    for (int c = 0; c < cols; c++)
                     {
                         // Up-Down orientation
-                        val.height = cellsPerCol - c;
-                        encounterMapUD[c, cl] = val;
+                        encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_HPC - r);
                         // Left-Right orientation
-                        val.height = cl;
-                        encounterMapLR[c, cl] = val;
+                        encounterMapLR[r, c] = new EnctrCell(c);
                     }
                 }
                 break;
             default:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
-                for (int c = 0; c < cellsPerCol; c++)
+                for (int r = 0; r < cellsPerCol; r++)
                 {
-                    for (int cl = 0; cl < cols; cl++)
+                    for (int c = 0; c < cols; c++)
                     {
-                        encounterMapUD[c, cl] = null;
-                        encounterMapLR[c, cl] = null;
+                        encounterMapUD[r, c] = null;
+                        encounterMapLR[r, c] = null;
                     }
                 }
                 break;

@@ -163,12 +163,108 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9addb4fd41eda54abad2ebb89df541e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floors:
-  - mvLyr1: 15
+  floors: []
+  walls:
+  - mvLyr1: 0
     mvLyr2: 0
-    path: Assets/Resources/Prefabs/Panel_0.prefab
-    model: {fileID: 187704, guid: 3c3f8b235390d5e44878db835d81453f, type: 2}
-  walls: []
+    encounterMapUD:
+      col: 7
+      hPc: 6
+      rad: 2
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 1
+      - height: 2
+      - height: 3
+      - height: 4
+      - height: 5
+      - height: 6
+      - height: 7
+      - height: 8
+      - height: 9
+      - height: 10
+      - height: 11
+      - height: 12
+      - height: 13
+      - height: 14
+      - height: 15
+      - height: 16
+      - height: 17
+      - height: 18
+      - height: 19
+      - height: 20
+      - height: 21
+      - height: 22
+      - height: 23
+      - height: 24
+      - height: 25
+      - height: 26
+      - height: 27
+      - height: 28
+      - height: 29
+      - height: 30
+      - height: 31
+      - height: 32
+      - height: 33
+      - height: 34
+      - height: 35
+      - height: 0
+      - height: 37
+      - height: 0
+      - height: 39
+      - height: 0
+      - height: 41
+    encounterMapLR:
+      col: 7
+      hPc: 6
+      rad: 2
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 1
+      - height: 2
+      - height: 3
+      - height: 4
+      - height: 5
+      - height: 6
+      - height: 7
+      - height: 8
+      - height: 9
+      - height: 10
+      - height: 11
+      - height: 12
+      - height: 13
+      - height: 14
+      - height: 15
+      - height: 16
+      - height: 17
+      - height: 18
+      - height: 19
+      - height: 20
+      - height: 21
+      - height: 22
+      - height: 23
+      - height: 24
+      - height: 25
+      - height: 26
+      - height: 27
+      - height: 28
+      - height: 29
+      - height: 30
+      - height: 31
+      - height: 32
+      - height: 33
+      - height: 34
+      - height: 35
+      - height: 0
+      - height: 37
+      - height: 0
+      - height: 39
+      - height: 0
+      - height: 41
+    path: Assets/Resources/Prefabs/wall_c.mb
+    model: {fileID: 100000, guid: 9d249cf988c95964ead2bee4f0d6f062, type: 3}
   platforms: []
   ramps: []
   special: []
