@@ -6,7 +6,7 @@ using UnityEngine;
 public class HexRect
 {
     [SerializeField]
-    private int col;
+    private int cCnt;
     [SerializeField]
     private int hPc;
     [SerializeField]
@@ -22,32 +22,27 @@ public class HexRect
     {
         rad = radius;
         hPc = 2 * (radius + 1);
-        col = hPc + 1;
+        cCnt = hPc + 1;
         sharpCor = (radius % 2 == 0) ? true : false;
-        hRect = new EnctrCell[hPc * col];
+        hRect = new EnctrCell[hPc * cCnt];
 
-        for (int r = 0; r < hPc; r++)
+        for (int i = 0; i < (hPc * cCnt); i++)
         {
-            for (int c = 0; c < col; c++)
-            {
-                hRect[(r * col) + c] = null;
-            }
+            hRect[i] = null;
         }
     }
 
     // Copy Constructor
     public HexRect(HexRect toCopy)
     {
-        col = toCopy.col;
+        cCnt = toCopy.cCnt;
         hPc = toCopy.hPc;
         sharpCor = toCopy.sharpCor;
-        hRect = new EnctrCell[hPc * col];
-        for (int r = 0; r < hPc; r++)
+        hRect = new EnctrCell[hPc * cCnt];
+
+        for (int i = 0; i < (hPc * cCnt); i++)
         {
-            for (int c = 0; c < col; c++)
-            {
-                hRect[(r * col) + c] = toCopy.hRect[(r * col) + c];
-            }
+            hRect[i] = toCopy.hRect[i];
         }
     }
 
@@ -60,7 +55,13 @@ public class HexRect
     // Get column count
     public int ColCnt()
     {
-        return col;
+        return cCnt;
+    }
+
+    // Is corner sharp
+    public bool SharpCor()
+    {
+        return sharpCor;
     }
 
     // Index Operator
@@ -78,22 +79,22 @@ public class HexRect
             }
             else
             {
-                return hRect[(rowKey * col) + colKey];
+                return hRect[(rowKey * cCnt) + colKey];
             }
         }
         set
         {
             if (sharpCor && (colKey % 2 != 0) && (rowKey == (hPc - 1)))
             {
-                hRect[(rowKey * col) + colKey] = default(EnctrCell);
+                hRect[(rowKey * cCnt) + colKey] = new EnctrCell();
             }
             else if (!sharpCor && (colKey % 2 == 0) && (rowKey == 0))
             {
-                hRect[(rowKey * col) + colKey] = default(EnctrCell);
+                hRect[(rowKey * cCnt) + colKey] = new EnctrCell();
             }
             else
             {
-                hRect[(rowKey * col) + colKey] = value;
+                hRect[(rowKey * cCnt) + colKey] = value;
             }
         }
     }
@@ -105,7 +106,7 @@ public class HexRect
         if (sharpCor)
         {
             // Iterate through each column
-            for (int c = 0; c < col; c++)
+            for (int c = 0; c < cCnt; c++)
             {
                 // If column is even index
                 if (c % 2 == 0)
@@ -113,7 +114,7 @@ public class HexRect
                     // for each cell in column
                     for (int r = 0; r < hPc; r++)
                     {
-                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
+                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
                     }
                 }
                 // If column is odd index
@@ -122,7 +123,7 @@ public class HexRect
                     // for all but bottom cell in column
                     for (int r = 0; r < (hPc - 1); r++)
                     {
-                        hRectRot[r, c] = hRect[(((hPc - 2) - r) * col) + (col - 1) - c];
+                        hRectRot[r, c] = hRect[(((hPc - 2) - r) * cCnt) + (cCnt - 1) - c];
                     }
                 }
             }
@@ -130,7 +131,7 @@ public class HexRect
         else
         {
             // Iterate through each column
-            for (int c = 0; c < col; c++)
+            for (int c = 0; c < cCnt; c++)
             {
                 // If column is even index
                 if (c % 2 == 0)
@@ -138,7 +139,7 @@ public class HexRect
                     // for all but top cell in column
                     for (int r = 1; r < hPc; r++)
                     {
-                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
+                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
                     }
                 }
                 // If column is odd index
@@ -147,7 +148,7 @@ public class HexRect
                     // for each cell in column
                     for (int r = 0; r < hPc; r++)
                     {
-                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
+                        hRectRot[r, c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
                     }
                 }
             }
@@ -162,7 +163,7 @@ public class HexRect
         if (sharpCor)
         {
             // Iterate through half of columns
-            for (int c = 0; c <= (col / 2); c++)
+            for (int c = 0; c <= (cCnt / 2); c++)
             {
                 // If column is even index
                 if (c % 2 == 0)
@@ -171,8 +172,8 @@ public class HexRect
                     for (int r = 0; r <= (hPc / 2); r++)
                     {
                         tmp = hRect[(r * hPc) + c];
-                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
-                        hRect[(((hPc - 1) - r) * col) + (col - 1) - c] = tmp;
+                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
+                        hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c] = tmp;
                     }
                 }
                 // If column is odd index
@@ -182,8 +183,8 @@ public class HexRect
                     for (int r = 0; r <= (hPc / 2); r++)
                     {
                         tmp = hRect[(r * hPc) + c];
-                        hRect[(r * hPc) + c] = hRect[(((hPc - 2) - r) * col) + (col - 1) - c];
-                        hRect[(((hPc - 2) - r) * col) + (col - 1) - c] = tmp;
+                        hRect[(r * hPc) + c] = hRect[(((hPc - 2) - r) * cCnt) + (cCnt - 1) - c];
+                        hRect[(((hPc - 2) - r) * cCnt) + (cCnt - 1) - c] = tmp;
                     }
                 }
             }
@@ -191,7 +192,7 @@ public class HexRect
         else
         {
             // Iterate through half of columns
-            for (int c = 0; c <= (col / 2); c++)
+            for (int c = 0; c <= (cCnt / 2); c++)
             {
                 // If column is even index
                 if (c % 2 == 0)
@@ -200,8 +201,8 @@ public class HexRect
                     for (int r = 1; r <= (hPc / 2); r++)
                     {
                         tmp = hRect[(r * hPc) + c];
-                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
-                        hRect[(((hPc - 1) - r) * col) + (col - 1) - c] = tmp;
+                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
+                        hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c] = tmp;
                     }
                 }
                 // If column is odd index
@@ -211,8 +212,8 @@ public class HexRect
                     for (int r = 0; r <= (hPc / 2); r++)
                     {
                         tmp = hRect[(r * hPc) + c];
-                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * col) + (col - 1) - c];
-                        hRect[(((hPc - 1) - r) * col) + (col - 1) - c] = tmp;
+                        hRect[(r * hPc) + c] = hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c];
+                        hRect[(((hPc - 1) - r) * cCnt) + (cCnt - 1) - c] = tmp;
                     }
                 }
             }
@@ -233,28 +234,28 @@ public class HexRect
         if (rad == 0)
         {
             // trim top-left corner
-            hRectTrim[0, 0] = default(EnctrCell);
+            hRectTrim[0, 0] = new EnctrCell();
             // trim top-right corner
-            hRectTrim[0, (col - 1)] = default(EnctrCell);
+            hRectTrim[0, (cCnt - 1)] = new EnctrCell();
             // trim bottom-left corner
-            hRectTrim[(hPc - 1), 0] = default(EnctrCell);
+            hRectTrim[(hPc - 1), 0] = new EnctrCell();
             // trim bottom-right corner
-            hRectTrim[(hPc - 1), (col - 1)] = default(EnctrCell);
+            hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
         }
         else if (rad == 1)
         {
             // trim top-left corner
-            hRectTrim[0, 1] = default(EnctrCell);
-            hRectTrim[1, 0] = default(EnctrCell);
+            hRectTrim[0, 1] = new EnctrCell();
+            hRectTrim[1, 0] = new EnctrCell();
             // trim top-right corner
-            hRectTrim[0, (col - 2)] = default(EnctrCell);
-            hRectTrim[1, (col - 1)] = default(EnctrCell);
+            hRectTrim[0, (cCnt - 2)] = new EnctrCell();
+            hRectTrim[1, (cCnt - 1)] = new EnctrCell();
             // trim bottom-left corner
-            hRectTrim[(hPc - 1), 0] = default(EnctrCell);
-            hRectTrim[(hPc - 1), 1] = default(EnctrCell);
+            hRectTrim[(hPc - 1), 0] = new EnctrCell();
+            hRectTrim[(hPc - 1), 1] = new EnctrCell();
             // trim bottom-right corner
-            hRectTrim[(hPc - 1), (col - 1)] = default(EnctrCell);
-            hRectTrim[(hPc - 1), (col - 2)] = default(EnctrCell);
+            hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
+            hRectTrim[(hPc - 1), (cCnt - 2)] = new EnctrCell();
         }
         else if(sharpCor)
         {
@@ -269,22 +270,22 @@ public class HexRect
                     // trim top-left corner
                     if (TL && (c < corColCnt - (2 * r)))
                     {
-                        hRectTrim[r, c] = default(EnctrCell);
+                        hRectTrim[r, c] = new EnctrCell();
                     }
                     // trim top-right corner
                     else if (TR && (c >= (2 * r)))
                     {
-                        hRectTrim[r, c + (col - corColCnt - 1)] = default(EnctrCell);
+                        hRectTrim[r, c + (cCnt - corColCnt - 1)] = new EnctrCell();
                     }
                     // trim bottom-left corner
                     else if (BL && (c < 2 * (r + 1)))
                     {
-                        hRectTrim[r + (tCorRowCnt - hPc - 1), c] = default(EnctrCell);
+                        hRectTrim[r + (tCorRowCnt - hPc - 1), c] = new EnctrCell();
                     }
-                    // trim bottom-riht corner
+                    // trim bottom-right corner
                     else if (BR && (c >= corColCnt - (2 * (c + 1))))
                     {
-                        hRectTrim[r + (tCorRowCnt - hPc - 1), c + (col - corColCnt - 1)] = default(EnctrCell);
+                        hRectTrim[r + (tCorRowCnt - hPc - 1), c + (cCnt - corColCnt - 1)] = new EnctrCell();
                     }
                 }
             }
@@ -301,24 +302,24 @@ public class HexRect
                     // trim top-left corner
                     if (TL)
                     {
-                        hRectTrim[r, c] = default(EnctrCell);
+                        hRectTrim[r, c] = new EnctrCell();
                     }
                     // trim top-right corner
                     else if (TR)
                     {
-                        hRectTrim[r, c + (col - corColCnt - 1)] = default(EnctrCell);
+                        hRectTrim[r, c + (cCnt - corColCnt - 1)] = new EnctrCell();
                     }
                     if (r < bCorRowCnt)
                     {
                         // trim bottom-left corner
                         if (BL)
                         {
-                            hRectTrim[r + (tCorRowCnt - hPc - 1), c] = default(EnctrCell);
+                            hRectTrim[r + (tCorRowCnt - hPc - 1), c] = new EnctrCell();
                         }
-                        // trim bottom-riht corner
+                        // trim bottom-right corner
                         else if (BR)
                         {
-                            hRectTrim[r + (tCorRowCnt - hPc - 1), c + (col - corColCnt - 1)] = default(EnctrCell);
+                            hRectTrim[r + (tCorRowCnt - hPc - 1), c + (cCnt - corColCnt - 1)] = new EnctrCell();
                         }
                     }
                 }

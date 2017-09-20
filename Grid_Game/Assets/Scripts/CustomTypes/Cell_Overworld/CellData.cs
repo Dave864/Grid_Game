@@ -41,6 +41,7 @@ public class CellData
         encounterMapLR = new HexRect(GlobalVals.ENC_MAP_RAD);
         int cellsPerCol = GlobalVals.ENC_MAP_HPC;
         int cols = GlobalVals.ENC_MAP_COL;
+        int r, c;
 
         switch (type)
         {
@@ -48,48 +49,45 @@ public class CellData
             case 0:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 0; // 0000
-                for (int r = 0; r < cellsPerCol; r++)
+                for (int i = 0; i < (cellsPerCol * cols); i++)
                 {
-                    for (int c = 0; c < cols; c++)
-                    {
-                        encounterMapUD[r, c] = new EnctrCell(0);
-                        encounterMapLR[r, c] = new EnctrCell(0);
-                    }
+                    r = i / cols;
+                    c = i - (r * cols);
+                    encounterMapUD[r, c] = new EnctrCell(0);
+                    encounterMapLR[r, c] = new EnctrCell(0);
                 }
                 break;
             // Default wall
             case 1:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
-                for (int r = 0; r < cellsPerCol; r++)
+                for (int i = 0; i < (cellsPerCol * cols); i++)
                 {
-                    for (int c = 0; c < cols; c++)
-                    {
-                        encounterMapUD[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
-                        encounterMapLR[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
-                    }
+                    r = i / cols;
+                    c = i - (r * cols);
+                    encounterMapUD[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
+                    encounterMapLR[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
                 }
                 break;
             // Default platform
             case 2:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 15; // 1111
-                for (int r = 0; r < cellsPerCol; r++)
+                for (int i = 0; i < (cellsPerCol * cols); i++)
                 {
-                    for (int c = 0; c < cols; c++)
+                    r = i / cols;
+                    c = i - (r * cols);
+                    // Borders
+                    if (r == 0 || r == (cellsPerCol - 1) || c == 0 || c == (cols - 1))
                     {
-                        // Borders
-                        if (r == 0 || r == (cellsPerCol - 1) || c == 0 || c == (cols - 1))
-                        {
-                            encounterMapUD[r, c] = new EnctrCell(0);
-                            encounterMapLR[r, c] = new EnctrCell(0);
-                        }
-                        // Center
-                        else
-                        {
-                            encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
-                            encounterMapLR[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
-                        }
+                        encounterMapUD[r, c] = new EnctrCell(0);
+                        encounterMapLR[r, c] = new EnctrCell(0);
+                    }
+                    // Center
+                    else
+                    {
+                        encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
+                        encounterMapLR[r, c] = new EnctrCell(GlobalVals.ENC_MAP_MX_HT);
                     }
                 }
                 break;
@@ -97,27 +95,25 @@ public class CellData
             case 3:
                 mvLyr1 = 15; // 1111
                 mvLyr2 = 15; // 1111
-                for (int r = 0; r < cellsPerCol; r++)
+                for (int i = 0; i < (cellsPerCol * cols); i++)
                 {
-                    for (int c = 0; c < cols; c++)
-                    {
-                        // Up-Down orientation
-                        encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_HPC - r);
-                        // Left-Right orientation
-                        encounterMapLR[r, c] = new EnctrCell(c);
-                    }
+                    r = i / cols;
+                    c = i - (r * cols);
+                    // Up-Down orientation
+                    encounterMapUD[r, c] = new EnctrCell(GlobalVals.ENC_MAP_HPC - r);
+                    // Left-Right orientation
+                    encounterMapLR[r, c] = new EnctrCell(c);
                 }
                 break;
             default:
                 mvLyr1 = 0; // 0000
                 mvLyr2 = 0; // 0000
-                for (int r = 0; r < cellsPerCol; r++)
+                for (int i = 0; i < (cellsPerCol * cols); i++)
                 {
-                    for (int c = 0; c < cols; c++)
-                    {
-                        encounterMapUD[r, c] = null;
-                        encounterMapLR[r, c] = null;
-                    }
+                    r = i / cols;
+                    c = i - (r * cols);
+                    encounterMapUD[r, c] = null;
+                    encounterMapLR[r, c] = null;
                 }
                 break;
         }
