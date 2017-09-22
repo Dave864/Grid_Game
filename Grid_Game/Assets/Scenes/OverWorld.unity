@@ -164,9 +164,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floors: []
-  walls:
-  - mvLyr1: 0
-    mvLyr2: 0
+  walls: []
+  platforms: []
+  ramps:
+  - mvLyr1: 15
+    mvLyr2: 15
     encounterMapUD:
       cCnt: 5
       hPc: 4
@@ -174,25 +176,25 @@ MonoBehaviour:
       sharpCor: 0
       hRect:
       - height: -1
-      - height: 1
+      - height: 4
+      - height: -1
+      - height: 4
       - height: -1
       - height: 3
-      - height: -1
-      - height: 5
-      - height: 6
-      - height: 7
-      - height: 8
-      - height: 9
-      - height: 10
-      - height: 11
-      - height: 12
-      - height: 13
-      - height: 14
-      - height: 15
-      - height: 16
-      - height: 17
-      - height: 18
-      - height: 19
+      - height: 3
+      - height: 3
+      - height: 3
+      - height: 3
+      - height: 2
+      - height: 2
+      - height: 2
+      - height: 2
+      - height: 2
+      - height: 1
+      - height: 1
+      - height: 1
+      - height: 1
+      - height: 1
     encounterMapLR:
       cCnt: 5
       hPc: 4
@@ -204,25 +206,23 @@ MonoBehaviour:
       - height: -1
       - height: 3
       - height: -1
-      - height: 5
-      - height: 6
-      - height: 7
-      - height: 8
-      - height: 9
-      - height: 10
-      - height: 11
-      - height: 12
-      - height: 13
-      - height: 14
-      - height: 15
-      - height: 16
-      - height: 17
-      - height: 18
-      - height: 19
-    path: Assets/Resources/Prefabs/wall_c.mb
-    model: {fileID: 100000, guid: 9d249cf988c95964ead2bee4f0d6f062, type: 3}
-  platforms: []
-  ramps: []
+      - height: 0
+      - height: 1
+      - height: 2
+      - height: 3
+      - height: 4
+      - height: 0
+      - height: 1
+      - height: 2
+      - height: 3
+      - height: 4
+      - height: 0
+      - height: 1
+      - height: 2
+      - height: 3
+      - height: 4
+    path: Assets/Resources/Prefabs/ramp.mb
+    model: {fileID: 100000, guid: a099dd30794be0f4ebdaa7f839b65402, type: 3}
   special: []
 --- !u!4 &529142986
 Transform:

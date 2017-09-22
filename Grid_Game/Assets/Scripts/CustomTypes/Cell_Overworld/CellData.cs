@@ -65,8 +65,8 @@ public class CellData
                 {
                     r = i / cols;
                     c = i - (r * cols);
-                    encounterMapUD[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
-                    encounterMapLR[r, c] = new EnctrCell((r * GlobalVals.ENC_MAP_COL) + c);
+                    encounterMapUD[r, c] = new EnctrCell(0);
+                    encounterMapLR[r, c] = new EnctrCell(0);
                 }
                 break;
             // Default platform

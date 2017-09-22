@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEditor;
 
 // Window for editing the information of a cell
@@ -30,10 +31,11 @@ public class CellDataWindow : EditorWindow
     private string mvArrLROff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off LR.png";
     private string mvArrUDOff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off UD.png";
     private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
+    private string htReference_path = "Assets/Resources/Materials/GUI Images/Enc Cell Ht Reference.png";
 
-    // Used for editing encounter maps
-    //private GUIContent[] selGridLR = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
-    //private GUIContent[] selGridUD = new GUIContent[GlobalVals.ENC_MAP_HPC * GlobalVals.ENC_MAP_COL];
+    // Data for Encounter Map GUI
+    private bool type = true;
+    private string encMapOr = "Left - Right";
 
     public static void AdvCellOpt(CellData cell, CELLTYPES t)
     {
@@ -213,21 +215,41 @@ public class CellDataWindow : EditorWindow
     private void EncounterMapGUI()
     {
         GUI.enabled = true;
+        Texture2D htReference = (Texture2D)AssetDatabase.LoadAssetAtPath(htReference_path, typeof(Texture2D));
+
         GUILayout.BeginHorizontal();
 
         // Height color reference image
-        // Left-Right orientation of map
-        EncounterMapSelGrid(info.encounterMapLR, true);
-        // Up-Down orientation of map
-        EncounterMapSelGrid(info.encounterMapUD, false);
+        GUILayout.Label(htReference, GUILayout.Width(htReference.width));
+
+        // Button to pick orientation
+        if(GUILayout.Button(encMapOr))
+        {
+            type = !type;
+            encMapOr = type ? "Left - Right" : "Up - Down";
+        }
+
+        // Create selection grid
+        if (type)
+        {
+            EncounterMapSelGrid(info.encounterMapLR, type);
+        }
+        else
+        {
+            EncounterMapSelGrid(info.encounterMapUD, type);
+        }
 
         GUILayout.EndHorizontal();
     }
 
     // Selection grid for an encounter map
+    // true is Left - Right orientation
+    // false is Up - Down orientaton
     private void EncounterMapSelGrid(HexRect hexRect, bool type)
     {
         int w = 40;
+        float hVal;
+
         GUILayout.BeginVertical("Box", GUILayout.Width(w * hexRect.ColCnt()));
         if (type)
         {
@@ -259,9 +281,12 @@ public class CellDataWindow : EditorWindow
                 }
                 if (hexRect[r,c] != null)
                 {
+                    hVal = ((float)hexRect[r, c].height / (float)GlobalVals.ENC_MAP_MX_HT) * 0.33f;
+                    GUI.color = Color.HSVToRGB(hVal, 1.0f, 1.0f);
                     GUILayout.Button(hexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w));
                 }
             }
+            GUI.color = Color.white;
             GUILayout.EndVertical();
         }
         GUILayout.EndHorizontal();
