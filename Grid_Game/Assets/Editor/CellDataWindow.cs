@@ -33,9 +33,14 @@ public class CellDataWindow : EditorWindow
     private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
     private string htReference_path = "Assets/Resources/Materials/GUI Images/Enc Cell Ht Reference.png";
 
-    // Data for Encounter Map GUI
+    // Values for Encounter Map GUI
     private bool type = true;
     private string encMapOr = "Left - Right";
+    bool ulTog = false;
+    bool blTog = false;
+    bool urTog = false;
+    bool brTog = false;
+    //private int curInd = 0;
 
     public static void AdvCellOpt(CellData cell, CELLTYPES t)
     {
@@ -48,16 +53,16 @@ public class CellDataWindow : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.BeginVertical();
+        //EditorGUILayout.BeginVertical();
         EditorGUILayout.BeginHorizontal();
         // Movement GUI
         MovementGui();
 
         // Where a preview of model should go
-        EditorGUILayout.EndHorizontal();
         // Encounter map GUI
         EncounterMapGUI();
-        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndHorizontal();
+        //EditorGUILayout.EndVertical();
     }
 
     // Interface for editing movement settings of a cell
@@ -222,6 +227,7 @@ public class CellDataWindow : EditorWindow
         // Height color reference image
         GUILayout.Label(htReference, GUILayout.Width(htReference.width));
 
+        GUILayout.BeginVertical();
         // Button to pick orientation
         if(GUILayout.Button(encMapOr))
         {
@@ -229,6 +235,23 @@ public class CellDataWindow : EditorWindow
             encMapOr = type ? "Left - Right" : "Up - Down";
         }
 
+        // Toggle used to see trimmed corners
+        GUILayout.BeginVertical("Box");
+        EditorGUILayout.LabelField("Trim Corner Preview");
+        GUILayout.BeginHorizontal();
+        EditorGUIUtility.labelWidth = 70.0f;
+        ulTog = EditorGUILayout.Toggle("Top - Left", ulTog);
+        urTog = EditorGUILayout.ToggleLeft("Top - Right", urTog);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        blTog = EditorGUILayout.Toggle("Bot - Left", blTog);
+        brTog = EditorGUILayout.ToggleLeft("Bot - Right", brTog);
+        EditorGUIUtility.labelWidth = 0.0f;
+        GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
+
+        GUILayout.EndVertical();
         // Create selection grid
         if (type)
         {
@@ -249,6 +272,7 @@ public class CellDataWindow : EditorWindow
     {
         int w = 40;
         float hVal;
+        HexRect trimHexRect = hexRect.TrimCorners(ulTog, urTog, blTog, brTog);
 
         GUILayout.BeginVertical("Box", GUILayout.Width(w * hexRect.ColCnt()));
         if (type)
@@ -260,12 +284,12 @@ public class CellDataWindow : EditorWindow
             GUILayout.Label("Up-Down Orientation");
         }
         GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-        for (int c = 0; c < hexRect.ColCnt(); c++)
+        for (int c = 0; c < trimHexRect.ColCnt(); c++)
         {
             GUILayout.BeginVertical();
-            for (int r = 0; r < hexRect.HexPerRow(); r++)
+            for (int r = 0; r < trimHexRect.HexPerRow(); r++)
             {
-                if (hexRect.SharpCor())
+                if (trimHexRect.SharpCor())
                 {
                     if ((r == 0) && (c % 2 != 0))
                     {
@@ -279,11 +303,21 @@ public class CellDataWindow : EditorWindow
                         GUILayout.Space(w / 2);
                     }
                 }
-                if (hexRect[r,c] != null)
+                if (trimHexRect[r,c] != null)
                 {
-                    hVal = ((float)hexRect[r, c].height / (float)GlobalVals.ENC_MAP_MX_HT) * 0.33f;
-                    GUI.color = Color.HSVToRGB(hVal, 1.0f, 1.0f);
-                    GUILayout.Button(hexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w));
+                    if (trimHexRect[r,c].height < 0)
+                    {
+                        GUI.color = Color.blue;
+                        GUI.enabled = false;
+                        GUILayout.Button("", GUILayout.Width(w), GUILayout.Height(w));
+                        GUI.enabled = true;
+                    }
+                    else
+                    {
+                        hVal = (trimHexRect[r, c].height / (float)GlobalVals.ENC_MAP_MX_HT) * 0.33f;
+                        GUI.color = Color.HSVToRGB(hVal, 1.0f, 1.0f);
+                        GUILayout.Button(trimHexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w));
+                    }                   
                 }
             }
             GUI.color = Color.white;

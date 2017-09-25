@@ -234,28 +234,52 @@ public class HexRect
         if (rad == 0)
         {
             // trim top-left corner
-            hRectTrim[0, 0] = new EnctrCell();
+            if (TL)
+            {
+                hRectTrim[0, 0] = new EnctrCell();
+            }
             // trim top-right corner
-            hRectTrim[0, (cCnt - 1)] = new EnctrCell();
+            if (TR)
+            {
+                hRectTrim[0, (cCnt - 1)] = new EnctrCell();
+            }
             // trim bottom-left corner
-            hRectTrim[(hPc - 1), 0] = new EnctrCell();
+            if (BL)
+            {
+                hRectTrim[(hPc - 1), 0] = new EnctrCell();
+            }
             // trim bottom-right corner
-            hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
+            if (BR)
+            {
+                hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
+            }
         }
         else if (rad == 1)
         {
             // trim top-left corner
-            hRectTrim[0, 1] = new EnctrCell();
-            hRectTrim[1, 0] = new EnctrCell();
+            if (TL)
+            {
+                hRectTrim[0, 1] = new EnctrCell();
+                hRectTrim[1, 0] = new EnctrCell();
+            }            
             // trim top-right corner
-            hRectTrim[0, (cCnt - 2)] = new EnctrCell();
-            hRectTrim[1, (cCnt - 1)] = new EnctrCell();
+            if (TR)
+            {
+                hRectTrim[0, (cCnt - 2)] = new EnctrCell();
+                hRectTrim[1, (cCnt - 1)] = new EnctrCell();
+            }           
             // trim bottom-left corner
-            hRectTrim[(hPc - 1), 0] = new EnctrCell();
-            hRectTrim[(hPc - 1), 1] = new EnctrCell();
+            if (BL)
+            {
+                hRectTrim[(hPc - 1), 0] = new EnctrCell();
+                hRectTrim[(hPc - 1), 1] = new EnctrCell();
+            }           
             // trim bottom-right corner
-            hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
-            hRectTrim[(hPc - 1), (cCnt - 2)] = new EnctrCell();
+            if (BR)
+            {
+                hRectTrim[(hPc - 1), (cCnt - 1)] = new EnctrCell();
+                hRectTrim[(hPc - 1), (cCnt - 2)] = new EnctrCell();
+            }            
         }
         else if(sharpCor)
         {
@@ -273,19 +297,19 @@ public class HexRect
                         hRectTrim[r, c] = new EnctrCell();
                     }
                     // trim top-right corner
-                    else if (TR && (c >= (2 * r)))
+                    if (TR && (c >= 2 * r))
                     {
-                        hRectTrim[r, c + (cCnt - corColCnt - 1)] = new EnctrCell();
+                        hRectTrim[r, c + (cCnt - corColCnt)] = new EnctrCell();
                     }
                     // trim bottom-left corner
-                    else if (BL && (c < 2 * (r + 1)))
+                    if (BL && (c < 2 * (r + 1)))
                     {
-                        hRectTrim[r + (tCorRowCnt - hPc - 1), c] = new EnctrCell();
+                        hRectTrim[r + (hPc - tCorRowCnt), c] = new EnctrCell();
                     }
                     // trim bottom-right corner
-                    else if (BR && (c >= corColCnt - (2 * (c + 1))))
+                    if (BR && (c >= (corColCnt - (2 * (r + 1)))))
                     {
-                        hRectTrim[r + (tCorRowCnt - hPc - 1), c + (cCnt - corColCnt - 1)] = new EnctrCell();
+                        hRectTrim[r + (hPc - tCorRowCnt), c + (cCnt - corColCnt)] = new EnctrCell();
                     }
                 }
             }
@@ -300,26 +324,26 @@ public class HexRect
                 for (int c = 0; c < corColCnt; c++)
                 {
                     // trim top-left corner
-                    if (TL)
+                    if (TL && ((c < corColCnt - (2 * r) + 1) || (c == 0)))
                     {
                         hRectTrim[r, c] = new EnctrCell();
                     }
                     // trim top-right corner
-                    else if (TR)
+                    if (TR && ((c >= (2 * r) - 1) || (c == corColCnt - 1)))
                     {
-                        hRectTrim[r, c + (cCnt - corColCnt - 1)] = new EnctrCell();
+                        hRectTrim[r, c + (cCnt - corColCnt)] = new EnctrCell();
                     }
                     if (r < bCorRowCnt)
                     {
                         // trim bottom-left corner
-                        if (BL)
+                        if (BL && (c < (r + 1) * 2))
                         {
-                            hRectTrim[r + (tCorRowCnt - hPc - 1), c] = new EnctrCell();
+                            hRectTrim[r + (hPc - tCorRowCnt + 1), c] = new EnctrCell();
                         }
                         // trim bottom-right corner
-                        else if (BR)
+                        if (BR && (c >= corColCnt - ((r + 1) * 2)))
                         {
-                            hRectTrim[r + (tCorRowCnt - hPc - 1), c + (cCnt - corColCnt - 1)] = new EnctrCell();
+                            hRectTrim[r + (hPc - tCorRowCnt + 1), c + (cCnt - corColCnt)] = new EnctrCell();
                         }
                     }
                 }

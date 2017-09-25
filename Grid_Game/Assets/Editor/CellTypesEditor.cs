@@ -32,7 +32,7 @@ public class CellTypesEditor : Editor
     }
 
     public override void OnInspectorGUI()
-    {        
+    {
         // Popup that lets you choose between the different cell lists
         curList = (CELLTYPES)EditorGUILayout.EnumPopup("Types: ", curList);
 
