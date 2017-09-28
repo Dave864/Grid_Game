@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEditor;
 
 public enum CELLTYPES
@@ -17,6 +18,7 @@ public enum CELLTYPES
 [CustomEditor(typeof(CellTypes))]
 public class CellTypesEditor : Editor
 {
+    private CellDataWindow advOptWindow;
     private Texture2D advOptButImg;
     private CellTypes cellTypesRef;
 
@@ -50,7 +52,7 @@ public class CellTypesEditor : Editor
         }
         if(EditorGUI.EndChangeCheck())
         {
-            Undo.RecordObject(target, "Added a new cell type");
+            Undo.RecordObject(target, "Added a new cell to list");
         }
 
         if(GUI.changed)
@@ -91,12 +93,16 @@ public class CellTypesEditor : Editor
             // Button for advanced options
             GUI.enabled = (curInfo.GetModel() != null) ? true : false;
             // Begin Change Check
+            EditorGUI.BeginChangeCheck();
             if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
-                //curInfo = new CellData(advOptMenu(curInfo));
                 AdvOptMenu(curInfo);
             }
             // End Change check
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Changed properties of the cell");
+            }
             EditorGUILayout.BeginVertical();
 
             // Field to insert the model to use
@@ -114,6 +120,9 @@ public class CellTypesEditor : Editor
             curInfo.SetPath(AssetDatabase.GetAssetPath(curInfo.GetModel()));
             EditorGUILayout.LabelField("Path:", curInfo.GetPath());
 
+            EditorGUILayout.LabelField("Layer 1: " + curInfo.mvmt.GetMv(true).ToString());
+            EditorGUILayout.LabelField("Layer 2: " + curInfo.mvmt.GetMv(false).ToString());
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();  
@@ -128,7 +137,7 @@ public class CellTypesEditor : Editor
             }
             if(EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(target, "Removed an item from the cell");
+                Undo.RecordObject(target, "Removed a cell from the list");
             }
 
             // Button to clear the info of the cell
@@ -151,7 +160,6 @@ public class CellTypesEditor : Editor
             EditorGUILayout.EndHorizontal();
             GUI.enabled = true;
         }
-        SetList();
     }
 
     // Add a new cell to the current list
@@ -174,13 +182,15 @@ public class CellTypesEditor : Editor
         if(curList != CELLTYPES.SPECIAL)
         {
             Debug.Log("Change standard cell");
-            CellDataWindow.AdvCellOpt(cell, curList);
+            advOptWindow = (CellDataWindow)EditorWindow.GetWindow(typeof(CellDataWindow), true, "Cell Data");
+            advOptWindow.info = cell;
+            advOptWindow.curType = curList;
+            advOptWindow.ShowAuxWindow();
         }
         else
         {
             Debug.Log("Attempt to change special cell");
         }
-        //return null;
     }
 
     // Changes the current list being displayed
@@ -211,36 +221,6 @@ public class CellTypesEditor : Editor
             default:
                 Debug.LogError("Unkown cell list type!");
                 curCellList = null;
-                break;
-        }
-    }
-
-    void SetList()
-    {
-        switch (curList)
-        {
-            case CELLTYPES.FLOOR:
-                Debug.Log("Saved changes to Floors list");
-                cellTypesRef.floors = curCellList;
-                break;
-            case CELLTYPES.WALL:
-                Debug.Log("Saved changes to Walls list");
-                cellTypesRef.walls = curCellList;
-                break;
-            case CELLTYPES.PLATFORM:
-                Debug.Log("Saved changes to Platforms list");
-                cellTypesRef.platforms = curCellList;
-                break;
-            case CELLTYPES.RAMP:
-                Debug.Log("Saved changes to Ramps list");
-                cellTypesRef.ramps = curCellList;
-                break;
-            case CELLTYPES.SPECIAL:
-                Debug.Log("Saved changes to Special list");
-                cellTypesRef.special = curCellList;
-                break;
-            default:
-                Debug.LogError("Unknown cell list type!");
                 break;
         }
     }

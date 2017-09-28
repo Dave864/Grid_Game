@@ -46,24 +46,6 @@ public class HexRect
         }
     }
 
-    // Get row count
-    public int HexPerRow()
-    {
-        return hPc;
-    }
-
-    // Get column count
-    public int ColCnt()
-    {
-        return cCnt;
-    }
-
-    // Is corner sharp
-    public bool SharpCor()
-    {
-        return sharpCor;
-    }
-
     // Index Operator
     public EnctrCell this[int rowKey, int colKey]
     {
@@ -97,6 +79,24 @@ public class HexRect
                 hRect[(rowKey * cCnt) + colKey] = value;
             }
         }
+    }
+
+    // Get row count
+    public int HexPerRow()
+    {
+        return hPc;
+    }
+
+    // Get column count
+    public int ColCnt()
+    {
+        return cCnt;
+    }
+
+    // Is corner sharp
+    public bool SharpCor()
+    {
+        return sharpCor;
     }
 
     // Make a HexRect rotated 180 degrees

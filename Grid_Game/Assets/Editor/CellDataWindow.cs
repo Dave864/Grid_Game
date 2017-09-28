@@ -40,16 +40,7 @@ public class CellDataWindow : EditorWindow
     bool blTog = false;
     bool urTog = false;
     bool brTog = false;
-    //private int curInd = 0;
-
-    public static void AdvCellOpt(CellData cell, CELLTYPES t)
-    {
-        CellDataWindow window = (CellDataWindow)GetWindow(typeof(CellDataWindow), true, "Cell Data");
-        window.info = cell;
-        window.curType = t;
-
-        window.ShowAuxWindow();
-    }
+    private int curInd = 0;
 
     private void OnGUI()
     {
@@ -134,7 +125,7 @@ public class CellDataWindow : EditorWindow
         // prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
 
         // Top button
-        if (info.CanMvTop(lyr))
+        if (/*info.mvmt.CanMvTop(lyr)*/info.mvmt[lyr, MVMT.TOP])
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -147,13 +138,14 @@ public class CellDataWindow : EditorWindow
         GUILayout.Space((mvButWdth * LRButScale) + elemSpacing);
         if (GUILayout.Button(mvArrowUD, GUILayout.Width(mvButLen), GUILayout.Height(mvButWdth)))
         {
-            info.SetTop(!info.CanMvTop(lyr), lyr);
+            //info.mvmt.SetTop(!info.mvmt.CanMvTop(lyr), lyr);
+            info.mvmt[lyr, MVMT.TOP] = !info.mvmt[lyr, MVMT.TOP];
         }
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         // Left button
-        if (info.CanMvLeft(lyr))
+        if (/*info.mvmt.CanMvLeft(lyr)*/info.mvmt[lyr, MVMT.LFT])
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -163,7 +155,8 @@ public class CellDataWindow : EditorWindow
         }
         if (GUILayout.Button(mvArrowLR, GUILayout.Width(mvButWdth * LRButScale), GUILayout.Height(mvButLen)))
         {
-            info.SetLeft(!info.CanMvLeft(lyr), lyr);
+            //info.mvmt.SetLeft(!info.mvmt.CanMvLeft(lyr), lyr);
+            info.mvmt[lyr, MVMT.LFT] = !info.mvmt[lyr, MVMT.LFT];
         }
 
         // Layer label
@@ -179,7 +172,7 @@ public class CellDataWindow : EditorWindow
         GUI.enabled = butEnable;
 
         // Right button
-        if (info.CanMvRight(lyr))
+        if (/*info.mvmt.CanMvRight(lyr)*/info.mvmt[lyr, MVMT.RGT])
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -189,13 +182,14 @@ public class CellDataWindow : EditorWindow
         }
         if (GUILayout.Button(mvArrowLR, GUILayout.Width(mvButWdth * LRButScale), GUILayout.Height(mvButLen)))
         {
-            info.SetRight(!info.CanMvRight(lyr), lyr);
+            //info.mvmt.SetRight(!info.mvmt.CanMvRight(lyr), lyr);
+            info.mvmt[lyr, MVMT.RGT] = !info.mvmt[lyr, MVMT.RGT];
         }
 
         EditorGUILayout.EndHorizontal();
 
         // Bot button
-        if (info.CanMvBot(lyr))
+        if (/*info.mvmt.CanMvBot(lyr)*/info.mvmt[lyr, MVMT.BOT])
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -209,7 +203,8 @@ public class CellDataWindow : EditorWindow
         GUILayout.Space((mvButWdth * LRButScale) + elemSpacing);
         if (GUILayout.Button(mvArrowUD, GUILayout.Width(mvButLen), GUILayout.Height(mvButWdth)))
         {
-            info.SetBot(!info.CanMvBot(lyr), lyr);
+            //info.mvmt.SetBot(!info.mvmt.CanMvBot(lyr), lyr);
+            info.mvmt[lyr, MVMT.BOT] = !info.mvmt[lyr, MVMT.BOT];
         }
         EditorGUILayout.EndHorizontal();
 
@@ -228,6 +223,7 @@ public class CellDataWindow : EditorWindow
         GUILayout.Label(htReference, GUILayout.Width(htReference.width));
 
         GUILayout.BeginVertical();
+
         // Button to pick orientation
         if(GUILayout.Button(encMapOr))
         {
@@ -235,7 +231,51 @@ public class CellDataWindow : EditorWindow
             encMapOr = type ? "Left - Right" : "Up - Down";
         }
 
-        // Toggle used to see trimmed corners
+        // Create menu to alter a cell's properties
+        if (type)
+        {
+            EncounterMapCellProp(info.encounterMapLR);
+        }
+        else
+        {
+            EncounterMapCellProp(info.encounterMapUD);
+        }
+
+        // Menu to see trimmed corners
+        EncounterMapTrimMenu();
+
+        GUILayout.EndVertical();
+
+        // Create selection grid
+        if (type)
+        {
+            EncounterMapSelGrid(info.encounterMapLR, type);
+        }
+        else
+        {
+            EncounterMapSelGrid(info.encounterMapUD, type);
+        }
+
+        GUILayout.EndHorizontal();
+    }
+
+    // GUI for editing an ecounter cell's properties
+    private void EncounterMapCellProp(HexRect hexRect)
+    {
+        int r = curInd / GlobalVals.ENC_MAP_COL;
+        int c = curInd - (r * GlobalVals.ENC_MAP_COL);
+        EditorGUILayout.LabelField("Layer 2 movement mask: " + info.mvmt.GetMv(true).ToString());
+        EditorGUILayout.LabelField("Layer 1 movement mask: " + info.mvmt.GetMv(false).ToString());
+        EditorGUILayout.LabelField("Column: " + c.ToString());
+        EditorGUILayout.LabelField("Cell: " + r.ToString());
+        EditorGUIUtility.labelWidth = 75.0f;
+        hexRect[r,c].height = EditorGUILayout.IntSlider("Height:", hexRect[r, c].height, 0, GlobalVals.ENC_MAP_MX_HT);
+        EditorGUIUtility.labelWidth = 0.0f;
+    }
+
+    // Toggle buttons used to see trimmed corners
+    private void EncounterMapTrimMenu()
+    {
         GUILayout.BeginVertical("Box");
         EditorGUILayout.LabelField("Trim Corner Preview");
         GUILayout.BeginHorizontal();
@@ -250,19 +290,6 @@ public class CellDataWindow : EditorWindow
         EditorGUIUtility.labelWidth = 0.0f;
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
-
-        GUILayout.EndVertical();
-        // Create selection grid
-        if (type)
-        {
-            EncounterMapSelGrid(info.encounterMapLR, type);
-        }
-        else
-        {
-            EncounterMapSelGrid(info.encounterMapUD, type);
-        }
-
-        GUILayout.EndHorizontal();
     }
 
     // Selection grid for an encounter map
@@ -283,6 +310,7 @@ public class CellDataWindow : EditorWindow
         {
             GUILayout.Label("Up-Down Orientation");
         }
+
         GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
         for (int c = 0; c < trimHexRect.ColCnt(); c++)
         {
@@ -316,7 +344,10 @@ public class CellDataWindow : EditorWindow
                     {
                         hVal = (trimHexRect[r, c].height / (float)GlobalVals.ENC_MAP_MX_HT) * 0.33f;
                         GUI.color = Color.HSVToRGB(hVal, 1.0f, 1.0f);
-                        GUILayout.Button(trimHexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w));
+                        if (GUILayout.Button(trimHexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w)))
+                        {
+                            curInd = (r * GlobalVals.ENC_MAP_COL) + c;
+                        }
                     }                   
                 }
             }
