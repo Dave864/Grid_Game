@@ -54,11 +54,6 @@ public class CellTypesEditor : Editor
         {
             Undo.RecordObject(target, "Added a new cell to list");
         }
-
-        if(GUI.changed)
-        {
-            EditorUtility.SetDirty(cellTypesRef);
-        }
     }
 
     // Displays each element in the current list
@@ -71,6 +66,7 @@ public class CellTypesEditor : Editor
         {
             curInfo = curCellList[ind];
             cellRemoved = false;
+
             EditorGUILayout.BeginHorizontal("Box");
 
             // Displays a preview of the model
@@ -87,12 +83,12 @@ public class CellTypesEditor : Editor
             {
                 GUILayout.Box("No Model", GUILayout.Width(50), GUILayout.Height(50));
             }
-            EditorGUILayout.BeginVertical(GUILayout.Height(50));
+
+            EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
 
             // Button for advanced options
             GUI.enabled = (curInfo.GetModel() != null) ? true : false;
-            // Begin Change Check
             EditorGUI.BeginChangeCheck();
             if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
@@ -103,6 +99,7 @@ public class CellTypesEditor : Editor
             {
                 Undo.RecordObject(target, "Changed properties of the cell");
             }
+
             EditorGUILayout.BeginVertical();
 
             // Field to insert the model to use
@@ -120,12 +117,13 @@ public class CellTypesEditor : Editor
             curInfo.SetPath(AssetDatabase.GetAssetPath(curInfo.GetModel()));
             EditorGUILayout.LabelField("Path:", curInfo.GetPath());
 
-            EditorGUILayout.LabelField("Layer 1: " + curInfo.mvmt.GetMv(true).ToString());
-            EditorGUILayout.LabelField("Layer 2: " + curInfo.mvmt.GetMv(false).ToString());
+            // Movement GUI
+            //MvmtGUI(true, curInfo);
+            //MvmtGUI(false, curInfo);
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();  
+            EditorGUILayout.BeginHorizontal();
 
             // Button that removes the cell from the current list
             EditorGUI.BeginChangeCheck();
@@ -143,8 +141,8 @@ public class CellTypesEditor : Editor
             // Button to clear the info of the cell
             if (!cellRemoved)
             {
-                EditorGUI.BeginChangeCheck();
                 GUI.enabled = (curInfo.GetModel() != null) ? true : false;
+                EditorGUI.BeginChangeCheck();
                 if (GUILayout.Button("Clear", GUILayout.MinWidth(50), GUILayout.ExpandWidth(true)))
                 {
                     curInfo = new CellData((int)curList);
@@ -155,9 +153,11 @@ public class CellTypesEditor : Editor
                     Undo.RecordObject(target, "Cleared the information of a cell");
                 }
             }
-            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
+
             GUI.enabled = true;
         }
     }
@@ -176,16 +176,51 @@ public class CellTypesEditor : Editor
         curCellList.Remove(curCellList[ind]);
     }
 
+    // GUI for changing movement settings of a cell
+    void MvmtGUI(bool lyr, CellData cell)
+    {
+        EditorGUILayout.BeginVertical();
+        if (lyr)
+        {
+            EditorGUILayout.LabelField("Layer 2");
+        }
+        else
+        {
+            EditorGUILayout.LabelField("Layer 1");
+        }
+        EditorGUIUtility.fieldWidth = 10.0f;
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(20.0f);
+        cell.mvmt[lyr, MVMT.TOP] = EditorGUILayout.Toggle(cell.mvmt[lyr, MVMT.TOP]);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        cell.mvmt[lyr, MVMT.LFT] = EditorGUILayout.Toggle(cell.mvmt[lyr, MVMT.LFT]);
+        cell.mvmt[lyr, MVMT.RGT] = EditorGUILayout.Toggle(cell.mvmt[lyr, MVMT.RGT]);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(20.0f);
+        cell.mvmt[lyr, MVMT.BOT] = EditorGUILayout.Toggle(cell.mvmt[lyr, MVMT.BOT]);
+        EditorGUILayout.EndHorizontal();
+        EditorGUIUtility.fieldWidth = 0.0f;
+
+        EditorGUILayout.EndVertical();
+    }
+
     // Menu for altering the information of a cell
     void AdvOptMenu(CellData cell)
     {
         if(curList != CELLTYPES.SPECIAL)
         {
+            // Begin Change Check
+            EditorGUI.BeginChangeCheck();
+
             Debug.Log("Change standard cell");
             advOptWindow = (CellDataWindow)EditorWindow.GetWindow(typeof(CellDataWindow), true, "Cell Data");
             advOptWindow.info = cell;
             advOptWindow.curType = curList;
-            advOptWindow.ShowAuxWindow();
+            advOptWindow.Show(true);
         }
         else
         {

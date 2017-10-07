@@ -82,7 +82,7 @@ public class HexRect
     }
 
     // Get row count
-    public int HexPerRow()
+    public int HexPerCol()
     {
         return hPc;
     }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public enum MVMT
 {
     TOP = 3,
@@ -30,7 +29,7 @@ public class OverworldMvmt
     [SerializeField]
     private int mvLyr2;
 
-    public OverworldMvmt(int ml1, int ml2)
+    public OverworldMvmt(int ml1 = 0, int ml2 = 0)
     {
         mvLyr1 = ml1;
         mvLyr2 = ml2;
@@ -44,7 +43,6 @@ public class OverworldMvmt
     }
 
     // Accessor
-    // Only recieves boolean values
     public bool this[bool lyr, MVMT dir]
     {
         get

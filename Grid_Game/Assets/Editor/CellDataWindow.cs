@@ -10,15 +10,7 @@ public class CellDataWindow : EditorWindow
     public CellData info;
     public CELLTYPES curType;
 
-    // position and size for model preview
-    /*
-    private int prevX;
-    private int prevY = 4;
-    private int prevLen = 500;
-    private int prevWdth = 200;
-    */
-
-    // position and sizes for movement GUI
+    // Sizes and values for movement GUI
     private int boxLen = 40;
     private int mvButWdth = 25;
     private int mvButLen = 40;
@@ -32,21 +24,38 @@ public class CellDataWindow : EditorWindow
     private string mvArrUDOff_path = "Assets/Resources/Materials/GUI Images/Movement Arrow Off UD.png";
     private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
     private string htReference_path = "Assets/Resources/Materials/GUI Images/Enc Cell Ht Reference.png";
+    private string encCell_path = "Assets/Resources/Materials/GUI Images/Encounter Cell.png";
 
-    // Values for Encounter Map GUI
-    private bool type = true;
+    // Sizes and values for Encounter Map GUI
+    private GUIStyle encCellNrm_Style;
+    private GUIStyle encCellSel_Style;
     private string encMapOr = "Left - Right";
-    bool ulTog = false;
-    bool blTog = false;
-    bool urTog = false;
-    bool brTog = false;
+    private bool type = true;
+    private bool ulTog = false;
+    private bool blTog = false;
+    private bool urTog = false;
+    private bool brTog = false;
+    private int cellButWdt = 40;
     private int curInd = 0;
 
     private void OnGUI()
     {
+        encCellNrm_Style = new GUIStyle
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fixedHeight = cellButWdt,
+            fixedWidth = cellButWdt,
+            margin = new RectOffset(2, 2, 2, 2),
+        };
+        encCellNrm_Style.normal.background = (Texture2D)AssetDatabase.LoadAssetAtPath(encCell_path, typeof(Texture2D));
+
+        encCellSel_Style = new GUIStyle(encCellNrm_Style);
+        encCellSel_Style.normal.background = Texture2D.whiteTexture;
+
         //EditorGUILayout.BeginVertical();
         EditorGUILayout.BeginHorizontal();
-        // Movement GUI
+        // Movement settings GUI
+        // This doesn't change movement settings for some reason
         MovementGui();
 
         // Where a preview of model should go
@@ -98,7 +107,7 @@ public class CellDataWindow : EditorWindow
                 butEnableLyr2 = false;
                 // Layer 1 Cell movement editor
                 butEnableLyr1 = false;
-                Debug.LogError("Tried to access CellData of special");
+                Debug.LogError("Tried to access CellData of special cell");
                 break;
         }
 
@@ -121,11 +130,10 @@ public class CellDataWindow : EditorWindow
         Texture2D mvArrowUD;
 
         GUI.enabled = butEnable;
-        /*Rect movemntGUIRect =*/ EditorGUILayout.BeginVertical();
-        // prevX = (int)(movemntGUIRect.width + (2.5 * elemSpacing));
+        EditorGUILayout.BeginVertical();
 
-        // Top button
-        if (/*info.mvmt.CanMvTop(lyr)*/info.mvmt[lyr, MVMT.TOP])
+        // Top button Label
+        if (info.mvmt[lyr, MVMT.TOP])
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -134,18 +142,20 @@ public class CellDataWindow : EditorWindow
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOff_path, typeof(Texture2D));
         }
         EditorGUILayout.BeginHorizontal();
+
         // Space used to position button
         GUILayout.Space((mvButWdth * LRButScale) + elemSpacing);
+
+        // Top button
         if (GUILayout.Button(mvArrowUD, GUILayout.Width(mvButLen), GUILayout.Height(mvButWdth)))
         {
-            //info.mvmt.SetTop(!info.mvmt.CanMvTop(lyr), lyr);
             info.mvmt[lyr, MVMT.TOP] = !info.mvmt[lyr, MVMT.TOP];
         }
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
-        // Left button
-        if (/*info.mvmt.CanMvLeft(lyr)*/info.mvmt[lyr, MVMT.LFT])
+        // Left button label
+        if (info.mvmt[lyr, MVMT.LFT])
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -153,9 +163,10 @@ public class CellDataWindow : EditorWindow
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROff_path, typeof(Texture2D));
         }
+
+        // Left button
         if (GUILayout.Button(mvArrowLR, GUILayout.Width(mvButWdth * LRButScale), GUILayout.Height(mvButLen)))
         {
-            //info.mvmt.SetLeft(!info.mvmt.CanMvLeft(lyr), lyr);
             info.mvmt[lyr, MVMT.LFT] = !info.mvmt[lyr, MVMT.LFT];
         }
 
@@ -171,8 +182,8 @@ public class CellDataWindow : EditorWindow
         }
         GUI.enabled = butEnable;
 
-        // Right button
-        if (/*info.mvmt.CanMvRight(lyr)*/info.mvmt[lyr, MVMT.RGT])
+        // Right button label
+        if (info.mvmt[lyr, MVMT.RGT])
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROn_path, typeof(Texture2D));
         }
@@ -180,16 +191,17 @@ public class CellDataWindow : EditorWindow
         {
             mvArrowLR = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrLROff_path, typeof(Texture2D));
         }
+
+        // Right button
         if (GUILayout.Button(mvArrowLR, GUILayout.Width(mvButWdth * LRButScale), GUILayout.Height(mvButLen)))
         {
-            //info.mvmt.SetRight(!info.mvmt.CanMvRight(lyr), lyr);
             info.mvmt[lyr, MVMT.RGT] = !info.mvmt[lyr, MVMT.RGT];
         }
 
         EditorGUILayout.EndHorizontal();
 
-        // Bot button
-        if (/*info.mvmt.CanMvBot(lyr)*/info.mvmt[lyr, MVMT.BOT])
+        // Bot button label
+        if (info.mvmt[lyr, MVMT.BOT])
         {
             mvArrowUD = (Texture2D)AssetDatabase.LoadAssetAtPath(mvArrUDOn_path, typeof(Texture2D));
         }
@@ -201,13 +213,13 @@ public class CellDataWindow : EditorWindow
         EditorGUILayout.BeginHorizontal();
         // Space used to position button
         GUILayout.Space((mvButWdth * LRButScale) + elemSpacing);
+
+        // Bot button
         if (GUILayout.Button(mvArrowUD, GUILayout.Width(mvButLen), GUILayout.Height(mvButWdth)))
         {
-            //info.mvmt.SetBot(!info.mvmt.CanMvBot(lyr), lyr);
             info.mvmt[lyr, MVMT.BOT] = !info.mvmt[lyr, MVMT.BOT];
         }
         EditorGUILayout.EndHorizontal();
-
         EditorGUILayout.EndVertical();
     }
 
@@ -264,8 +276,6 @@ public class CellDataWindow : EditorWindow
     {
         int r = curInd / GlobalVals.ENC_MAP_COL;
         int c = curInd - (r * GlobalVals.ENC_MAP_COL);
-        EditorGUILayout.LabelField("Layer 2 movement mask: " + info.mvmt.GetMv(true).ToString());
-        EditorGUILayout.LabelField("Layer 1 movement mask: " + info.mvmt.GetMv(false).ToString());
         EditorGUILayout.LabelField("Column: " + c.ToString());
         EditorGUILayout.LabelField("Cell: " + r.ToString());
         EditorGUIUtility.labelWidth = 75.0f;
@@ -297,8 +307,9 @@ public class CellDataWindow : EditorWindow
     // false is Up - Down orientaton
     private void EncounterMapSelGrid(HexRect hexRect, bool type)
     {
-        int w = 40;
+        int w = cellButWdt;
         float hVal;
+        GUIStyle gUIStyle;
         HexRect trimHexRect = hexRect.TrimCorners(ulTog, urTog, blTog, brTog);
 
         GUILayout.BeginVertical("Box", GUILayout.Width(w * hexRect.ColCnt()));
@@ -315,8 +326,9 @@ public class CellDataWindow : EditorWindow
         for (int c = 0; c < trimHexRect.ColCnt(); c++)
         {
             GUILayout.BeginVertical();
-            for (int r = 0; r < trimHexRect.HexPerRow(); r++)
+            for (int r = 0; r < trimHexRect.HexPerCol(); r++)
             {
+                // Format layout of encounter cells GUI
                 if (trimHexRect.SharpCor())
                 {
                     if ((r == 0) && (c % 2 != 0))
@@ -331,20 +343,25 @@ public class CellDataWindow : EditorWindow
                         GUILayout.Space(w / 2);
                     }
                 }
+                // Display the encounter cells GUI
                 if (trimHexRect[r,c] != null)
                 {
+                    // "Trim" the encounter cell
                     if (trimHexRect[r,c].height < 0)
                     {
                         GUI.color = Color.blue;
                         GUI.enabled = false;
-                        GUILayout.Button("", GUILayout.Width(w), GUILayout.Height(w));
+                        GUILayout.Box("", encCellNrm_Style);
                         GUI.enabled = true;
                     }
+                    // Create button to interact with encounter cell
                     else
                     {
                         hVal = (trimHexRect[r, c].height / (float)GlobalVals.ENC_MAP_MX_HT) * 0.33f;
                         GUI.color = Color.HSVToRGB(hVal, 1.0f, 1.0f);
-                        if (GUILayout.Button(trimHexRect[r, c].height.ToString(), GUILayout.Width(w), GUILayout.Height(w)))
+                        // Set style for button
+                        gUIStyle = (curInd == ((r * GlobalVals.ENC_MAP_COL) + c)) ? encCellSel_Style : encCellNrm_Style;
+                        if (GUILayout.Button(trimHexRect[r, c].height.ToString(), gUIStyle))
                         {
                             curInd = (r * GlobalVals.ENC_MAP_COL) + c;
                         }
