@@ -25,6 +25,7 @@ public class CellDataWindow : EditorWindow
     private string mvReference_path = "Assets/Resources/Materials/GUI Images/Cell Movement Reference.png";
     private string htReference_path = "Assets/Resources/Materials/GUI Images/Enc Cell Ht Reference.png";
     private string encCell_path = "Assets/Resources/Materials/GUI Images/Encounter Cell.png";
+    private string encCellSel_path = "Assets/Resources/Materials/GUI Images/Selected Encounter Cell.png";
 
     // Sizes and values for Encounter Map GUI
     private GUIStyle encCellNrm_Style;
@@ -38,20 +39,24 @@ public class CellDataWindow : EditorWindow
     private int cellButWdt = 40;
     private int curInd = 0;
 
-    private void OnGUI()
+    // Set up GUI styles
+    private void Awake()
     {
         encCellNrm_Style = new GUIStyle
         {
             alignment = TextAnchor.MiddleCenter,
             fixedHeight = cellButWdt,
             fixedWidth = cellButWdt,
-            margin = new RectOffset(2, 2, 2, 2),
+            margin = new RectOffset(2, 2, 2, 2)
         };
         encCellNrm_Style.normal.background = (Texture2D)AssetDatabase.LoadAssetAtPath(encCell_path, typeof(Texture2D));
 
         encCellSel_Style = new GUIStyle(encCellNrm_Style);
-        encCellSel_Style.normal.background = Texture2D.whiteTexture;
+        encCellSel_Style.normal.background = (Texture2D)AssetDatabase.LoadAssetAtPath(encCellSel_path, typeof(Texture2D));
+    }
 
+    private void OnGUI()
+    {
         //EditorGUILayout.BeginVertical();
         EditorGUILayout.BeginHorizontal();
         // Movement settings GUI
@@ -77,35 +82,25 @@ public class CellDataWindow : EditorWindow
         switch (curType)
         {
             case CELLTYPES.FLOOR:
-                // Layer 2 Cell movement editor
                 butEnableLyr2 = false;
-                // Layer 1 Cell movement editor
                 butEnableLyr1 = true;
                 break;
             case CELLTYPES.WALL:
-                // Layer 2 Cell movement editor
                 butEnableLyr2 = false;
-                // Layer 1 Cell movement editor
                 butEnableLyr1 = false;
                 break;
             case CELLTYPES.PLATFORM:
-                // Layer 2 Cell movement editor
                 butEnableLyr2 = true;
-                // Layer 1 Cell movement editor
                 butEnableLyr1 = false;
                 break;
             case CELLTYPES.RAMP:
                 GUI.enabled = true;
-                // Layer 2 Cell movement editor
                 butEnableLyr2 = true;
-                // Layer 1 Cell movement editor
                 butEnableLyr1 = true;
                 break;
             default:
                 GUI.enabled = false;
-                // Layer 2 Cell movement editor
                 butEnableLyr2 = false;
-                // Layer 1 Cell movement editor
                 butEnableLyr1 = false;
                 Debug.LogError("Tried to access CellData of special cell");
                 break;
@@ -276,8 +271,6 @@ public class CellDataWindow : EditorWindow
     {
         int r = curInd / GlobalVals.ENC_MAP_COL;
         int c = curInd - (r * GlobalVals.ENC_MAP_COL);
-        EditorGUILayout.LabelField("Column: " + c.ToString());
-        EditorGUILayout.LabelField("Cell: " + r.ToString());
         EditorGUIUtility.labelWidth = 75.0f;
         hexRect[r,c].height = EditorGUILayout.IntSlider("Height:", hexRect[r, c].height, 0, GlobalVals.ENC_MAP_MX_HT);
         EditorGUIUtility.labelWidth = 0.0f;
@@ -305,7 +298,7 @@ public class CellDataWindow : EditorWindow
     // Selection grid for an encounter map
     // true is Left - Right orientation
     // false is Up - Down orientaton
-    private void EncounterMapSelGrid(HexRect hexRect, bool type)
+    private void EncounterMapSelGrid(HexRect hexRect, bool rot)
     {
         int w = cellButWdt;
         float hVal;
@@ -313,7 +306,7 @@ public class CellDataWindow : EditorWindow
         HexRect trimHexRect = hexRect.TrimCorners(ulTog, urTog, blTog, brTog);
 
         GUILayout.BeginVertical("Box", GUILayout.Width(w * hexRect.ColCnt()));
-        if (type)
+        if (rot)
         {
             GUILayout.Label("Left-Right Orientation");
         }

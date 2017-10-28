@@ -16,15 +16,16 @@ public enum CELLTYPES
 }
 
 [CustomEditor(typeof(CellTypes))]
+[CanEditMultipleObjects]
 public class CellTypesEditor : Editor
 {
-    private CellDataWindow advOptWindow;
+    private CellDataWindow cellDataW;
     private Texture2D advOptButImg;
     private CellTypes cellTypesRef;
 
     private List<CellData> curCellList;
 
-    public CELLTYPES curList = 0;
+    private CELLTYPES curList = 0;
 
     private void OnEnable()
     {
@@ -57,7 +58,7 @@ public class CellTypesEditor : Editor
     }
 
     // Displays each element in the current list
-    void DispList()
+    private void DispList()
     {
         CellData curInfo;
         Texture2D mdlPrev;
@@ -87,12 +88,12 @@ public class CellTypesEditor : Editor
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
 
-            // Button for advanced options
+            // Button for settings of the cell
             GUI.enabled = (curInfo.GetModel() != null) ? true : false;
             EditorGUI.BeginChangeCheck();
             if (GUILayout.Button(new GUIContent(advOptButImg), GUILayout.MaxWidth(30), GUILayout.MaxHeight(30), GUILayout.ExpandWidth(false)))
             {
-                AdvOptMenu(curInfo);
+                CellDataSettings(curInfo);
             }
             // End Change check
             if (EditorGUI.EndChangeCheck())
@@ -120,6 +121,7 @@ public class CellTypesEditor : Editor
             // Movement GUI
             //MvmtGUI(true, curInfo);
             //MvmtGUI(false, curInfo);
+            //EncMapGUI(curInfo);
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
@@ -163,21 +165,27 @@ public class CellTypesEditor : Editor
     }
 
     // Add a new cell to the current list
-    void AddCell()
+    private void AddCell()
     {
         Debug.Log("Added another cell");
         curCellList.Add(new CellData((int)curList));
     }
 
     // Remove a cell from the current list
-    void RemoveCell(int ind)
+    private void RemoveCell(int ind)
     {
         Debug.Log("A cell has been removed");
         curCellList.Remove(curCellList[ind]);
     }
 
+    // GUI for changeing the first cell of an encounter map
+    private void EncMapGUI(CellData cell)
+    {
+        cell.encounterMapLR[0, 0].height = EditorGUILayout.IntSlider("Height:", cell.encounterMapLR[0, 0].height, 0, GlobalVals.ENC_MAP_MX_HT);
+    }
+
     // GUI for changing movement settings of a cell
-    void MvmtGUI(bool lyr, CellData cell)
+    private void MvmtGUI(bool lyr, CellData cell)
     {
         EditorGUILayout.BeginVertical();
         if (lyr)
@@ -191,6 +199,7 @@ public class CellTypesEditor : Editor
         EditorGUIUtility.fieldWidth = 10.0f;
         EditorGUILayout.BeginHorizontal();
         GUILayout.Space(20.0f);
+        Debug.Log(cell.mvmt[lyr, MVMT.TOP]);
         cell.mvmt[lyr, MVMT.TOP] = EditorGUILayout.Toggle(cell.mvmt[lyr, MVMT.TOP]);
         EditorGUILayout.EndHorizontal();
 
@@ -209,7 +218,7 @@ public class CellTypesEditor : Editor
     }
 
     // Menu for altering the information of a cell
-    void AdvOptMenu(CellData cell)
+    private void CellDataSettings(CellData cell)
     {
         if(curList != CELLTYPES.SPECIAL)
         {
@@ -217,10 +226,10 @@ public class CellTypesEditor : Editor
             EditorGUI.BeginChangeCheck();
 
             Debug.Log("Change standard cell");
-            advOptWindow = (CellDataWindow)EditorWindow.GetWindow(typeof(CellDataWindow), true, "Cell Data");
-            advOptWindow.info = cell;
-            advOptWindow.curType = curList;
-            advOptWindow.Show(true);
+            cellDataW = (CellDataWindow)EditorWindow.GetWindow(typeof(CellDataWindow), true, "Cell Data");
+            cellDataW.info = cell;
+            cellDataW.curType = curList;
+            cellDataW.Show(true);
         }
         else
         {
@@ -229,7 +238,7 @@ public class CellTypesEditor : Editor
     }
 
     // Changes the current list being displayed
-    void GetList()
+    private void GetList()
     {
         switch (curList)
         {

@@ -165,7 +165,310 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floors: []
   walls: []
-  platforms: []
+  platforms:
+  - encounterMapUD:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    encounterMapLR:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    mvmt:
+      mvLyr1: 0
+      mvLyr2: 15
+    path: Assets/Resources/Prefabs/platform_p.mb
+    model: {fileID: 100002, guid: 84a2dcf152b5d5d49a05629b2eb31e56, type: 3}
+  - encounterMapUD:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    encounterMapLR:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    mvmt:
+      mvLyr1: 0
+      mvLyr2: 15
+    path: Assets/Resources/Prefabs/platform_w.mb
+    model: {fileID: 100002, guid: 0580fd2c3736489428212dcd9a6f520d, type: 3}
+  - encounterMapUD:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    encounterMapLR:
+      cCnt: 7
+      hPc: 6
+      rad: 0
+      sharpCor: 1
+      hRect:
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 6
+      - height: 0
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+      - height: -1
+      - height: 0
+    mvmt:
+      mvLyr1: 0
+      mvLyr2: 15
+    path: Assets/Resources/Prefabs/platform_i.mb
+    model: {fileID: 100002, guid: 75d6f7d2726f3314ca243ca31fe0c13c, type: 3}
   ramps: []
   special: []
 --- !u!4 &529142986
