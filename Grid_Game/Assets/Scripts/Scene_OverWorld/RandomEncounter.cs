@@ -1212,8 +1212,8 @@ public class RandomEncounter : MonoBehaviour {
 		PlayerPrefs.SetString ("ArenaType", "double");
 		PlayerPrefs.SetInt ("TL", (int)char.GetNumericValue (SectionData.Cur_Sec [PlayerMovement.Cur_Row - 1] [PlayerMovement.Cur_Col] [3]));
 		PlayerPrefs.SetInt ("TR", -1);
-		PlayerPrefs.SetInt ("BL", -2);
-		PlayerPrefs.SetInt ("BR", -1);
+		PlayerPrefs.SetInt ("BL", -1);
+		PlayerPrefs.SetInt ("BR", -2);
 	}
 
 	// set up quad arena with player at top-left
